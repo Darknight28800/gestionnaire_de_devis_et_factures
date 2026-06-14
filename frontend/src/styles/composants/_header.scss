@@ -1,0 +1,151 @@
+/* ============================
+   HEADER PREMIUM FACTUREPRO
+============================ */
+    .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px 32px; /* Premium spacing */
+    background: var(--fond-carte);
+
+    border-bottom: 2px solid var(--gris-200); /* Ligne nette */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+
+    min-height: 95px; /* Empêche le logo de dépasser */
+    box-sizing: border-box;
+    }
+
+    /* Zone gauche */
+    .header__left {
+    display: flex;
+    align-items: center;
+    gap: 18px; /* Premium spacing */
+    }
+
+    /* Burger menu (mobile) */
+    .header__burger {
+    display: none;
+    background: transparent;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    }
+
+    /* Logo premium */
+    .header__logo {
+    height: 72px; /* Taille premium */
+    width: auto;
+    object-fit: contain;
+    display: block;
+    }
+
+    /* Placeholder si pas de logo */
+    .header__logo-placeholder {
+    width: 160px;
+    height: 60px;
+    background: var(--gris-200);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gris-600);
+    font-size: 0.9rem;
+    }
+
+    /* Titre entreprise */
+    .header__title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--texte);
+    margin: 0;
+    }
+
+    /* Zone droite */
+    .header__right {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    }
+
+    /* Bouton dark mode */
+    .btn-darkmode {
+    background: transparent;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: var(--texte);
+    }
+
+    /* Avatar + menu */
+    .header__user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    position: relative;
+    }
+
+    .header__avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    }
+
+    /* Menu utilisateur */
+    .user-menu {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: var(--fond-carte);
+    border: 1px solid var(--gris-200);
+    border-radius: 10px;
+    padding: 10px 0;
+    width: 180px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    z-index: 2100;
+    }
+
+    .user-menu a {
+    padding: 0.7rem 1rem;
+    text-decoration: none;
+    color: var(--texte);
+    font-size: 0.95rem;
+    transition: 0.2s ease;
+
+    &:hover {
+        background: var(--hover);
+    }
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+    .header__burger {
+        display: inline-block;
+    }
+
+    .header__title {
+        font-size: 1.2rem;
+    }
+
+    .header__logo {
+        height: 55px; /* plus petit sur mobile */
+    }
+
+    .header {
+        min-height: 80px;
+        padding: 16px 20px;
+        }
+    }
+
+    /* DARK MODE */
+    body.dark .header {
+        border-bottom-color: var(--gris-800);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    }
+
+    body.dark .header__logo {
+    filter: brightness(1.1);
+}

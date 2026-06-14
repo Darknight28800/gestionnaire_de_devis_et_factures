@@ -1,0 +1,24 @@
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    background: var(--fond-carte);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    width: 420px;
+    box-shadow: var(--shadow-lg);
+}
+
+.modal__close {
+    margin-top: var(--space-md);
+    padding: 10px 16px;
+    background: var(--couleur-primaire);
+    color: #fff;
+    border-radius: var(--radius-sm);
+}

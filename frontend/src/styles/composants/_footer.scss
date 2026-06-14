@@ -1,0 +1,53 @@
+.footer-premium {
+    background: var(--couleur-primaire);
+    padding: 50px 60px;
+    color: #fff;
+    margin-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 40px;
+}
+
+.footer-col h4,
+.footer-col h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+.footer-col p {
+    opacity: 0.85;
+    font-size: 0.95rem;
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-col ul li {
+    margin-bottom: 10px;
+}
+
+.footer-col ul li a {
+    color: #fff;
+    opacity: 0.85;
+    font-size: 0.95rem;
+    transition: 0.25s ease;
+}
+
+.footer-col ul li a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* Colonne marque */
+.footer-col.brand h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+}

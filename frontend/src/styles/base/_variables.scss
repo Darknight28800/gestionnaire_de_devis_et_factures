@@ -1,0 +1,114 @@
+/* ============================
+    VARIABLES GLOBALES (CSS)
+   ============================ */
+
+:root {
+    /* Couleurs dynamiques venant de /parametres */
+    --couleur-primaire: #4f46e5;
+    --couleur-secondaire: #1cc88a;
+    --couleur-accent: #36b9cc;
+
+    /* Couleurs neutres */
+    --gris-100: #f3f4f6;
+    --gris-200: #e5e7eb;
+    --gris-300: #d1d5db;
+    --gris-400: #9ca3af;
+    --gris-500: #6b7280;
+    --gris-600: #4b5563;
+    --gris-700: #374151;
+    --gris-800: #1f2937;
+    --gris-900: #111827;
+
+    /* Fond & texte */
+    --fond: #ffffff;
+    --fond-carte: #ffffff;
+    --texte: #111827;
+    --texte-inverse: #ffffff;
+
+    /* Sidebar */
+    --sidebar-bg: var(--fond);
+    --sidebar-border: var(--gris-200);
+
+    /* Header */
+    --header-bg: var(--fond);
+    --header-border: var(--gris-200);
+
+    /* Hover */
+    --hover: var(--gris-100);
+
+    /* Radius */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+
+    /* Ombres */
+    --shadow-sm: 0 2px 6px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 6px 18px rgba(0,0,0,0.12);
+
+    /* Espacements */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 40px;
+
+    /* Typographie */
+    --font-base: "Inter", sans-serif;
+
+    /* Breakpoints */
+    --bp-sm: 576px;
+    --bp-md: 768px;
+    --bp-lg: 992px;
+    --bp-xl: 1200px;
+}
+
+/* ============================
+        DARK MODE
+   ============================ */
+
+.dark {
+    --fond: #0f172a;
+    --fond-carte: #1e293b;
+    --texte: #f8fafc;
+    --texte-inverse: #0f172a;
+
+    --sidebar-bg: #1e293b;
+    --sidebar-border: #334155;
+
+    --header-bg: #1e293b;
+    --header-border: #334155;
+
+    --hover: #334155;
+}
+
+/* ============================
+   DARK MODE AUTOMATIQUE
+   ============================ */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --fond: #121212;
+        --fond-carte: #1e1e1e;
+        --texte: #eaeaea;
+        --gris-100: #1f1f1f;
+        --gris-200: #2a2a2a;
+        --gris-300: #3a3a3a;
+        --gris-700: #555;
+        --gris-800: #2c2c2c;
+        --couleur-primaire: #6a5acd; /* bleu-violet du logo */
+    }
+
+    body {
+        background: var(--fond);
+        color: var(--texte);
+    }
+
+    a, button {
+        color: var(--texte);
+    }
+
+    .card, .admin-card, .table-logs, .table-roles {
+        background: var(--fond-carte);
+        color: var(--texte);
+    }
+}

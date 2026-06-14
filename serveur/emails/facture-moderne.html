@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef1f7;
+            padding: 30px;
+        }
+
+        .card {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #4a6cf7;
+            padding: 20px;
+            color: white;
+        }
+
+        .content {
+            padding: 25px;
+            color: #333;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 18px;
+            background: #4a6cf7;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .footer {
+            padding: 15px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="header">
+            <h2>Nouvelle facture disponible</h2>
+        </div>
+
+        <div class="content">
+            <p>Bonjour,</p>
+            <p>Votre facture n° <strong>{{numero_facture}}</strong> est maintenant disponible.</p>
+            <p>Montant TTC : <strong>{{montant}} €</strong></p>
+
+            <a href="{{lien_facture}}" class="btn">Télécharger la facture</a>
+        </div>
+
+        <div class="footer">
+            © {{annee}} — Votre Gestionnaire de Factures
+        </div>
+    </div>
+</body>
+
+</html>

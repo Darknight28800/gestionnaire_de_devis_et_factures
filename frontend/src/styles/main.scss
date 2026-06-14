@@ -1,0 +1,53 @@
+/* ============================
+    BASE
+   ============================ */
+@use "./base/reset";
+@use "./base/variables";
+@use "./base/mixins";
+
+/* Dark mode + thèmes dynamiques */
+@use "./base/darkmode";
+@use "./base/themes";
+
+/* Espacements + animations globales */
+@use "./base/spacing";
+@use "./base/animations";
+
+/* ============================
+    LAYOUT
+   ============================ */
+@use "./layout/grille";
+@use "./layout/helpers";
+@use "./composants/layout";
+
+/* ============================
+    COMPOSANTS
+   ============================ */
+@use "./composants/header";
+@use "./composants/footer";
+@use "./composants/sidebar";
+@use "./composants/boutons";
+@use "./composants/cartes";
+@use "./composants/tableaux";
+
+/* ============================
+    PAGES
+   ============================ */
+@use "./pages/page";
+@use "./pages/factures";
+@use "./pages/tableauDeBord";
+@use "./pages/connexion";
+@use "./pages/clients";
+@use "./pages/profil";
+@use "./pages/admin";
+@use "./pages/support";
+@use "./pages/parametres";
+@use "./pages/devis";
+
+/* Pages d’erreurs */
+@use "./pages/erreur401";
+@use "./pages/erreur403";
+@use "./pages/erreur404";
+@use "./pages/erreur500";
+
+

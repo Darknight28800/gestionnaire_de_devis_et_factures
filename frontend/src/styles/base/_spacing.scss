@@ -1,0 +1,37 @@
+/* ============================
+    UTILITAIRES SPACING
+   ============================ */
+
+$spaces: (
+    0: 0,
+    1: 4px,
+    2: 8px,
+    3: 12px,
+    4: 16px,
+    5: 24px,
+    6: 32px,
+    8: 48px,
+    10: 64px
+);
+
+/* Marges */
+@each $key, $value in $spaces {
+    .m-#{$key} { margin: $value !important; }
+    .mt-#{$key} { margin-top: $value !important; }
+    .mb-#{$key} { margin-bottom: $value !important; }
+    .ml-#{$key} { margin-left: $value !important; }
+    .mr-#{$key} { margin-right: $value !important; }
+    .mx-#{$key} { margin-left: $value !important; margin-right: $value !important; }
+    .my-#{$key} { margin-top: $value !important; margin-bottom: $value !important; }
+}
+
+/* Padding */
+@each $key, $value in $spaces {
+    .p-#{$key} { padding: $value !important; }
+    .pt-#{$key} { padding-top: $value !important; }
+    .pb-#{$key} { padding-bottom: $value !important; }
+    .pl-#{$key} { padding-left: $value !important; }
+    .pr-#{$key} { padding-right: $value !important; }
+    .px-#{$key} { padding-left: $value !important; padding-right: $value !important; }
+    .py-#{$key} { padding-top: $value !important; padding-bottom: $value !important; }
+}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        body {
+            background: #f0f0f0;
+            padding: 40px;
+            font-family: Roboto, sans-serif;
+        }
+
+        .box {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            background: #f7faff;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 22px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h2>Votre facture est prête</h2>
+        <p>Bonjour,</p>
+
+        <div class="highlight">
+            <p><strong>Facture :</strong> {{numero_facture}}</p>
+            <p><strong>Montant :</strong> {{montant}} €</p>
+            <p><strong>Date :</strong> {{date_facture}}</p>
+        </div>
+
+        <a href="{{lien_facture}}" class="btn">Accéder à la facture</a>
+
+        <p class="footer">Merci pour votre confiance.</p>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,112 @@
+.clients-page {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.clients-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    .actions {
+        display: flex;
+        gap: 1rem;
+    }
+}
+
+.input-search {
+    padding: 0.7rem 1rem;
+    border-radius: var(--radius);
+    border: 1px solid #e2e8f0;
+    width: 250px;
+}
+
+.table-clients {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+
+    th {
+        background: var(--bg);
+        padding: 1rem;
+        text-align: left;
+        color: var(--text-light);
+    }
+
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--bg-hover);
+    }
+
+    tr:hover td {
+        background: var(--bg-hover);
+    }
+}
+
+.statut {
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.statut--actif { background: #bbf7d0; color: #15803d; }
+.statut--inactif { background: #fecaca; color: #b91c1c; }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    &__content {
+        position: relative;
+        background: var(--bg-card);
+        padding: 2rem;
+        border-radius: var(--radius);
+        width: 400px;
+        box-shadow: var(--shadow);
+    }
+}
+
+.form-client {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .form-ligne {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+    }
+}

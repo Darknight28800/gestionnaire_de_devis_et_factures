@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Votre facture est disponible</h2>
+        <p>Bonjour,</p>
+        <p>Veuillez trouver ci‑joint votre facture. Vous pouvez la consulter ou la télécharger via le bouton ci‑dessous.
+        </p>
+
+        <a href="{{lien_facture}}" class="btn">Voir la facture</a>
+
+        <p class="footer">Cet e‑mail a été envoyé automatiquement par votre gestionnaire de devis & factures.</p>
+    </div>
+</body>
+
+</html>

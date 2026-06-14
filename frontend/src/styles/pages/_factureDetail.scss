@@ -1,0 +1,116 @@
+.facture-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.facture-detail__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    .actions {
+        display: flex;
+        gap: 1rem;
+    }
+}
+
+.infos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+
+    @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.card {
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+
+    h3 {
+        margin-bottom: 1rem;
+    }
+}
+
+.table-lignes {
+    width: 100%;
+    border-collapse: collapse;
+
+    th {
+        background: var(--bg);
+        padding: 1rem;
+        text-align: left;
+        color: var(--text-light);
+    }
+
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--bg-hover);
+    }
+}
+
+.totaux {
+    background: var(--bg);
+    padding: 1rem;
+    border-radius: var(--radius);
+    font-size: 1rem;
+
+    p {
+        margin: 0.3rem 0;
+    }
+}
+
+.timeline ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--bg-hover);
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin-top: 5px;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        small {
+            color: var(--text-light);
+        }
+    }
+}
+
+/* STATUTS */
+.statut {
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.statut--payee { background: #bbf7d0; color: #15803d; }
+.statut--non_payee { background: #fecaca; color: #b91c1c; }

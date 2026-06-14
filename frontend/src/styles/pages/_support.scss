@@ -1,0 +1,13 @@
+.page-support .card {
+    max-width: 500px;
+}
+
+.page-support .card p {
+    padding: var(--space-sm) 0;
+    color: var(--texte);
+}
+
+.page-support .card p:hover {
+    color: var(--couleur-primaire);
+    cursor: pointer;
+}

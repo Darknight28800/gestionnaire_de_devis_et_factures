@@ -1,0 +1,84 @@
+/* ============================
+   MIXINS GLOBAUX
+   ============================ */
+
+/* Flex */
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@mixin flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Grid */
+@mixin grid($cols, $gap: var(--space-md)) {
+    display: grid;
+    grid-template-columns: repeat($cols, 1fr);
+    gap: $gap;
+}
+
+/* Responsive */
+@mixin responsive($breakpoint) {
+    @media (max-width: $breakpoint) {
+        @content;
+    }
+}
+
+/* Ombres */
+@mixin shadow-sm {
+    box-shadow: var(--shadow-sm);
+}
+
+@mixin shadow-md {
+    box-shadow: var(--shadow-md);
+}
+
+@mixin shadow-lg {
+    box-shadow: var(--shadow-lg);
+}
+
+/* Carte */
+@mixin card {
+    background: var(--fond-carte);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+}
+
+/* Texte */
+@mixin text-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--texte);
+}
+
+@mixin text-subtitle {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--texte);
+}
+
+/* Bouton */
+@mixin btn($bg, $color: #fff) {
+    background: $bg;
+    color: $color;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+
+    &:hover {
+        opacity: 0.85;
+    }
+}

@@ -1,0 +1,132 @@
+/* ============================
+    DARK MODE GLOBAL
+   ============================ */
+
+[data-theme="dark"] {
+    --bg: #0d1117;
+    --bg-card: #161b22;
+    --bg-hover: #1e2631;
+
+    --text: #e6edf3;
+    --text-light: #9ba3af;
+
+    --primary: #3b82f6;
+    --primary-hover: #60a5fa;
+
+    --danger: #f87171;
+    --danger-hover: #ef4444;
+
+    --sidebar-bg: #161b22;
+    --sidebar-border: #30363d;
+
+    --header-bg: #161b22;
+    --header-border: #30363d;
+
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================
+   DARK MODE GLOBAL FIX
+   ============================ */
+
+body.dark {
+    background: var(--fond);
+    color: var(--texte);
+}
+
+/* CARTES */
+body.dark .card,
+body.dark .chart,
+body.dark .list,
+body.dark .parametres-section {
+    background: var(--gris-800);
+    border-color: var(--gris-700);
+    color: var(--texte);
+}
+
+/* TITRES */
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark h4,
+body.dark h5 {
+    color: var(--texte);
+}
+
+/* TABLEAUX */
+body.dark table {
+    background: var(--gris-800);
+    color: var(--texte);
+    border-color: var(--gris-700);
+}
+
+body.dark table th {
+    background: var(--gris-700);
+    color: var(--texte);
+}
+
+body.dark table td {
+    border-color: var(--gris-700);
+    color: var(--texte);
+}
+
+/* INPUTS + SELECTS */
+body.dark input,
+body.dark select,
+body.dark textarea {
+    background: var(--gris-800);
+    border-color: var(--gris-700);
+    color: var(--texte);
+}
+
+body.dark input::placeholder,
+body.dark textarea::placeholder {
+    color: var(--gris-400);
+}
+
+/* BOUTONS */
+body.dark button {
+    background: var(--gris-700);
+    color: var(--texte);
+    border-color: var(--gris-600);
+}
+
+body.dark button:hover {
+    background: var(--gris-600);
+}
+
+/* STATUTS */
+body.dark .statut-payee {
+    color: #10b981;
+}
+
+body.dark .statut-non-payee {
+    color: #ef4444;
+}
+
+/* LISTES */
+body.dark .list li {
+    border-color: var(--gris-700);
+}
+
+/* SECTIONS PARAMÈTRES */
+body.dark .parametres-section label {
+    color: var(--texte);
+}
+
+/* CHAMPS DE COULEUR */
+body.dark input[type="color"] {
+    background: var(--gris-700);
+    border-color: var(--gris-600);
+}
+
+/* BOUTON "Nouveau devis" */
+body.dark .btn-primary {
+    background: var(--couleur-primaire);
+    color: #fff;
+}
+
+body.dark .btn-primary:hover {
+    opacity: 0.85;
+}
+

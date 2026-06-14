@@ -1,0 +1,169 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    padding: var(--space-lg);
+    color: var(--texte);
+}
+
+/* TITRE */
+.dashboard__title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--texte);
+}
+
+/* ============================
+    CARTES PREMIUM
+   ============================ */
+.dashboard__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-lg);
+}
+
+.card {
+    background: var(--fond-carte);
+    border: 1px solid var(--gris-200);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+    }
+}
+
+.card__icon {
+    font-size: 2rem;
+}
+
+.card__info h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--texte);
+}
+
+.card__info p {
+    font-size: 0.9rem;
+    color: var(--gris-500);
+}
+
+/* DARK MODE */
+body.dark .card {
+    background: var(--gris-800);
+    border-color: var(--gris-700);
+}
+
+body.dark .card__info p {
+    color: var(--gris-300);
+}
+
+/* ============================
+    GRAPHIQUES
+   ============================ */
+.dashboard__charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: var(--space-xl);
+}
+
+.chart {
+    background: var(--fond-carte);
+    border: 1px solid var(--gris-200);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.chart h3 {
+    margin-bottom: var(--space-md);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--texte);
+}
+
+/* DARK MODE */
+body.dark .chart {
+    background: var(--gris-800);
+    border-color: var(--gris-700);
+}
+
+/* ============================
+    LISTES PREMIUM
+   ============================ */
+.dashboard__lists {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: var(--space-xl);
+}
+
+.list {
+    background: var(--fond-carte);
+    border: 1px solid var(--gris-200);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.list h3 {
+    margin-bottom: var(--space-md);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--texte);
+}
+
+.list ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.list li {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: var(--space-sm);
+    border-bottom: 1px solid var(--gris-200);
+    font-size: 0.9rem;
+    color: var(--texte);
+}
+
+.list li:last-child {
+    border-bottom: none;
+}
+
+/* Statuts */
+.statut-payee {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.statut-non-payee {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+/* DARK MODE */
+body.dark .list {
+    background: var(--gris-800);
+    border-color: var(--gris-700);
+}
+
+body.dark .list li {
+    border-color: var(--gris-700);
+}
+
+/* ============================
+    RESPONSIVE
+   ============================ */
+@media (max-width: 768px) {
+    .list li {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-sm);
+    }
+}

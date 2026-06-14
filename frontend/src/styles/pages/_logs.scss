@@ -1,0 +1,125 @@
+@use "../base/mixins";
+
+.page-logs {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: var(--space-xl);
+}
+
+/* HEADER */
+.page-logs .header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--texte);
+}
+
+.page-logs .header p {
+    opacity: 0.8;
+    margin-top: 6px;
+}
+
+/* FILTRES */
+.filters {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.filters input {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--gris-300);
+    background: var(--fond);
+    color: var(--texte);
+}
+
+.filters .btn-primary {
+    background: var(--couleur-primaire);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* TABLE */
+.table-logs {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--fond-carte);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.table-logs th,
+.table-logs td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--gris-200);
+}
+
+body.dark .table-logs th,
+body.dark .table-logs td {
+    border-color: var(--gris-700);
+}
+
+.table-logs th {
+    background: var(--gris-100);
+    font-weight: 700;
+}
+
+body.dark .table-logs th {
+    background: var(--gris-800);
+}
+
+/* PAGINATION */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+
+.pagination button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    background: var(--couleur-primaire);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ============================
+    LOGS PAGE
+   ============================ */
+
+.logs-wrapper {
+    @include mixins.card;
+    overflow-x: auto;
+
+    table {
+        width: 100%;
+        border-radius: var(--radius);
+        thead {
+        background: var(--primary-dark);
+        color: #fff;
+        }
+        tbody tr:hover {
+        background: rgba(0, 116, 199, 0.08);
+        }
+    }
+
+    .log-level {
+        &.error { color: var(--danger); }
+        &.warning { color: var(--warning); }
+        &.info { color: var(--success); }
+    }
+}

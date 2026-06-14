@@ -1,0 +1,30 @@
+.page-erreur {
+    text-align: center;
+    padding: var(--space-xl);
+}
+
+.erreur-code {
+    font-size: 5rem;
+    font-weight: 800;
+    color: #dc2626;
+}
+
+.erreur-message {
+    font-size: 1.2rem;
+    margin-bottom: var(--space-lg);
+    color: var(--texte);
+}
+
+.erreur-btn {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #dc2626;
+    color: #fff;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+        background: rgba(220, 38, 38, 0.85);
+    }
+}

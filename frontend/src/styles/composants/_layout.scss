@@ -1,0 +1,35 @@
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+    background: var(--fond);
+    color: var(--texte);
+    font-family: var(--font-base);
+}
+
+.app-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-content {
+    padding: var(--space-lg);
+    background: var(--fond);
+    min-height: calc(100vh - 70px);
+}
+
+/* Overlay pour mobile */
+.sidebar-overlay {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .app-layout {
+        position: relative;
+    }
+
+    .sidebar-overlay {
+        display: block;
+    }
+}
