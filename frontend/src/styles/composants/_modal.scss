@@ -1,19 +1,37 @@
+/* ============================
+   MODAL OVERLAY (BACKDROP)
+============================ */
+
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px); /* FLOU PRO */
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 10000; /* AU-DESSUS DE LA SIDEBAR */
 }
+
+/* ============================
+   MODAL CONTENT
+============================ */
 
 .modal {
     background: var(--fond-carte);
     padding: var(--space-lg);
     border-radius: var(--radius-md);
     width: 420px;
+    max-width: 90%;
     box-shadow: var(--shadow-lg);
+    position: relative;
+    z-index: 10001; /* AU-DESSUS DU BACKDROP */
+    animation: modalFade 0.25s ease-out;
 }
+
+/* ============================
+   CLOSE BUTTON
+============================ */
 
 .modal__close {
     margin-top: var(--space-md);
@@ -21,4 +39,23 @@
     background: var(--couleur-primaire);
     color: #fff;
     border-radius: var(--radius-sm);
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* ============================
+   ANIMATION
+============================ */
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }

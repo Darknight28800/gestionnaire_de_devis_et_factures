@@ -1,5 +1,6 @@
 import { DevisModele } from '../modeles/devisModele.js';
 import { DevisLigneModele } from '../modeles/devisLigneModele.js';
+import { HistoriqueModele } from "../modeles/historiqueModele.js";
 
 export const DevisControleur = {
     async liste(req, res, next) {
@@ -14,23 +15,29 @@ export const DevisControleur = {
     async detail(req, res, next) {
         try {
             const devis = await DevisModele.parId(req.params.id);
-            if (!devis) {
-                return res.status(404).json({ message: "Devis introuvable" });
-            }
+            if (!devis) return res.status(404).json({ message: "Devis introuvable" });
 
             const lignes = await DevisLigneModele.parDevis(req.params.id);
-            res.json({ ...devis, lignes });
+            const historique = await HistoriqueModele.parElement("devis", req.params.id);
+
+            res.json({ ...devis, lignes, historique });
         } catch (e) {
             next(e);
         }
     },
 
     async creer(req, res, next) {
-        try {
-            // 1) Création du devis
-            const devis = await DevisModele.creer(req.body);
+    try {
+        const utilisateur_id = req.user.id;
 
-            // 2) Création des lignes si présentes
+        const data = {
+            ...req.body,
+            utilisateur_id
+        };
+
+        const devis = await DevisModele.creer(data);
+
+
             if (req.body.lignes && Array.isArray(req.body.lignes)) {
                 for (const ligne of req.body.lignes) {
                     await DevisLigneModele.creer({

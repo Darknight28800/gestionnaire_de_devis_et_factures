@@ -16,9 +16,13 @@ import Admin from "../pages/admin/admin";
 import Utilisateurs from "../pages/admin/utilisateurs";
 import Roles from "../pages/admin/roles";
 import Logs from "../pages/admin/logs";
-import Support from "../pages/support/support";
-import Parametres from "../pages/parametres/parametres";
 
+import Support from "../pages/support/support";
+import Contact from "../pages/support/contact";
+import MentionsLegales from "../pages/support/mentionsLegales";
+import Confidentialite from "../pages/support/confidentialite";
+
+import Parametres from "../pages/parametres/parametres";
 import Logout from "../pages/logout/logout";
 
 /* Pages d’erreur */
@@ -47,7 +51,12 @@ export default function RouteurApp() {
 
                         <Route path="/profil" element={<Profil />} />
                         <Route path="/parametres" element={<Parametres />} />
+
+                        {/* Support */}
                         <Route path="/support" element={<Support />} />
+                        <Route path="/support/contact" element={<Contact />} />
+                        <Route path="/mentions-legales" element={<MentionsLegales />} />
+                        <Route path="/confidentialite" element={<Confidentialite />} />
 
                         {/* Déconnexion */}
                         <Route path="/logout" element={<Logout />} />

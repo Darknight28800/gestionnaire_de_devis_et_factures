@@ -1,18 +1,25 @@
+import { useContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import { AuthContexte } from "../contexte/authProvider";
 
 export default function RouteProtegee({ role }) {
-    const token = localStorage.getItem("token");
-    const userRole = localStorage.getItem("role"); // "user" ou "admin"
+  const { utilisateur } = useContext(AuthContexte);
 
-    // Pas connecté → 401
-    if (!token) {
-        return <Navigate to="/erreur401" replace />;
-    }
+  // 1) Pendant le chargement du contexte
+  if (utilisateur === null) {
+    return <div>Chargement...</div>;
+  }
 
-    // Route admin → vérifier rôle
-    if (role === "admin" && userRole !== "admin") {
-        return <Navigate to="/erreur403" replace />;
-    }
+  // 2) Pas connecté
+  if (!utilisateur) {
+    return <Navigate to="/connexion" replace />;
+  }
 
-    return <Outlet />;
+  // 3) Rôle insuffisant
+  if (role === "admin" && utilisateur.role !== "admin") {
+    return <Navigate to="/erreur403" replace />;
+  }
+
+  // 4) OK
+  return <Outlet />;
 }

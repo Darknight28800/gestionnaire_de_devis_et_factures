@@ -1,8 +1,17 @@
+/* ============================
+   PAGE CLIENTS
+============================ */
+
 .clients-page {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    width: 100%;
 }
+
+/* ============================
+   HEADER
+============================ */
 
 .clients-header {
     display: flex;
@@ -12,6 +21,7 @@
     h1 {
         font-size: 1.8rem;
         font-weight: 700;
+        color: var(--text);
     }
 
     .actions {
@@ -20,12 +30,22 @@
     }
 }
 
+/* ============================
+   SEARCH INPUT
+============================ */
+
 .input-search {
     padding: 0.7rem 1rem;
     border-radius: var(--radius);
     border: 1px solid #e2e8f0;
     width: 250px;
+    background: var(--bg-card);
+    color: var(--text);
 }
+
+/* ============================
+   TABLE CLIENTS
+============================ */
 
 .table-clients {
     width: 100%;
@@ -40,17 +60,24 @@
         padding: 1rem;
         text-align: left;
         color: var(--text-light);
+        font-weight: 600;
+        font-size: 0.9rem;
     }
 
     td {
         padding: 1rem;
         border-bottom: 1px solid var(--bg-hover);
+        color: var(--text);
     }
 
     tr:hover td {
         background: var(--bg-hover);
     }
 }
+
+/* ============================
+   STATUT BADGES
+============================ */
 
 .statut {
     padding: 0.3rem 0.7rem;
@@ -60,8 +87,19 @@
     text-transform: capitalize;
 }
 
-.statut--actif { background: #bbf7d0; color: #15803d; }
-.statut--inactif { background: #fecaca; color: #b91c1c; }
+.statut--actif {
+    background: #bbf7d0;
+    color: #15803d;
+}
+
+.statut--inactif {
+    background: #fecaca;
+    color: #b91c1c;
+}
+
+/* ============================
+   PAGINATION
+============================ */
 
 .pagination {
     display: flex;
@@ -70,28 +108,53 @@
     gap: 1.5rem;
 }
 
+/* ============================
+   MODAL GLOBAL
+============================ */
+
 .modal {
     position: fixed;
     inset: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 10000; /* AU-DESSUS DE TOUT */
+}
 
-    &__backdrop {
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.4);
+.modal__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px); /* FLOU */
+    z-index: 9000;
+}
+
+.modal__contenu {
+    position: relative;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 500px;
+    max-width: 90%;
+    z-index: 10001;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    animation: modalFade 0.25s ease-out;
+}
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
     }
-
-    &__content {
-        position: relative;
-        background: var(--bg-card);
-        padding: 2rem;
-        border-radius: var(--radius);
-        width: 400px;
-        box-shadow: var(--shadow);
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
+
+/* ============================
+   FORMULAIRE CLIENT
+============================ */
 
 .form-client {
     display: flex;
@@ -102,11 +165,33 @@
         display: flex;
         flex-direction: column;
         gap: 0.3rem;
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        input,
+        select {
+            padding: 0.7rem 1rem;
+            border-radius: var(--radius);
+            border: 1px solid #e2e8f0;
+            background: var(--bg-card);
+            color: var(--text);
+        }
+    }
+
+    .form-ligne--2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
     }
 
     .form-actions {
         display: flex;
         justify-content: flex-end;
         gap: 1rem;
+        margin-top: 1rem;
     }
 }

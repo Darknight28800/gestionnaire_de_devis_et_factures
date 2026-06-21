@@ -1,23 +1,38 @@
-import { useState } from "react";
-import { AuthContexte } from "./authContexte";
+import { createContext, useState, useEffect } from "react";
+
+export const AuthContexte = createContext();
 
 export function AuthProvider({ children }) {
-    const [utilisateur, setUtilisateur] = useState(null);
+  const [utilisateur, setUtilisateur] = useState(null);
 
-    const connexion = (token, dataUtilisateur) => {
-        localStorage.setItem("token", token);
-        setUtilisateur(dataUtilisateur);
-    };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userData = localStorage.getItem("utilisateur");
 
-    const deconnexion = () => {
-        localStorage.removeItem("token");
-        setUtilisateur(null);
-    };
+    if (token && userData) {
+      setUtilisateur(JSON.parse(userData));
+    } else {
+      setUtilisateur(false);
+    }
+  }, []);
 
-    return (
-        <AuthContexte.Provider value={{ utilisateur, connexion, deconnexion }}>
-            {children}
-        </AuthContexte.Provider>
-    );
+  const connexion = (token, dataUtilisateur) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("utilisateur", JSON.stringify(dataUtilisateur));
+    setUtilisateur(dataUtilisateur);
+  };
+
+  const deconnexion = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("utilisateur");
+    setUtilisateur(false);
+  };
+
+  const valeur = { utilisateur, connexion, deconnexion };
+
+  return (
+    <AuthContexte.Provider value={valeur}>
+      {children}
+    </AuthContexte.Provider>
+  );
 }
-

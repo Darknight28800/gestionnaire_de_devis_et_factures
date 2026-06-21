@@ -21,10 +21,10 @@ export default function Footer() {
                 <div className="footer-col">
                     <h4>Support</h4>
                     <ul>
-                        <li><a href="/soutien">Centre d’aide</a></li>
-                        <li><a href="/contact">Contact</a></li>
-                        <li><a href="/mentions-legales">Mentions légales</a></li>
-                        <li><a href="/confidentialite">Confidentialité</a></li>
+                        <li><a href="/support">Centre d’aide</a></li>
+                        <li><a href="/support/contact">Contact</a></li>
+                        <li><a href="/support/mentions-legales">Mentions légales</a></li>
+                        <li><a href="/support/confidentialite">Confidentialité</a></li>
                     </ul>
                 </div>
 

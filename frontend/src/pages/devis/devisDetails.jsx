@@ -17,21 +17,27 @@ export default function DevisDetail() {
     }, [id]);
 
     useEffect(() => {
-        const run = async () => {
+        const fetchData = async () => {
             await rechargerDevis();
         };
-        run();
+        fetchData();
     }, [rechargerDevis]);
 
+    /* ============================
+       ENVOI EMAIL
+    ============================ */
     const envoyerEmail = async () => {
         try {
             await api.post(`/emails/envoyer-devis/${id}`);
-            rechargerDevis();
+            await rechargerDevis();
         } catch (err) {
             console.error("Erreur lors de l'envoi de l'email :", err);
         }
     };
 
+    /* ============================
+       PDF
+    ============================ */
     const telechargerPDF = async () => {
         try {
             const res = await api.get(`/devis/${id}/pdf`, {
@@ -73,6 +79,8 @@ export default function DevisDetail() {
 
                 <div className="card">
                     <h3>Informations du devis</h3>
+                    <p><strong>Titre :</strong> {devis.titre}</p>
+                    <p><strong>Description :</strong> {devis.description}</p>
                     <p><strong>Statut :</strong> <span className={`statut statut--${devis.statut}`}>{devis.statut}</span></p>
                     <p><strong>Date :</strong> {new Date(devis.date_creation).toLocaleDateString()}</p>
                 </div>

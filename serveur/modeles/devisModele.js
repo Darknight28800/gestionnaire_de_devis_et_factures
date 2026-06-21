@@ -14,10 +14,11 @@ export class DevisModele {
 
     static async creer(data) {
         const sql = `
-            INSERT INTO devis (utilisateur_id, montant, titre, description, date_creation)
-            VALUES (?, ?, ?, ?, NOW())
+            INSERT INTO devis (client_id, utilisateur_id, montant, titre, description, date_creation)
+            VALUES (?, ?, ?, ?, ?, NOW())
         `;
         const params = [
+            data.client_id,
             data.utilisateur_id,
             data.montant,
             data.titre,
@@ -27,13 +28,15 @@ export class DevisModele {
         return { id: result.insertId, ...data };
     }
 
+
     static async mettreAJour(id, data) {
         const sql = `
             UPDATE devis
-            SET utilisateur_id = ?, montant = ?, titre = ?, description = ?
+            SET client_id = ?, utilisateur_id = ?, montant = ?, titre = ?, description = ?
             WHERE id = ?
         `;
         const params = [
+            data.client_id,
             data.utilisateur_id,
             data.montant,
             data.titre,

@@ -12,32 +12,24 @@ export default function FactureDetail() {
             const res = await api.get(`/factures/${id}`);
             setFacture(res.data);
         } catch (err) {
-            console.error("Erreur lors du chargement de la facture :", err);
+            console.error("Erreur chargement facture :", err);
         }
     }, [id]);
 
     useEffect(() => {
-        const run = async () => {
+        const fetchData = async () => {
             await rechargerFacture();
         };
-        run();
+        fetchData();
     }, [rechargerFacture]);
 
-    const marquerPayee = async () => {
-        try {
-            await api.patch(`/factures/${id}/payer`);
-            rechargerFacture();
-        } catch (err) {
-            console.error("Erreur :", err);
-        }
-    };
 
     const envoyerEmail = async () => {
         try {
             await api.post(`/emails/envoyer-facture/${id}`);
             rechargerFacture();
         } catch (err) {
-            console.error("Erreur lors de l'envoi de l'email :", err);
+            console.error("Erreur email facture :", err);
         }
     };
 
@@ -53,7 +45,7 @@ export default function FactureDetail() {
             a.download = `facture-${id}.pdf`;
             a.click();
         } catch (err) {
-            console.error("Erreur PDF :", err);
+            console.error("Erreur PDF facture :", err);
         }
     };
 
@@ -73,29 +65,17 @@ export default function FactureDetail() {
                 <h1>Facture #{facture.id}</h1>
 
                 <div className="actions">
-                    {facture.statut !== "payee" && (
-                        <button className="btn-primaire" onClick={marquerPayee}>
-                            ✔ Marquer payée
-                        </button>
-                    )}
-
-                    <button className="btn-texte" onClick={envoyerEmail}>
-                        ✉️ Envoyer
-                    </button>
-
-                    <button className="btn-texte" onClick={telechargerPDF}>
-                        📄 Télécharger PDF
-                    </button>
+                    <button className="btn-texte" onClick={envoyerEmail}>✉️ Envoyer</button>
+                    <button className="btn-primaire" onClick={telechargerPDF}>📄 Générer PDF</button>
                 </div>
             </div>
 
             <div className="infos-grid">
 
                 <div className="card">
-                    <h3>Informations</h3>
+                    <h3>Informations facture</h3>
                     <p><strong>Statut :</strong> <span className={`statut statut--${facture.statut}`}>{facture.statut}</span></p>
-                    <p><strong>Date :</strong> {new Date(facture.date_facture).toLocaleDateString()}</p>
-                    <p><strong>Devis lié :</strong> #{facture.devis_id}</p>
+                    <p><strong>Date :</strong> {new Date(facture.date_creation).toLocaleDateString()}</p>
                 </div>
 
                 <div className="card">

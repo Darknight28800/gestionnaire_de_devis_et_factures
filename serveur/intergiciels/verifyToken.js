@@ -1,19 +1,22 @@
 import jwt from "jsonwebtoken";
 
 export default function verifyToken(req, res, next) {
-    const authHeader = req.headers.authorization;
+    const header = req.headers.authorization;
 
-    if (!authHeader) {
+    if (!header) {
         return res.status(401).json({ message: "Token manquant" });
     }
 
-    const token = authHeader.split(" ")[1];
+    const token = header.split(" ")[1];
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.utilisateur = decoded; // on stocke les infos du token
+
+        // 🔥 C’EST ÇA QUI MANQUAIT
+        req.utilisateur = decoded;
+
         next();
-    } catch (error) {
-        return res.status(403).json({ message: "Token invalide" });
+    } catch (err) {
+        return res.status(401).json({ message: "Token invalide" });
     }
 }

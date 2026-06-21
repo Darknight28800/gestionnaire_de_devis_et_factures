@@ -1,11 +1,9 @@
-import { Router } from "express";
-import { tableauDeBordControleur } from "../controleurs/tableauDeBordControleur.js";
-import { authMiddleware } from "../intergiciels/authMiddleware.js";
+import express from "express";
+import { TableauDeBordControleur } from "../controleurs/tableauDeBordControleur.js";
+import verifyToken from "../intergiciels/verifyToken.js";
 
-const router = Router();
+const router = express.Router();
 
-router.use(authMiddleware);
-
-router.get("/statistiques", tableauDeBordControleur.statistiques);
+router.get("/statistiques", verifyToken, TableauDeBordControleur.statistiques);
 
 export default router;

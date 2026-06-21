@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import clientRoutes from "./routes/clientRoutes.js";
 import devisRoutes from "./routes/devisRoutes.js";
+import emailsRoutes from "./routes/emailsRoutes.js"
 import factureRoutes from "./routes/factureRoutes.js";
 import tableauDeBordRoutes from "./routes/tableauDeBordRoutes.js";
 import parametresRoutes from "./routes/parametresRoutes.js";
@@ -34,6 +35,7 @@ app.use("/clients", clientRoutes);
 app.use("/devis", devisRoutes);
 app.use("/factures", factureRoutes);
 app.use("/tableau-de-bord", tableauDeBordRoutes);
+app.use("/emails", emailsRoutes);
 app.use("/uploads", express.static("uploads"));
 app.use("/parametres", parametresRoutes);
 

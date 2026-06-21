@@ -1,6 +1,6 @@
 import pool from "../config/base_de_donnees.js";
 
-export const tableauDeBordControleur = {
+export const TableauDeBordControleur = {
     async statistiques(req, res, next) {
         try {
             const [[{ total_clients }]] = await pool.query(

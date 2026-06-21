@@ -1,26 +1,44 @@
 import nodemailer from "nodemailer";
-import fs from "fs";
-import path from "path";
+import { DevisModele } from "../modeles/devisModele.js";
+import { FactureModele } from "../modeles/factureModele.js";
 
-export const envoyerEmail = async (to, subject, templatePath, variables) => {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-        }
-    });
+export class EmailService {
 
-    let html = fs.readFileSync(templatePath, "utf8");
+    static async envoyerDevis(id) {
+        const devis = await DevisModele.parId(id);
 
-    Object.keys(variables).forEach((key) => {
-        html = html.replaceAll(`{{${key}}}`, variables[key]);
-    });
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
 
-    await transporter.sendMail({
-        from: `"Mon App" <${process.env.EMAIL_USER}>`,
-        to,
-        subject,
-        html
-    });
-};
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: devis.client.email,
+            subject: `Votre devis #${id}`,
+            html: `<p>Bonjour, voici votre devis.</p>`
+        });
+    }
+
+    static async envoyerFacture(id) {
+        const facture = await FactureModele.parId(id);
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: facture.client.email,
+            subject: `Votre facture #${id}`,
+            html: `<p>Bonjour, voici votre facture.</p>`
+        });
+    }
+}

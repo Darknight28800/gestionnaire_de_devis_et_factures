@@ -2,6 +2,7 @@ import { FactureModele } from "../modeles/factureModele.js";
 import { FactureLigneModele } from "../modeles/factureLigneModele.js";
 import { DevisModele } from "../modeles/devisModele.js";
 import { DevisLigneModele } from "../modeles/devisLigneModele.js";
+import { HistoriqueModele } from "../modeles/historiqueModele.js";
 import { envoyerEmailFacture } from "../utils/email.js";
 
 export const FactureControleur = {
@@ -40,18 +41,12 @@ export const FactureControleur = {
     },
 
     // 📌 Détail d'une facture + ses lignes
-    async detail(req, res, next) {
-        try {
+        async detail(req, res, next) {
             const facture = await FactureModele.parId(req.params.id);
-            if (!facture) {
-                return res.status(404).json({ message: "Facture introuvable" });
-            }
-
             const lignes = await FactureLigneModele.parFacture(req.params.id);
-            res.json({ ...facture, lignes });
-        } catch (e) {
-            next(e);
-        }
+            const historique = await HistoriqueModele.parElement("facture", req.params.id);
+
+        res.json({ ...facture, lignes, historique });
     },
 
     // 📌 Créer une facture + lignes

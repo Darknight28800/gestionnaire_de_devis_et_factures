@@ -74,7 +74,7 @@ export class FactureModele {
 
         // Colonnes autorisées pour éviter l'injection SQL
         const colonnesAutorisees = ["id", "montant", "date_facture", "statut", "date_creation"];
-        if (!colonnesAutorisees.includes(sort)) sort = "id";
+        if (!colonnesAutorisees.includes(sort)) sort = "date_creation"; // Valeur par défaut
 
         // Ordre autorisé
         order = order.toUpperCase() === "ASC" ? "ASC" : "DESC";
