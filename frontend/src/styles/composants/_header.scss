@@ -92,6 +92,16 @@
     border-radius: 50%;
     }
 
+    .header__avatar--initiales {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary, var(--couleur-primaire));
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    }
+
     /* Menu utilisateur */
     .user-menu {
     position: absolute;

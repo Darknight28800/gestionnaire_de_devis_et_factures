@@ -6,7 +6,6 @@ export default function Parametres() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
-    // Valeurs API stockées mais NON affichées dans les champs
     const [parametres, setParametres] = useState({
         nom_entreprise: "",
         email: "",
@@ -29,7 +28,6 @@ export default function Parametres() {
                 const res = await api.get("/parametres");
                 const data = res.data;
 
-                // On stocke les valeurs API mais on ne les affiche pas dans les inputs
                 setParametres({
                     nom_entreprise: data.nom_entreprise || "",
                     email: data.email || "",
@@ -124,7 +122,7 @@ export default function Parametres() {
                             <input
                                 type="text"
                                 name="nom_entreprise"
-                                defaultValue=""
+                                value={parametres.nom_entreprise}
                                 onChange={handleChange}
                                 placeholder=" "
                             />
@@ -135,7 +133,7 @@ export default function Parametres() {
                             <input
                                 type="email"
                                 name="email"
-                                defaultValue=""
+                                value={parametres.email}
                                 onChange={handleChange}
                                 placeholder=" "
                             />
@@ -146,7 +144,7 @@ export default function Parametres() {
                             <input
                                 type="text"
                                 name="telephone"
-                                defaultValue=""
+                                value={parametres.telephone}
                                 onChange={handleChange}
                                 placeholder=" "
                             />
@@ -157,7 +155,7 @@ export default function Parametres() {
                             <input
                                 type="text"
                                 name="adresse"
-                                defaultValue=""
+                                value={parametres.adresse}
                                 onChange={handleChange}
                                 placeholder=" "
                             />

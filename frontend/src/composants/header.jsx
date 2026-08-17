@@ -1,10 +1,20 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import api from "../api/axios";
+import { AuthContexte } from "../contexte/authProvider";
 import "../styles/composants/_header.scss";
 
 export default function Header({ onToggleSidebar }) {
+    const { utilisateur } = useContext(AuthContexte);
     const [parametres, setParametres] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
+
+    const nomAffiche = utilisateur?.nom || utilisateur?.email || "Mon compte";
+    const initiales = nomAffiche
+        .split(/[\s@.]+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((mot) => mot[0].toUpperCase())
+        .join("");
 
     /* Charger les paramètres */
     useEffect(() => {
@@ -82,12 +92,10 @@ export default function Header({ onToggleSidebar }) {
                     className="header__user"
                     onClick={() => setMenuOpen(!menuOpen)}
                 >
-                    <img
-                        src="https://i.pravatar.cc/40"
-                        alt="avatar"
-                        className="header__avatar"
-                    />
-                    <span>John Doe</span>
+                    <span className="header__avatar header__avatar--initiales">
+                        {initiales || "?"}
+                    </span>
+                    <span>{nomAffiche}</span>
 
                     {menuOpen && (
                         <div className="user-menu">

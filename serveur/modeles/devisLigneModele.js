@@ -12,14 +12,14 @@ export class DevisLigneModele {
 
     static async creer(data) {
         const sql = `
-            INSERT INTO devis_lignes (devis_id, description, quantite, prix_unitaire)
+            INSERT INTO devis_lignes (devis_id, description, quantite, prix)
             VALUES (?, ?, ?, ?)
         `;
         const params = [
             data.devis_id,
             data.description,
             data.quantite,
-            data.prix_unitaire
+            data.prix
         ];
         const [result] = await pool.query(sql, params);
         return { id: result.insertId, ...data };

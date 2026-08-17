@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node ./node_modules/nodemon/bin/nodemon.js app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "vitest run"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -15,9 +16,12 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.1.1",
     "mysql2": "^3.9.0",
-    "nodemailer": "^8.0.11"
+    "nodemailer": "^8.0.11",
+    "pdfkit": "^0.19.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.10"
   }
 }

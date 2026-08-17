@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import api from "../../api/axios";
 import Modal from "../../composants/modal";
 import "../../styles/pages/_devis.scss";
@@ -54,6 +55,27 @@ export default function Devis() {
             lignes: [{ description: "", quantite: 1, prix: 0 }]
         });
         setModalOpen(true);
+    };
+
+    const ouvrirEditionDevis = async (d) => {
+        try {
+            const res = await api.get(`/devis/${d.id}`);
+            const data = res.data;
+            setModeEdition(true);
+            setDevisActuel(data);
+            setForm({
+                client_id: data.client_id,
+                titre: data.titre || "",
+                description: data.description || "",
+                statut: data.statut,
+                lignes: data.lignes.length
+                    ? data.lignes
+                    : [{ description: "", quantite: 1, prix: 0 }]
+            });
+            setModalOpen(true);
+        } catch (err) {
+            console.error("Erreur chargement devis :", err);
+        }
     };
 
     /* ============================
@@ -137,6 +159,7 @@ export default function Devis() {
                         <th>Montant</th>
                         <th>Statut</th>
                         <th>Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
 
@@ -152,6 +175,14 @@ export default function Devis() {
                                 </span>
                             </td>
                             <td>{new Date(d.date_creation).toLocaleDateString()}</td>
+                            <td style={{ display: "flex", gap: "0.75rem" }}>
+                                <Link className="btn-lien" to={`/devis/${d.id}`}>
+                                    Voir →
+                                </Link>
+                                <button className="btn-lien" onClick={() => ouvrirEditionDevis(d)}>
+                                    Modifier
+                                </button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>

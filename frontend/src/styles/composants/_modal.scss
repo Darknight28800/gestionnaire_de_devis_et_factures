@@ -23,6 +23,8 @@
     border-radius: var(--radius-md);
     width: 420px;
     max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
     box-shadow: var(--shadow-lg);
     position: relative;
     z-index: 10001; /* AU-DESSUS DU BACKDROP */

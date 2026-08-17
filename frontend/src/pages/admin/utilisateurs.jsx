@@ -68,6 +68,12 @@ export default function Utilisateurs() {
 
             // Ajout local
             setUsers((prev) => [...prev, res.data.utilisateur]);
+
+            if (res.data.motDePasseTemporaire) {
+                alert(
+                    `Utilisateur créé.\nMot de passe temporaire : ${res.data.motDePasseTemporaire}\n\nCommuniquez-le à l'utilisateur, il ne sera plus affiché.`
+                );
+            }
         }
 
         setModalOpen(false);

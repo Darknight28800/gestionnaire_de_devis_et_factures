@@ -35,13 +35,19 @@ export const TableauDeBordControleur = {
                 "SELECT SUM(montant) AS montant_attente FROM factures WHERE statut = 'non_payee'"
             );
 
-            const [recent_devis] = await pool.query(
-                "SELECT * FROM devis ORDER BY id DESC LIMIT 5"
-            );
+            const [recent_devis] = await pool.query(`
+                SELECT devis.*, clients.nom AS client_nom
+                FROM devis
+                JOIN clients ON clients.id = devis.client_id
+                ORDER BY devis.id DESC LIMIT 5
+            `);
 
-            const [recent_factures] = await pool.query(
-                "SELECT * FROM factures ORDER BY id DESC LIMIT 5"
-            );
+            const [recent_factures] = await pool.query(`
+                SELECT factures.*, clients.nom AS client_nom
+                FROM factures
+                JOIN clients ON clients.id = factures.client_id
+                ORDER BY factures.id DESC LIMIT 5
+            `);
 
             res.json({
                 stats: {

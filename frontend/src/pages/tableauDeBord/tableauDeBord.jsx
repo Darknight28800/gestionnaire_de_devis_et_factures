@@ -202,7 +202,7 @@ export default function TableauDeBord() {
                         {recentDevis.map((d) => (
                             <li key={d.id}>
                                 <span>#{d.id}</span>
-                                <span>Client {d.client_id}</span>
+                                <span>{d.client_nom}</span>
                                 <span>{new Date(d.date_creation).toLocaleDateString()}</span>
                                 <span>{d.montant || "—"} €</span>
                             </li>
@@ -217,7 +217,7 @@ export default function TableauDeBord() {
                         {recentFactures.map((f) => (
                             <li key={f.id}>
                                 <span>#{f.id}</span>
-                                <span>Devis {f.devis_id}</span>
+                                <span>{f.client_nom}</span>
                                 <span className={f.statut === "payee" ? "statut-payee" : "statut-non-payee"}>
                                     {f.statut}
                                 </span>

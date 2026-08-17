@@ -12,9 +12,12 @@ const pool = mysql.createPool({
     connectionLimit: 10,
 });
 
-pool.query("SELECT DATABASE() AS db").then(([rows]) => {
-    console.log("📌 Base réellement utilisée par Node :", rows[0].db);
-});
-
+pool.query("SELECT DATABASE() AS db")
+    .then(([rows]) => {
+        console.log("📌 Base réellement utilisée par Node :", rows[0].db);
+    })
+    .catch((err) => {
+        console.error("❌ Impossible de se connecter à la base de données :", err.message);
+    });
 
 export default pool;

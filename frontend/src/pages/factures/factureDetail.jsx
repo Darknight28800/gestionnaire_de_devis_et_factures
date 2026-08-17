@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import api from "../../api/axios";
 import "../../styles/pages/_factureDetail.scss";
 
@@ -49,6 +49,15 @@ export default function FactureDetail() {
         }
     };
 
+    const marquerPayee = async () => {
+        try {
+            await api.patch(`/factures/${id}/payer`);
+            await rechargerFacture();
+        } catch (err) {
+            console.error("Erreur marquage payée :", err);
+        }
+    };
+
     if (!facture) return <p>Chargement...</p>;
 
     const totalHT = facture.lignes.reduce(
@@ -65,8 +74,12 @@ export default function FactureDetail() {
                 <h1>Facture #{facture.id}</h1>
 
                 <div className="actions">
+                    {facture.statut !== "payee" && (
+                        <button className="btn-primaire" onClick={marquerPayee}>✅ Marquer comme payée</button>
+                    )}
                     <button className="btn-texte" onClick={envoyerEmail}>✉️ Envoyer</button>
                     <button className="btn-primaire" onClick={telechargerPDF}>📄 Générer PDF</button>
+                    <Link className="btn-texte" to="/factures">← Retour</Link>
                 </div>
             </div>
 

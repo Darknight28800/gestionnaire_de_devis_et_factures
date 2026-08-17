@@ -17,6 +17,11 @@ export const UtilisateurModele = {
         return rows[0];
     },
 
+    async compter() {
+        const [[{ total }]] = await pool.query("SELECT COUNT(*) AS total FROM utilisateurs");
+        return total;
+    },
+
     async creer({ nom = null, email, mot_de_passe, role = "utilisateur" }) {
         const [result] = await pool.query(
         `INSERT INTO utilisateurs (nom, email, mot_de_passe, role)

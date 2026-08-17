@@ -1,8 +1,12 @@
 import express from "express";
 import db from "../config/base_de_donnees.js";
 import { uploadLogo } from "../intergiciels/uploadLogo.js";
+import verifyToken from "../intergiciels/verifyToken.js";
+import adminMiddleware from "../intergiciels/admin.js";
 
 const router = express.Router();
+
+router.use(verifyToken);
 
 // GET /parametres
 router.get("/", async (req, res) => {
@@ -15,8 +19,8 @@ router.get("/", async (req, res) => {
     }
 });
 
-// PUT /parametres
-router.put("/", uploadLogo.single("logo"), async (req, res) => {
+// PUT /parametres (admin uniquement)
+router.put("/", adminMiddleware, uploadLogo.single("logo"), async (req, res) => {
     try {
         const {
             nom_entreprise,
@@ -63,6 +67,23 @@ router.put("/", uploadLogo.single("logo"), async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Erreur lors de la mise à jour des paramètres" });
+    }
+});
+
+// POST /parametres/logo (admin uniquement) — upload du logo seul
+router.post("/logo", adminMiddleware, uploadLogo.single("logo"), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "Aucun fichier reçu" });
+        }
+
+        const logo_url = `/uploads/${req.file.filename}`;
+        await db.query("UPDATE parametres SET logo_url = ? WHERE id = 1", [logo_url]);
+
+        res.json({ logo_url });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Erreur lors de l'upload du logo" });
     }
 });
 

@@ -1,10 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import api from "../../api/axios";
 import "../../styles/pages/_devisDetail.scss";
 
 export default function DevisDetail() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [devis, setDevis] = useState(null);
 
     const rechargerDevis = useCallback(async () => {
@@ -54,6 +55,16 @@ export default function DevisDetail() {
         }
     };
 
+    const convertirEnFacture = async () => {
+        try {
+            const res = await api.post(`/factures/convertir/${id}`);
+            navigate(`/factures/${res.data.facture.id}`);
+        } catch (err) {
+            console.error("Erreur conversion en facture :", err);
+            alert("Erreur lors de la conversion en facture.");
+        }
+    };
+
     if (!devis) return <p>Chargement...</p>;
 
     const totalHT = devis.lignes.reduce(
@@ -70,8 +81,12 @@ export default function DevisDetail() {
                 <h1>Devis #{devis.id}</h1>
 
                 <div className="actions">
+                    {devis.statut === "accepte" && (
+                        <button className="btn-primaire" onClick={convertirEnFacture}>🧾 Convertir en facture</button>
+                    )}
                     <button className="btn-texte" onClick={envoyerEmail}>✉️ Envoyer</button>
                     <button className="btn-primaire" onClick={telechargerPDF}>📄 Générer PDF</button>
+                    <Link className="btn-texte" to="/devis">← Retour</Link>
                 </div>
             </div>
 

@@ -22,6 +22,9 @@ router.post("/convertir/:devisId", verifyToken, FactureControleur.convertirDepui
 // 📌 Récupérer une facture + ses lignes
 router.get("/:id", verifyToken, FactureControleur.detail);
 
+// 📌 Générer le PDF d'une facture
+router.get("/:id/pdf", verifyToken, FactureControleur.pdf);
+
 // 📌 Modifier une facture + lignes
 router.put("/:id", verifyToken, FactureControleur.mettreAJour);
 

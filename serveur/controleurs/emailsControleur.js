@@ -8,11 +8,7 @@ export const EmailsControleur = {
 
             await EmailService.envoyerDevis(devisId);
 
-            await HistoriqueModele.ajouter({
-                type: "devis",
-                element_id: devisId,
-                message: "Devis envoyé par email"
-            });
+            await HistoriqueModele.ajouter("devis", devisId, "Devis envoyé par email");
 
             res.json({ message: "Email envoyé" });
         } catch (e) {
@@ -26,11 +22,7 @@ export const EmailsControleur = {
 
             await EmailService.envoyerFacture(factureId);
 
-            await HistoriqueModele.ajouter({
-                type: "facture",
-                element_id: factureId,
-                message: "Facture envoyée par email"
-            });
+            await HistoriqueModele.ajouter("facture", factureId, "Facture envoyée par email");
 
             res.json({ message: "Email envoyé" });
         } catch (e) {

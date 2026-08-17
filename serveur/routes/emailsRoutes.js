@@ -1,8 +1,11 @@
 import express from "express";
 import { EmailService } from "../services/emailService.js";
 import pool from "../config/base_de_donnees.js";
+import verifyToken from "../intergiciels/verifyToken.js";
 
 const router = express.Router();
+
+router.use(verifyToken);
 
 router.post("/envoyer-devis/:id", async (req, res) => {
     try {

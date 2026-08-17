@@ -9,7 +9,9 @@ import TableauDeBord from "../pages/tableauDeBord/tableauDeBord";
 
 import Clients from "../pages/clients/clients";
 import Devis from "../pages/devis/devis";
+import DevisDetail from "../pages/devis/devisDetails";
 import Factures from "../pages/factures/factures";
+import FactureDetail from "../pages/factures/factureDetail";
 
 import Profil from "../pages/profil/profil";
 import Admin from "../pages/admin/admin";
@@ -47,7 +49,9 @@ export default function RouteurApp() {
 
                         <Route path="/clients" element={<Clients />} />
                         <Route path="/devis" element={<Devis />} />
+                        <Route path="/devis/:id" element={<DevisDetail />} />
                         <Route path="/factures" element={<Factures />} />
+                        <Route path="/factures/:id" element={<FactureDetail />} />
 
                         <Route path="/profil" element={<Profil />} />
                         <Route path="/parametres" element={<Parametres />} />

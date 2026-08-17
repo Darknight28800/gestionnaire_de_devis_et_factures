@@ -26,11 +26,11 @@ const router = Router();
         [req.utilisateur.id]
         );
 
-        if (!rows) {
+        if (!rows[0]) {
         return res.status(404).json({ message: "Utilisateur introuvable" });
         }
 
-        res.json({ utilisateur: rows });
+        res.json({ utilisateur: rows[0] });
     } catch (err) {
         console.error("Erreur /auth/me :", err);
         res.status(500).json({ message: "Erreur serveur" });

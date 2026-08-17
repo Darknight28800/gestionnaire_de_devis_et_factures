@@ -11,6 +11,9 @@ router.get("/", verifyToken, DevisControleur.liste);
 // 📌 Récupérer un devis + ses lignes
 router.get("/:id", verifyToken, DevisControleur.detail);
 
+// 📌 Générer le PDF d'un devis
+router.get("/:id/pdf", verifyToken, DevisControleur.pdf);
+
 // 📌 Créer un devis + lignes (utilisateur connecté)
 router.post("/", verifyToken, DevisControleur.creer);
 

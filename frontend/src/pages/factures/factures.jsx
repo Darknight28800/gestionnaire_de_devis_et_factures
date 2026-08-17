@@ -1,51 +1,137 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import { Link } from "react-router-dom";
+import Modal from "../../composants/modal";
 import "../../styles/pages/_factures.scss";
+
+const LIGNE_VIDE = { description: "", quantite: 1, prix: 0 };
 
 export default function Factures() {
     const [factures, setFactures] = useState([]);
+    const [clients, setClients] = useState([]);
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modeEdition, setModeEdition] = useState(false);
+    const [factureActuelle, setFactureActuelle] = useState(null);
+
+    const [form, setForm] = useState({
+        client_id: "",
+        statut: "non_payee",
+        lignes: [{ ...LIGNE_VIDE }]
+    });
+
+    const charger = async () => {
+        try {
+            const res = await api.get(
+                `/factures?search=${search}&page=${page}&limit=5&sort=date_facture&order=desc`
+            );
+            setFactures(res.data.factures);
+            setTotalPages(res.data.totalPages);
+        } catch (err) {
+            console.error("Erreur lors du chargement des factures :", err);
+        }
+    };
+
+    const chargerClients = async () => {
+        const res = await api.get("/clients");
+        setClients(res.data);
+    };
+
     useEffect(() => {
-        const charger = async () => {
-            try {
-                const res = await api.get(
-                    `/factures?search=${search}&page=${page}&limit=5&sort=date_facture&order=desc`
-                );
-
-                setFactures(res.data.factures);
-                setTotalPages(res.data.totalPages);
-            } catch (err) {
-                console.error("Erreur lors du chargement des factures :", err);
-            }
-        };
-
         charger();
     }, [search, page]);
 
+    useEffect(() => {
+        chargerClients();
+    }, []);
+
+    const ouvrirCreation = () => {
+        setModeEdition(false);
+        setFactureActuelle(null);
+        setForm({ client_id: "", statut: "non_payee", lignes: [{ ...LIGNE_VIDE }] });
+        setModalOpen(true);
+    };
+
+    const ouvrirEdition = async (facture) => {
+        try {
+            const res = await api.get(`/factures/${facture.id}`);
+            const data = res.data;
+            setModeEdition(true);
+            setFactureActuelle(data);
+            setForm({
+                client_id: data.client_id,
+                statut: data.statut,
+                lignes: data.lignes.length ? data.lignes : [{ ...LIGNE_VIDE }]
+            });
+            setModalOpen(true);
+        } catch (err) {
+            console.error("Erreur chargement facture :", err);
+        }
+    };
+
+    const ajouterLigne = () => {
+        setForm((prev) => ({ ...prev, lignes: [...prev.lignes, { ...LIGNE_VIDE }] }));
+    };
+
+    const supprimerLigne = (index) => {
+        setForm((prev) => ({ ...prev, lignes: prev.lignes.filter((_, i) => i !== index) }));
+    };
+
+    const changerLigne = (index, field, value) => {
+        const lignes = [...form.lignes];
+        lignes[index][field] = value;
+        setForm({ ...form, lignes });
+    };
+
+    const totalHT = form.lignes.reduce((sum, l) => sum + l.quantite * l.prix, 0);
+    const totalTVA = totalHT * 0.2;
+    const totalTTC = totalHT + totalTVA;
+
+    const envoyer = async (e) => {
+        e.preventDefault();
+
+        const data = { ...form, montant: totalHT };
+
+        try {
+            if (modeEdition && factureActuelle) {
+                await api.put(`/factures/${factureActuelle.id}`, data);
+            } else {
+                await api.post("/factures", data);
+            }
+
+            setModalOpen(false);
+            charger();
+        } catch (err) {
+            console.error(err.response?.data);
+            alert("Erreur lors de l'enregistrement de la facture.");
+        }
+    };
 
     return (
         <div className="factures-page">
 
-            {/* HEADER PREMIUM */}
             <div className="factures-header">
                 <h1>Factures</h1>
 
-                <input
-                    type="text"
-                    className="input-search"
-                    placeholder="Rechercher une facture..."
-                    onChange={(e) => {
-                        setPage(1);
-                        setSearch(e.target.value);
-                    }}
-                />
+                <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+                    <input
+                        type="text"
+                        className="input-search"
+                        placeholder="Rechercher une facture..."
+                        onChange={(e) => {
+                            setPage(1);
+                            setSearch(e.target.value);
+                        }}
+                    />
+                    <button className="btn btn-primaire" onClick={ouvrirCreation}>
+                        + Nouvelle facture
+                    </button>
+                </div>
             </div>
 
-            {/* TABLE PREMIUM */}
             <table className="table-factures">
                 <thead>
                     <tr>
@@ -53,7 +139,7 @@ export default function Factures() {
                         <th>Montant</th>
                         <th>Date</th>
                         <th>Statut</th>
-                        <th>Détails</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
 
@@ -70,17 +156,19 @@ export default function Factures() {
                                 </span>
                             </td>
 
-                            <td>
+                            <td style={{ display: "flex", gap: "0.75rem" }}>
                                 <Link className="btn-lien" to={`/factures/${f.id}`}>
                                     Voir →
                                 </Link>
+                                <button className="btn-lien" onClick={() => ouvrirEdition(f)}>
+                                    Modifier
+                                </button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
 
-            {/* PAGINATION PREMIUM */}
             <div className="pagination">
                 <button
                     className="btn-texte"
@@ -102,6 +190,96 @@ export default function Factures() {
                     Suivant →
                 </button>
             </div>
+
+            <Modal
+                open={modalOpen}
+                title={modeEdition ? "Modifier la facture" : "Nouvelle facture"}
+                onClose={() => setModalOpen(false)}
+            >
+                <form onSubmit={envoyer} className="form-devis">
+
+                    <div className="form-ligne">
+                        <label>Client</label>
+                        <select
+                            value={form.client_id}
+                            onChange={(e) => setForm({ ...form, client_id: Number(e.target.value) })}
+                            required
+                        >
+                            <option value="">Sélectionner un client</option>
+                            {clients.map((c) => (
+                                <option key={c.id} value={c.id}>{c.nom}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="form-ligne">
+                        <label>Statut</label>
+                        <select
+                            value={form.statut}
+                            onChange={(e) => setForm({ ...form, statut: e.target.value })}
+                        >
+                            <option value="non_payee">Non payée</option>
+                            <option value="payee">Payée</option>
+                        </select>
+                    </div>
+
+                    <h3>Lignes de la facture</h3>
+
+                    {form.lignes.map((ligne, index) => (
+                        <div key={index} className="ligne-devis">
+                            <input
+                                placeholder="Description"
+                                value={ligne.description}
+                                onChange={(e) => changerLigne(index, "description", e.target.value)}
+                            />
+                            <input
+                                type="number"
+                                min="1"
+                                value={ligne.quantite}
+                                onChange={(e) => changerLigne(index, "quantite", Number(e.target.value))}
+                            />
+                            <input
+                                type="number"
+                                min="0"
+                                value={ligne.prix}
+                                onChange={(e) => changerLigne(index, "prix", Number(e.target.value))}
+                            />
+                            <button
+                                type="button"
+                                className="btn-texte btn-danger"
+                                onClick={() => supprimerLigne(index)}
+                            >
+                                🗑️
+                            </button>
+                        </div>
+                    ))}
+
+                    <button
+                        type="button"
+                        className="btn-primaire btn-ajout-ligne"
+                        onClick={ajouterLigne}
+                    >
+                        + Ajouter une ligne
+                    </button>
+
+                    <div className="totaux">
+                        <p>Total HT : <strong>{totalHT.toFixed(2)} €</strong></p>
+                        <p>TVA (20%) : <strong>{totalTVA.toFixed(2)} €</strong></p>
+                        <p>Total TTC : <strong>{totalTTC.toFixed(2)} €</strong></p>
+                    </div>
+
+                    <div className="form-actions">
+                        <button type="button" className="btn-texte" onClick={() => setModalOpen(false)}>
+                            Annuler
+                        </button>
+                        <button type="submit" className="btn-primaire">
+                            {modeEdition ? "Enregistrer" : "Créer la facture"}
+                        </button>
+                    </div>
+
+                </form>
+            </Modal>
+
         </div>
     );
 }

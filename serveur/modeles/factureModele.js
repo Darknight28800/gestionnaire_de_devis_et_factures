@@ -20,14 +20,15 @@ export class FactureModele {
     // 📌 Créer une facture
     static async creer(data) {
         const sql = `
-            INSERT INTO factures (devis_id, utilisateur_id, montant, date_facture, statut)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO factures (devis_id, client_id, utilisateur_id, montant, date_facture, statut)
+            VALUES (?, ?, ?, ?, ?, ?)
         `;
         const params = [
-            data.devis_id,
+            data.devis_id || null,
+            data.client_id,
             data.utilisateur_id,
             data.montant,
-            data.date_facture,
+            data.date_facture || new Date(),
             data.statut || "non_payee"
         ];
         const [result] = await pool.query(sql, params);
@@ -38,15 +39,13 @@ export class FactureModele {
     static async mettreAJour(id, data) {
         const sql = `
             UPDATE factures
-            SET devis_id = ?, utilisateur_id = ?, montant = ?, date_facture = ?, statut = ?
+            SET client_id = ?, montant = ?, statut = ?
             WHERE id = ?
         `;
         const params = [
-            data.devis_id,
-            data.utilisateur_id,
+            data.client_id,
             data.montant,
-            data.date_facture,
-            data.statut,
+            data.statut || "non_payee",
             id
         ];
         await pool.query(sql, params);
