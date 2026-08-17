@@ -20,9 +20,12 @@ dotenv.config();
 
 const app = express();
 
+// .trim() : une variable d'environnement copiée-collée depuis un dashboard (Railway, etc.)
+// embarque parfois un espace ou un retour à la ligne invisible en fin de valeur, ce qui fait
+// planter le module cors avec "Invalid character in header content" au moment d'écrire l'en-tête.
 app.use(
     cors({
-        origin: process.env.APP_URL || "http://localhost:5173",
+        origin: process.env.APP_URL?.trim() || "http://localhost:5173",
         credentials: true,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
         allowedHeaders: ["Content-Type", "Authorization"]
