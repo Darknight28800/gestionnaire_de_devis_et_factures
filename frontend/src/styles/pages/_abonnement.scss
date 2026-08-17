@@ -1,0 +1,122 @@
+@use "../base/mixins";
+
+.page-abonnement {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 900px;
+}
+
+.callout {
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius, 8px);
+    font-size: 0.89rem;
+
+    &--info {
+        background: var(--primary-soft, #e8eefd);
+        color: var(--primary);
+    }
+}
+
+.carte-statut {
+    @include mixins.glass-card;
+    padding: 1.5rem;
+
+    h2 {
+        margin: 0 0 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    p {
+        margin: 0.3rem 0;
+        color: var(--text-light, var(--texte));
+    }
+
+    &__note {
+        font-style: italic;
+        font-size: 0.87rem;
+    }
+
+    .btn {
+        margin-top: 0.8rem;
+    }
+
+    &--impaye {
+        border-color: var(--danger, #dc2626);
+
+        h2 { color: var(--danger, #dc2626); }
+    }
+
+    &--essai h2 { color: var(--warning, #b45309); }
+    &--actif h2 { color: var(--success, #16a34a); }
+}
+
+.offres-titre {
+    font-size: 1.3rem;
+    margin: 0.5rem 0 0;
+}
+
+.grille-offres {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+}
+
+.carte-offre {
+    @include mixins.glass-card;
+    @include mixins.glass-hover;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+
+    h3 {
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    &__description {
+        color: var(--text-light, var(--texte));
+        font-size: 0.88rem;
+        margin: 0;
+        min-height: 2.4em;
+    }
+
+    &__prix {
+        font-size: 1.7rem;
+        font-weight: 700;
+        margin: 0.2rem 0;
+        color: var(--primary, var(--couleur-primaire));
+
+        span {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-light, var(--texte));
+        }
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 0.6rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        font-size: 0.88rem;
+    }
+
+    li::before {
+        content: "✓ ";
+        color: var(--success, #16a34a);
+        font-weight: 700;
+    }
+
+    .btn {
+        margin-top: auto;
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}

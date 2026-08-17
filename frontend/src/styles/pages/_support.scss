@@ -11,3 +11,15 @@
     color: var(--couleur-primaire);
     cursor: pointer;
 }
+
+.page-lede {
+    color: var(--text-light, var(--texte));
+    margin: -0.5rem 0 1.5rem;
+    max-width: 60ch;
+}
+
+.form-support {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}

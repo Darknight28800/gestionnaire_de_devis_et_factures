@@ -34,16 +34,6 @@
     color: var(--texte);
 }
 
-.filters .btn-primary {
-    background: var(--couleur-primaire);
-    color: #fff;
-    padding: 10px 18px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-}
-
 /* TABLE */
 .table-logs {
     width: 100%;
@@ -62,7 +52,7 @@
 
 body.dark .table-logs th,
 body.dark .table-logs td {
-    border-color: var(--gris-700);
+    border-color: var(--gris-300);
 }
 
 .table-logs th {
@@ -71,31 +61,34 @@ body.dark .table-logs td {
 }
 
 body.dark .table-logs th {
-    background: var(--gris-800);
+    background: var(--gris-200);
 }
 
-/* PAGINATION */
-.pagination {
+/* PAGINATION (spécifique à cette page — voir composants/_boutons.scss pour .btn-texte,
+   utilisé ailleurs pour la pagination devis/factures/archives) */
+.page-logs .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 16px;
 }
 
-.pagination button {
-    padding: 8px 14px;
-    border-radius: 8px;
-    border: none;
-    background: var(--couleur-primaire);
-    color: #fff;
-    cursor: pointer;
-    font-weight: 600;
+.page-logs .pagination button {
+    @include mixins.bouton-premium(var(--couleur-primaire), #fff, var(--couleur-primaire-hover));
+    padding: 8px 16px;
 }
 
-.pagination button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+/* STATUTS TICKETS */
+.statut {
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
 }
+
+.statut--ouvert { background: #fef3c7; color: #92400e; }
+.statut--resolu { background: #bbf7d0; color: #15803d; }
 
 /* ============================
     LOGS PAGE

@@ -35,8 +35,16 @@ export default function Sidebar({ open }) {
                     <span>Factures</span>
                 </NavLink>
 
+                <NavLink to="/archives" className="sidebar_link">
+                    <span>Archives</span>
+                </NavLink>
+
                 <NavLink to="/parametres" className="sidebar_link">
                     <span>Paramètres</span>
+                </NavLink>
+
+                <NavLink to="/abonnement" className="sidebar_link">
+                    <span>Abonnement</span>
                 </NavLink>
 
                 <NavLink to="/profil" className="sidebar_link">

@@ -12,25 +12,25 @@ export const ClientModele = {
     },
 
     async creer(data) {
-        const { nom, email, telephone, adresse, ville, code_postal, pays } = data;
+        const { nom, email, telephone, adresse, ville, code_postal, pays, statut } = data;
 
         const [result] = await pool.query(
-            `INSERT INTO clients (nom, email, telephone, adresse, ville, code_postal, pays)
-                VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [nom, email, telephone, adresse, ville, code_postal, pays]
+            `INSERT INTO clients (nom, email, telephone, adresse, ville, code_postal, pays, statut)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [nom, email, telephone, adresse, ville, code_postal, pays, statut || "actif"]
         );
 
         return this.trouverParId(result.insertId);
     },
 
     async mettreAJour(id, data) {
-        const { nom, email, telephone, adresse, ville, code_postal, pays } = data;
+        const { nom, email, telephone, adresse, ville, code_postal, pays, statut } = data;
 
         await pool.query(
-            `UPDATE clients 
-                SET nom = ?, email = ?, telephone = ?, adresse = ?, ville = ?, code_postal = ?, pays = ?
+            `UPDATE clients
+                SET nom = ?, email = ?, telephone = ?, adresse = ?, ville = ?, code_postal = ?, pays = ?, statut = ?
                 WHERE id = ?`,
-            [nom, email, telephone, adresse, ville, code_postal, pays, id]
+            [nom, email, telephone, adresse, ville, code_postal, pays, statut || "actif", id]
         );
 
         return this.trouverParId(id);

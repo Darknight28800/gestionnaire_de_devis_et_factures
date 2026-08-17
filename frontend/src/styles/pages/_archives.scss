@@ -1,0 +1,74 @@
+.page-archives {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.archives-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+
+    h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text);
+        margin: 0;
+    }
+}
+
+.archives-tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--gris-200, #e2e8f0);
+
+    button {
+        background: none;
+        border: none;
+        padding: 0.7rem 1.2rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text-light, var(--texte));
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+
+        &.actif {
+            color: var(--primary, var(--couleur-primaire));
+            border-bottom-color: var(--primary, var(--couleur-primaire));
+        }
+
+        &:hover {
+            color: var(--primary, var(--couleur-primaire));
+        }
+    }
+}
+
+.table-archives {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card, var(--fond-carte));
+    border-radius: var(--radius, 12px);
+    overflow: hidden;
+    box-shadow: var(--shadow, 0 4px 12px rgba(0, 0, 0, 0.05));
+
+    th {
+        background: var(--bg, var(--fond));
+        padding: 1rem;
+        text-align: left;
+        color: var(--text-light, var(--texte));
+        font-size: 0.85rem;
+        border-bottom: 1px solid var(--gris-200, #e2e8f0);
+    }
+
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--gris-100, #f1f5f9);
+        color: var(--text, var(--texte));
+    }
+
+    tr:hover td {
+        background: var(--bg-hover, var(--hover));
+    }
+}

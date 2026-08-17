@@ -1,6 +1,7 @@
 import Sidebar from "./sidebar";
 import Header from "./header";
 import Footer from "./footer";
+import BandeauEssai from "./bandeauEssai";
 import "../styles/composants/_layout.scss";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
@@ -25,6 +26,7 @@ export default function Layout() {
         {/* MAIN */}
         <div className="app-main">
             <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+            <BandeauEssai />
 
             <div className="app-content">
             <Outlet />

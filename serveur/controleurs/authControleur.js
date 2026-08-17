@@ -91,5 +91,45 @@ export const AuthControleur = {
         } catch (e) {
             next(e);
         }
+    },
+
+    async mettreAJourProfil(req, res, next) {
+        try {
+            const { nom } = req.body;
+            if (!nom || !nom.trim()) {
+                return res.status(400).json({ message: "Le nom ne peut pas être vide" });
+            }
+
+            const utilisateur = await UtilisateurModele.mettreAJourNom(req.utilisateur.id, nom.trim());
+            const { mot_de_passe, ...utilisateurSansMotDePasse } = utilisateur;
+            res.json(utilisateurSansMotDePasse);
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    async changerMotDePasse(req, res, next) {
+        try {
+            const { motDePasseActuel, nouveauMotDePasse } = req.body;
+            if (!motDePasseActuel || !nouveauMotDePasse) {
+                return res.status(400).json({ message: "Mot de passe actuel et nouveau mot de passe requis" });
+            }
+            if (nouveauMotDePasse.length < 6) {
+                return res.status(400).json({ message: "Le nouveau mot de passe doit contenir au moins 6 caractères" });
+            }
+
+            const utilisateur = await UtilisateurModele.trouverParId(req.utilisateur.id);
+            const match = await bcrypt.compare(motDePasseActuel, utilisateur.mot_de_passe);
+            if (!match) {
+                return res.status(400).json({ message: "Mot de passe actuel incorrect" });
+            }
+
+            const hash = await bcrypt.hash(nouveauMotDePasse, 10);
+            await UtilisateurModele.mettreAJourMotDePasse(req.utilisateur.id, hash);
+
+            res.json({ message: "Mot de passe mis à jour" });
+        } catch (e) {
+            next(e);
+        }
     }
 };

@@ -120,25 +120,27 @@ tbody td {
     color: var(--texte);
 }
 
-/* DARK MODE */
+/* DARK MODE
+   L'échelle --gris-N est inversée dans .dark (voir _variables.scss) :
+   --gris-100/200/300 y sont les teintes sombres, pas --gris-700/800/900. */
 body.dark thead {
-    background: var(--gris-800);
+    background: var(--gris-200);
 }
 
 body.dark .table-wrapper {
-    background: var(--gris-800);
-    border-color: var(--gris-700);
+    background: var(--gris-200);
+    border-color: var(--gris-300);
 }
 
 body.dark tbody td {
-    border-color: var(--gris-700);
+    border-color: var(--gris-300);
 }
 
 body.dark .pagination button {
-    background: var(--gris-700);
+    background: var(--gris-300);
     color: var(--texte);
 }
 
 body.dark .pagination button:hover {
-    background: var(--gris-600);
+    background: var(--gris-400);
 }

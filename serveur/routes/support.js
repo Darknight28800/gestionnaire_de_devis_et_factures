@@ -2,6 +2,8 @@ import express from "express";
 import db from "../config/base_de_donnees.js";
 import verifyToken from "../intergiciels/verifyToken.js";
 import adminMiddleware from "../intergiciels/admin.js";
+import { UtilisateurModele } from "../modeles/utilisateurModele.js";
+import { envoyerEmailTicketSupport } from "../utils/email.js";
 
 const router = express.Router();
 
@@ -19,6 +21,19 @@ router.post("/tickets", verifyToken, async (req, res) => {
         );
 
         res.status(201).json({ message: "Ticket créé" });
+
+        // Copie envoyée à l'adresse mail pro — ne doit jamais faire échouer la création du ticket
+        try {
+            const utilisateur = await UtilisateurModele.trouverParId(req.utilisateur.id);
+            await envoyerEmailTicketSupport({
+                nom: utilisateur?.nom,
+                email: utilisateur?.email || req.utilisateur.email,
+                sujet,
+                message
+            });
+        } catch (errEmail) {
+            console.error("Erreur envoi copie mail du ticket :", errEmail);
+        }
     } catch (err) {
         console.error("Erreur création ticket :", err);
         res.status(500).json({ message: "Erreur serveur" });
@@ -37,6 +52,17 @@ router.get("/tickets", verifyToken, adminMiddleware, async (req, res) => {
         res.json(rows);
     } catch (err) {
         console.error("Erreur GET tickets :", err);
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+});
+
+// 📌 Marquer un ticket comme résolu (admin uniquement)
+router.patch("/tickets/:id/resoudre", verifyToken, adminMiddleware, async (req, res) => {
+    try {
+        await db.query("UPDATE tickets_support SET statut = 'resolu' WHERE id = ?", [req.params.id]);
+        res.json({ message: "Ticket marqué comme résolu" });
+    } catch (err) {
+        console.error("Erreur résolution ticket :", err);
         res.status(500).json({ message: "Erreur serveur" });
     }
 });

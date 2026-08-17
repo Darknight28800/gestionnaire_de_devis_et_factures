@@ -1,0 +1,47 @@
+.page-erreur {
+    min-height: calc(100vh - 140px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.5rem;
+    padding: var(--space-xl);
+
+    --erreur-couleur: var(--couleur-primaire);
+}
+
+.page-erreur--401 { --erreur-couleur: var(--couleur-accent); }
+.page-erreur--403 { --erreur-couleur: var(--alerte); }
+.page-erreur--404 { --erreur-couleur: var(--couleur-primaire); }
+.page-erreur--500 { --erreur-couleur: var(--danger); }
+
+.erreur-code {
+    font-size: 5rem;
+    font-weight: 800;
+    color: var(--erreur-couleur);
+    line-height: 1;
+}
+
+.erreur-message {
+    font-size: 1.15rem;
+    margin-bottom: var(--space-md);
+    color: var(--texte-clair);
+    max-width: 40ch;
+}
+
+.erreur-btn {
+    display: inline-block;
+    padding: 12px 22px;
+    background: var(--erreur-couleur);
+    color: #fff;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+
+    &:hover {
+        opacity: 0.88;
+        transform: translateY(-1px);
+    }
+}

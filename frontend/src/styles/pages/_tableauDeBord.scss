@@ -1,3 +1,5 @@
+@use "../base/mixins";
+
 .dashboard {
     display: flex;
     flex-direction: column;
@@ -22,20 +24,15 @@
     gap: var(--space-lg);
 }
 
-.card {
-    background: var(--fond-carte);
-    border: 1px solid var(--gris-200);
-    border-radius: var(--radius-md);
-    padding: var(--space-lg);
-    display: flex;
+.dashboard__cards .card {
+    flex-direction: row;
     align-items: center;
     gap: var(--space-md);
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-    &:hover {
-        transform: translateY(-4px);
-        box-shadow: var(--shadow-md);
+    @for $i from 1 through 8 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{($i - 1) * 0.05}s;
+        }
     }
 }
 
@@ -47,21 +44,12 @@
     font-size: 1.6rem;
     font-weight: 700;
     color: var(--texte);
+    font-variant-numeric: tabular-nums;
 }
 
 .card__info p {
     font-size: 0.9rem;
-    color: var(--gris-500);
-}
-
-/* DARK MODE */
-body.dark .card {
-    background: var(--gris-800);
-    border-color: var(--gris-700);
-}
-
-body.dark .card__info p {
-    color: var(--gris-300);
+    color: var(--text-light);
 }
 
 /* ============================
@@ -74,11 +62,9 @@ body.dark .card__info p {
 }
 
 .chart {
-    background: var(--fond-carte);
-    border: 1px solid var(--gris-200);
-    border-radius: var(--radius-md);
+    @include mixins.glass-card;
     padding: var(--space-lg);
-    box-shadow: var(--shadow-sm);
+    animation-delay: 0.15s;
 }
 
 .chart h3 {
@@ -86,12 +72,6 @@ body.dark .card__info p {
     font-size: 1.2rem;
     font-weight: 600;
     color: var(--texte);
-}
-
-/* DARK MODE */
-body.dark .chart {
-    background: var(--gris-800);
-    border-color: var(--gris-700);
 }
 
 /* ============================
@@ -104,11 +84,9 @@ body.dark .chart {
 }
 
 .list {
-    background: var(--fond-carte);
-    border: 1px solid var(--gris-200);
-    border-radius: var(--radius-md);
+    @include mixins.glass-card;
     padding: var(--space-lg);
-    box-shadow: var(--shadow-sm);
+    animation-delay: 0.2s;
 }
 
 .list h3 {
@@ -139,23 +117,13 @@ body.dark .chart {
 
 /* Statuts */
 .statut-payee {
-    color: #10b981;
+    color: var(--succes);
     font-weight: 600;
 }
 
 .statut-non-payee {
-    color: #ef4444;
+    color: var(--danger);
     font-weight: 600;
-}
-
-/* DARK MODE */
-body.dark .list {
-    background: var(--gris-800);
-    border-color: var(--gris-700);
-}
-
-body.dark .list li {
-    border-color: var(--gris-700);
 }
 
 /* ============================

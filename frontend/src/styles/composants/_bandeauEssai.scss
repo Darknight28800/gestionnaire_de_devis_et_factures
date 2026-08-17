@@ -1,0 +1,32 @@
+.bandeau-essai {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: var(--warning-soft, #fef3e2);
+    color: var(--warning, #b45309);
+    padding: 0.6rem 1.5rem;
+    font-size: 0.87rem;
+    text-align: center;
+    flex-wrap: wrap;
+
+    &__lien {
+        font-weight: 700;
+        color: inherit;
+        text-decoration: underline;
+    }
+
+    &__fermer {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        font-size: 0.85rem;
+        opacity: 0.7;
+        margin-left: 0.5rem;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}

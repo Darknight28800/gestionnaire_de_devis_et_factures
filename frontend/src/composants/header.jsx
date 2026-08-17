@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import api from "../api/axios";
+import api, { resoudreUrlFichier } from "../api/axios";
 import { AuthContexte } from "../contexte/authProvider";
 import "../styles/composants/_header.scss";
 
@@ -7,6 +7,7 @@ export default function Header({ onToggleSidebar }) {
     const { utilisateur } = useContext(AuthContexte);
     const [parametres, setParametres] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [modeSombre, setModeSombre] = useState(false);
 
     const nomAffiche = utilisateur?.nom || utilisateur?.email || "Mon compte";
     const initiales = nomAffiche
@@ -49,6 +50,7 @@ export default function Header({ onToggleSidebar }) {
         const savedTheme = localStorage.getItem("theme");
         if (savedTheme === "dark") {
             document.body.classList.add("dark");
+            setModeSombre(true);
         }
     }, []);
 
@@ -56,6 +58,7 @@ export default function Header({ onToggleSidebar }) {
     const toggleDarkMode = () => {
         const isDark = document.body.classList.toggle("dark");
         localStorage.setItem("theme", isDark ? "dark" : "light");
+        setModeSombre(isDark);
     };
 
     return (
@@ -69,7 +72,7 @@ export default function Header({ onToggleSidebar }) {
 
                 {/* Logo FacturePro (fallback si aucun logo dans parametres) */}
                 <img
-                    src={parametres?.logo_url || "/assets/logo-facturepro.png"}
+                    src={parametres?.logo_url ? resoudreUrlFichier(parametres.logo_url) : "/assets/logo-facturepro.svg"}
                     alt="Logo FacturePro"
                     className="header__logo"
                 />
@@ -83,8 +86,8 @@ export default function Header({ onToggleSidebar }) {
             <div className="header__right">
 
                 {/* DARK MODE */}
-                <button className="btn-darkmode" onClick={toggleDarkMode}>
-                    🌙
+                <button className="btn-darkmode" onClick={toggleDarkMode} aria-label="Basculer le mode sombre">
+                    {modeSombre ? "☀️" : "🌙"}
                 </button>
 
                 {/* MENU UTILISATEUR */}

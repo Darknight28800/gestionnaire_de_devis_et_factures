@@ -6,6 +6,9 @@ import verifyToken from "../intergiciels/verifyToken.js";
 import adminMiddleware from "../intergiciels/admin.js";
 import { RoleModele } from "../modeles/roleModele.js";
 import { LogModele } from "../modeles/logModele.js";
+import { DevisModele } from "../modeles/devisModele.js";
+import { FactureModele } from "../modeles/factureModele.js";
+import { DUREE_CONSERVATION_ANNEES } from "../config/archivage.js";
 
 const router = express.Router();
 
@@ -159,6 +162,33 @@ router.get("/logs", async (req, res) => {
         res.json(resultat);
     } catch (err) {
         console.error("Erreur GET logs :", err);
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+});
+
+/* ============================================================
+   ARCHIVES
+============================================================ */
+
+// 📌 Purger manuellement les devis/factures archivés depuis plus de N années
+router.post("/purger-archives", async (req, res) => {
+    try {
+        const devisSupprimes = await DevisModele.purgerExpires();
+        const facturesSupprimees = await FactureModele.purgerExpires();
+
+        await LogModele.ajouter(
+            identiteAdmin(req),
+            `Purge des archives (${devisSupprimes} devis, ${facturesSupprimees} factures supprimés définitivement)`
+        );
+
+        res.json({
+            message: "Purge effectuée",
+            devisSupprimes,
+            facturesSupprimees,
+            dureeConservationAnnees: DUREE_CONSERVATION_ANNEES
+        });
+    } catch (err) {
+        console.error("Erreur purge archives :", err);
         res.status(500).json({ message: "Erreur serveur" });
     }
 });

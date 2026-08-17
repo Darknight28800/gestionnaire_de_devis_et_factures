@@ -58,6 +58,24 @@ export default function FactureDetail() {
         }
     };
 
+    const archiver = async () => {
+        try {
+            await api.patch(`/factures/${id}/archiver`);
+            await rechargerFacture();
+        } catch (err) {
+            console.error("Erreur archivage :", err);
+        }
+    };
+
+    const desarchiver = async () => {
+        try {
+            await api.patch(`/factures/${id}/desarchiver`);
+            await rechargerFacture();
+        } catch (err) {
+            console.error("Erreur désarchivage :", err);
+        }
+    };
+
     if (!facture) return <p>Chargement...</p>;
 
     const totalHT = facture.lignes.reduce(
@@ -79,9 +97,22 @@ export default function FactureDetail() {
                     )}
                     <button className="btn-texte" onClick={envoyerEmail}>✉️ Envoyer</button>
                     <button className="btn-primaire" onClick={telechargerPDF}>📄 Générer PDF</button>
+                    {facture.archive_le ? (
+                        <button className="btn-texte" onClick={desarchiver}>📤 Désarchiver</button>
+                    ) : (
+                        facture.statut === "payee" && (
+                            <button className="btn-texte" onClick={archiver}>🗄️ Archiver</button>
+                        )
+                    )}
                     <Link className="btn-texte" to="/factures">← Retour</Link>
                 </div>
             </div>
+
+            {facture.archive_le && (
+                <p className="message message--succes">
+                    📦 Cette facture est archivée depuis le {new Date(facture.archive_le).toLocaleDateString()}.
+                </p>
+            )}
 
             <div className="infos-grid">
 

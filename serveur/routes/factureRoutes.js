@@ -10,6 +10,9 @@ const router = Router();
 // 📌 Route unique : pagination + recherche + tri
 router.get("/", verifyToken, FactureControleur.paginer);
 
+// 📌 Récupérer les factures archivées (avant /:id pour éviter le conflit de route)
+router.get("/archives", verifyToken, FactureControleur.archives);
+
 // 📌 Créer une facture + lignes
 router.post("/", verifyToken, FactureControleur.creer);
 
@@ -33,6 +36,10 @@ router.post("/:id/envoyer-email", verifyToken, FactureControleur.envoyerParEmail
 
 // 📌 Marquer une facture comme payée
 router.patch("/:id/payer", verifyToken, FactureControleur.marquerCommePaye);
+
+// 📌 Archiver / désarchiver une facture
+router.patch("/:id/archiver", verifyToken, FactureControleur.archiver);
+router.patch("/:id/desarchiver", verifyToken, FactureControleur.desarchiver);
 
 // 📌 Supprimer une facture (ADMIN uniquement)
 router.delete("/:id", verifyToken, isAdmin, FactureControleur.supprimer);

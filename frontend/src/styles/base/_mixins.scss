@@ -55,6 +55,53 @@
     box-shadow: var(--shadow-md);
 }
 
+/* Carte verre (glassmorphism) — cards & KPI */
+@mixin glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur, blur(18px) saturate(160%));
+    -webkit-backdrop-filter: var(--glass-blur, blur(18px) saturate(160%));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--glass-shadow);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
+}
+
+@mixin glass-hover {
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 40px rgba(29, 78, 216, 0.16), 0 4px 12px rgba(16, 24, 40, 0.08);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        &:hover { transform: none; }
+    }
+}
+
+/* Apparition en fondu + léger déplacement, avec décalage optionnel */
+@mixin fade-in-up($delay: 0s) {
+    animation: fadeInUp 0.5s ease both;
+    animation-delay: $delay;
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Texte */
 @mixin text-title {
     font-size: 28px;
@@ -80,5 +127,97 @@
 
     &:hover {
         opacity: 0.85;
+    }
+}
+
+/* Bouton premium : arrondi généreux, légère élévation au survol, retour tactile au clic.
+   $bg peut être une couleur pleine (bouton plein) ou "transparent" (bouton fantôme). */
+@mixin bouton-premium($bg, $couleur: #fff, $bg-hover: null) {
+    background: $bg;
+    color: $couleur;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.16s ease,
+                background 0.16s ease,
+                opacity 0.16s ease;
+
+    @if $bg-hover {
+        &:hover:not(:disabled) {
+            background: $bg-hover;
+        }
+    } @else {
+        &:hover:not(:disabled) {
+            filter: brightness(1.08);
+        }
+    }
+
+    &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px -6px color-mix(in srgb, #{$bg} 65%, transparent);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0) scale(0.97);
+        box-shadow: none;
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--couleur-primaire);
+        outline-offset: 2px;
+    }
+
+    &:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: background 0.16s ease, opacity 0.16s ease;
+        &:hover:not(:disabled), &:active:not(:disabled) {
+            transform: none;
+        }
+    }
+}
+
+/* Variante fantôme (fond transparent, se remplit légèrement au survol) */
+@mixin bouton-fantome($couleur: var(--texte-clair), $couleur-hover: var(--couleur-primaire)) {
+    background: transparent;
+    color: $couleur;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+
+    &:hover:not(:disabled) {
+        background: var(--gris-100);
+        color: $couleur-hover;
+        transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0) scale(0.97);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--couleur-primaire);
+        outline-offset: 2px;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: background 0.16s ease, color 0.16s ease;
+        &:hover:not(:disabled), &:active:not(:disabled) {
+            transform: none;
+        }
     }
 }

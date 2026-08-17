@@ -1,6 +1,6 @@
 export default function Erreur403() {
     return (
-        <div className="page page-erreur">
+        <div className="page page-erreur page-erreur--403">
             <h1 className="erreur-code">403</h1>
             <p className="erreur-message">Vous n’avez pas les permissions nécessaires.</p>
 

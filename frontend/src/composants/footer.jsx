@@ -1,10 +1,32 @@
+import { useEffect, useState } from "react";
+import api from "../api/axios";
+
 export default function Footer() {
+    const [parametres, setParametres] = useState(null);
+
+    useEffect(() => {
+        const charger = async () => {
+            try {
+                const res = await api.get("/parametres");
+                setParametres(res.data);
+            } catch (err) {
+                console.error("Erreur chargement paramètres :", err);
+            }
+        };
+        charger();
+    }, []);
+
     return (
         <footer className="footer-premium">
             <div className="footer-container">
 
                 <div className="footer-col brand">
-                    <h3>Mon Entreprise</h3>
+                    <h3>{parametres?.nom_entreprise || "FacturePro"}</h3>
+                    <p className="footer-col__credit">
+                        {parametres?.nom_entreprise ? "FacturePro by SphereWeb" : "by SphereWeb"}
+                    </p>
+                    {parametres?.adresse && <p>{parametres.adresse}</p>}
+                    {parametres?.siret && <p>SIRET : {parametres.siret}</p>}
                     <p>© {new Date().getFullYear()} — Tous droits réservés.</p>
                 </div>
 

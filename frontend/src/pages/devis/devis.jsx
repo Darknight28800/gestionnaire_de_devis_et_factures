@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 import Modal from "../../composants/modal";
+import useAuth from "../../hooks/useAuth";
 import "../../styles/pages/_devis.scss";
 
 export default function Devis() {
+    const { utilisateur } = useAuth();
+    const navigate = useNavigate();
     const [devis, setDevis] = useState([]);
     const [clients, setClients] = useState([]);
+    const [conversionEnCours, setConversionEnCours] = useState(null);
 
     const [modalOpen, setModalOpen] = useState(false);
     const [modeEdition, setModeEdition] = useState(false);
@@ -101,11 +105,25 @@ export default function Devis() {
         setForm({ ...form, lignes });
     };
 
+    /* Vide le champ dès qu'on clique dedans, pour que l'utilisateur n'ait jamais
+       à effacer manuellement une valeur existante avant de taper la sienne. */
+    const viderChamp = (index, field) => {
+        changerLigne(index, field, "");
+    };
+
+    /* Si l'utilisateur quitte le champ sans rien saisir, on remet une valeur par défaut
+       valide pour ne pas casser le calcul ni l'enregistrement. */
+    const remplirSiVide = (index, field, valeurDefaut) => {
+        if (form.lignes[index][field] === "") {
+            changerLigne(index, field, valeurDefaut);
+        }
+    };
+
     /* ============================
        CALCULS
     ============================ */
     const totalHT = form.lignes.reduce(
-        (sum, l) => sum + l.quantite * l.prix,
+        (sum, l) => sum + (Number(l.quantite) || 0) * (Number(l.prix) || 0),
         0
     );
 
@@ -120,6 +138,11 @@ export default function Devis() {
 
         const data = {
             ...form,
+            lignes: form.lignes.map((l) => ({
+                ...l,
+                quantite: Number(l.quantite) || 0,
+                prix: Number(l.prix) || 0
+            })),
             montant: totalHT
         };
 
@@ -136,6 +159,37 @@ export default function Devis() {
         } catch (err) {
             console.error(err.response?.data);
             alert("Erreur lors de l’enregistrement du devis.");
+        }
+    };
+
+    /* ============================
+       CONVERSION EN FACTURE (1 clic)
+    ============================ */
+    const convertirEnFacture = async (d) => {
+        setConversionEnCours(d.id);
+        try {
+            const res = await api.post(`/factures/convertir/${d.id}`);
+            navigate(`/factures/${res.data.facture.id}`);
+        } catch (err) {
+            console.error(err);
+            alert("Erreur lors de la conversion en facture.");
+        } finally {
+            setConversionEnCours(null);
+        }
+    };
+
+    /* ============================
+       SUPPRESSION
+    ============================ */
+    const supprimerDevis = async (d) => {
+        if (!window.confirm(`Supprimer le devis #${d.id} ?`)) return;
+
+        try {
+            await api.delete(`/devis/${d.id}`);
+            rechargerDevis();
+        } catch (err) {
+            console.error(err);
+            alert("Erreur lors de la suppression du devis.");
         }
     };
 
@@ -175,13 +229,28 @@ export default function Devis() {
                                 </span>
                             </td>
                             <td>{new Date(d.date_creation).toLocaleDateString()}</td>
-                            <td style={{ display: "flex", gap: "0.75rem" }}>
+                            <td className="actions-cellule">
                                 <Link className="btn-lien" to={`/devis/${d.id}`}>
                                     Voir →
                                 </Link>
                                 <button className="btn-lien" onClick={() => ouvrirEditionDevis(d)}>
                                     Modifier
                                 </button>
+                                {d.statut === "accepte" && !d.archive_le && (
+                                    <button
+                                        className="btn-primaire btn-primaire--compact"
+                                        onClick={() => convertirEnFacture(d)}
+                                        disabled={conversionEnCours === d.id}
+                                        title="Convertir ce devis accepté en facture"
+                                    >
+                                        {conversionEnCours === d.id ? "Conversion..." : "🧾 Convertir"}
+                                    </button>
+                                )}
+                                {utilisateur?.role === "admin" && (
+                                    <button className="btn-texte btn-danger" onClick={() => supprimerDevis(d)}>
+                                        Supprimer
+                                    </button>
+                                )}
                             </td>
                         </tr>
                     ))}
@@ -193,6 +262,7 @@ export default function Devis() {
                 open={modalOpen}
                 title={modeEdition ? "Modifier le devis" : "Nouveau devis"}
                 onClose={() => setModalOpen(false)}
+                taille="large"
             >
                 <form onSubmit={envoyer} className="form-devis">
 
@@ -256,10 +326,18 @@ export default function Devis() {
 
                     <h3>Lignes du devis</h3>
 
+                    <div className="ligne-devis ligne-devis--entete">
+                        <span>Description</span>
+                        <span>Quantité</span>
+                        <span>Prix unitaire (€)</span>
+                        <span></span>
+                    </div>
+
                     {form.lignes.map((ligne, index) => (
                         <div key={index} className="ligne-devis">
                             <input
-                                placeholder="Description"
+                                placeholder="Ex : Prestation, produit..."
+                                aria-label="Description de la ligne"
                                 value={ligne.description}
                                 onChange={(e) =>
                                     changerLigne(index, "description", e.target.value)
@@ -269,24 +347,34 @@ export default function Devis() {
                             <input
                                 type="number"
                                 min="1"
+                                aria-label="Quantité"
+                                title="Quantité"
                                 value={ligne.quantite}
+                                onFocus={() => viderChamp(index, "quantite")}
+                                onBlur={() => remplirSiVide(index, "quantite", 1)}
                                 onChange={(e) =>
-                                    changerLigne(index, "quantite", Number(e.target.value))
+                                    changerLigne(index, "quantite", e.target.value === "" ? "" : Number(e.target.value))
                                 }
                             />
 
                             <input
                                 type="number"
                                 min="0"
+                                step="0.01"
+                                aria-label="Prix unitaire en euros"
+                                title="Prix unitaire (€)"
                                 value={ligne.prix}
+                                onFocus={() => viderChamp(index, "prix")}
+                                onBlur={() => remplirSiVide(index, "prix", 0)}
                                 onChange={(e) =>
-                                    changerLigne(index, "prix", Number(e.target.value))
+                                    changerLigne(index, "prix", e.target.value === "" ? "" : Number(e.target.value))
                                 }
                             />
 
                             <button
                                 type="button"
-                                className="btn-texte btn-danger"
+                                className="btn-icone"
+                                aria-label="Supprimer cette ligne"
                                 onClick={() => supprimerLigne(index)}
                             >
                                 🗑️

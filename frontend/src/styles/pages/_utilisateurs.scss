@@ -23,20 +23,6 @@
     color: var(--texte);
 }
 
-.page-utilisateurs .header .btn-primary {
-    background: var(--couleur-primaire);
-    color: #fff;
-    padding: 10px 18px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.25s ease;
-}
-
-.page-utilisateurs .header .btn-primary:hover {
-    opacity: 0.9;
-}
 
 /* ============================
    TABLE UTILISATEURS
@@ -55,7 +41,7 @@
 }
 
 body.dark .table-users thead {
-    background: var(--gris-800);
+    background: var(--gris-200);
 }
 
 .table-users th,
@@ -67,7 +53,7 @@ body.dark .table-users thead {
 
 body.dark .table-users th,
 body.dark .table-users td {
-    border-color: var(--gris-700);
+    border-color: var(--gris-300);
 }
 
 .table-users th {
@@ -91,7 +77,7 @@ body.dark .table-users td {
 }
 
 .badge-admin {
-    background: #2563eb; /* bleu */
+    background: var(--couleur-primaire);
 }
 
 .badge-user {
@@ -101,35 +87,6 @@ body.dark .table-users td {
 /* ============================
    ACTIONS
 ============================ */
-.btn-edit,
-.btn-delete {
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    border: none;
-    transition: 0.25s ease;
-}
-
-.btn-edit {
-    background: var(--couleur-primaire);
-    color: #fff;
-    margin-right: 6px;
-}
-
-.btn-edit:hover {
-    opacity: 0.9;
-}
-
-.btn-delete {
-    background: #e11d48;
-    color: #fff;
-}
-
-.btn-delete:hover {
-    opacity: 0.9;
-}
-
 /* ============================
    MODALE
 ============================ */
@@ -175,7 +132,7 @@ body.dark .table-users td {
 
 body.dark .modal input,
 body.dark .modal select {
-    border-color: var(--gris-700);
+    border-color: var(--gris-300);
 }
 
 /* Actions */
@@ -183,27 +140,4 @@ body.dark .modal select {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-}
-
-.btn-primary {
-    background: var(--couleur-primaire);
-    color: #fff;
-    padding: 10px 16px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.btn-secondary {
-    background: var(--gris-200);
-    color: var(--texte);
-    padding: 10px 16px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-}
-
-body.dark .btn-secondary {
-    background: var(--gris-700);
 }

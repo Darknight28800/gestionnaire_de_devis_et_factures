@@ -11,6 +11,9 @@ import tableauDeBordRoutes from "./routes/tableauDeBordRoutes.js";
 import parametresRoutes from "./routes/parametresRoutes.js";
 import adminRoutes from "./routes/admin.js";
 import supportRoutes from "./routes/support.js";
+import abonnementRoutes from "./routes/abonnementRoutes.js";
+import { AbonnementControleur } from "./controleurs/abonnementControleur.js";
+import verifierAbonnement from "./intergiciels/verifierAbonnement.js";
 import { erreurMiddleware } from "./intergiciels/erreurMiddleware.js";
 
 dotenv.config();
@@ -26,18 +29,29 @@ app.use(
     })
 );
 
+// 📌 Le webhook Stripe a besoin du corps brut (non-JSON) pour vérifier la signature —
+// il doit donc être monté AVANT express.json().
+app.post(
+    "/abonnement/webhook",
+    express.raw({ type: "application/json" }),
+    AbonnementControleur.webhook
+);
+
 app.use(express.json());
 
 app.use("/auth", authRoutes);
-app.use("/clients", clientRoutes);
-app.use("/devis", devisRoutes);
-app.use("/factures", factureRoutes);
-app.use("/tableau-de-bord", tableauDeBordRoutes);
-app.use("/emails", emailsRoutes);
+app.use("/abonnement", abonnementRoutes);
+
+// 📌 Routes métier : bloquées si la période d'essai est terminée sans abonnement actif
+app.use("/clients", verifierAbonnement, clientRoutes);
+app.use("/devis", verifierAbonnement, devisRoutes);
+app.use("/factures", verifierAbonnement, factureRoutes);
+app.use("/tableau-de-bord", verifierAbonnement, tableauDeBordRoutes);
+app.use("/emails", verifierAbonnement, emailsRoutes);
 app.use("/uploads", express.static("uploads"));
-app.use("/parametres", parametresRoutes);
-app.use("/admin", adminRoutes);
-app.use("/support", supportRoutes);
+app.use("/parametres", verifierAbonnement, parametresRoutes);
+app.use("/admin", verifierAbonnement, adminRoutes);
+app.use("/support", verifierAbonnement, supportRoutes);
 
 app.use(erreurMiddleware);
 

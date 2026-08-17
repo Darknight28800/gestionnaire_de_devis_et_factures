@@ -5,8 +5,10 @@ import { DevisLigneModele } from "../modeles/devisLigneModele.js";
 import { HistoriqueModele } from "../modeles/historiqueModele.js";
 import { ClientModele } from "../modeles/clientModele.js";
 import { LogModele } from "../modeles/logModele.js";
+import { ParametresModele } from "../modeles/parametresModele.js";
 import { envoyerEmailFacture } from "../utils/email.js";
 import { genererPdfFacture } from "../utils/pdf.js";
+import { DUREE_CONSERVATION_ANNEES } from "../config/archivage.js";
 
 const identiteUtilisateur = (req) => req.utilisateur.email || `utilisateur #${req.utilisateur.id}`;
 
@@ -40,6 +42,16 @@ export const FactureControleur = {
         try {
             const factures = await FactureModele.tous();
             res.json(factures);
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    // 📌 Liste des factures archivées
+    async archives(req, res, next) {
+        try {
+            const factures = await FactureModele.archives();
+            res.json({ factures, dureeConservationAnnees: DUREE_CONSERVATION_ANNEES });
         } catch (e) {
             next(e);
         }
@@ -218,6 +230,37 @@ export const FactureControleur = {
         }
     },
 
+    // 📌 Archiver / désarchiver une facture
+    async archiver(req, res, next) {
+        try {
+            const facture = await FactureModele.parId(req.params.id);
+            if (!facture) return res.status(404).json({ message: "Facture introuvable" });
+
+            await FactureModele.archiver(req.params.id);
+            await HistoriqueModele.ajouter("facture", req.params.id, "Facture archivée");
+            await LogModele.ajouter(identiteUtilisateur(req), `Archivage de la facture #${req.params.id}`);
+
+            res.json({ message: "Facture archivée" });
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    async desarchiver(req, res, next) {
+        try {
+            const facture = await FactureModele.parId(req.params.id);
+            if (!facture) return res.status(404).json({ message: "Facture introuvable" });
+
+            await FactureModele.desarchiver(req.params.id);
+            await HistoriqueModele.ajouter("facture", req.params.id, "Facture désarchivée");
+            await LogModele.ajouter(identiteUtilisateur(req), `Désarchivage de la facture #${req.params.id}`);
+
+            res.json({ message: "Facture désarchivée" });
+        } catch (e) {
+            next(e);
+        }
+    },
+
     // 📌 Générer le PDF d'une facture
     async pdf(req, res, next) {
         try {
@@ -226,8 +269,9 @@ export const FactureControleur = {
 
             const lignes = await FactureLigneModele.parFacture(req.params.id);
             const client = await ClientModele.trouverParId(facture.client_id);
+            const parametres = await ParametresModele.obtenir();
 
-            genererPdfFacture({ facture, client, lignes, res });
+            genererPdfFacture({ facture, client, lignes, res }, parametres);
         } catch (e) {
             next(e);
         }

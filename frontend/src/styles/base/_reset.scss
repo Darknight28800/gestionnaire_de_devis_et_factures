@@ -1,0 +1,27 @@
+/* Reset minimal — la police et les couleurs de base s'appliquent à toute
+   la page, pas seulement à l'intérieur de .app-layout (pages hors layout :
+   connexion, erreurs...). */
+
+html {
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-base);
+    background: var(--fond);
+    color: var(--texte);
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}

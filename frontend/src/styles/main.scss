@@ -30,6 +30,9 @@
 @use "./composants/cartes";
 @use "./composants/tableaux";
 @use "./composants/modal";
+@use "./composants/formulaires";
+@use "./composants/bandeauEssai";
+@use "./composants/blocageAbonnement";
 
 /* ============================
     PAGES
@@ -42,13 +45,13 @@
 @use "./pages/profil";
 @use "./pages/admin";
 @use "./pages/support";
+@use "./pages/contenuLegal";
 @use "./pages/parametres";
 @use "./pages/devis";
+@use "./pages/archives";
+@use "./pages/abonnement";
 
 /* Pages d’erreurs */
-@use "./pages/erreur401";
-@use "./pages/erreur403";
-@use "./pages/erreur404";
-@use "./pages/erreur500";
+@use "./pages/erreurs";
 
 

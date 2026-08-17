@@ -8,6 +8,9 @@ const router = Router();
 // 📌 Récupérer tous les devis (utilisateur connecté)
 router.get("/", verifyToken, DevisControleur.liste);
 
+// 📌 Récupérer les devis archivés (avant /:id pour éviter le conflit de route)
+router.get("/archives", verifyToken, DevisControleur.archives);
+
 // 📌 Récupérer un devis + ses lignes
 router.get("/:id", verifyToken, DevisControleur.detail);
 
@@ -19,6 +22,10 @@ router.post("/", verifyToken, DevisControleur.creer);
 
 // 📌 Modifier un devis + lignes (utilisateur connecté)
 router.put("/:id", verifyToken, DevisControleur.mettreAJour);
+
+// 📌 Archiver / désarchiver un devis
+router.patch("/:id/archiver", verifyToken, DevisControleur.archiver);
+router.patch("/:id/desarchiver", verifyToken, DevisControleur.desarchiver);
 
 // 📌 Supprimer un devis (ADMIN uniquement)
 router.delete("/:id", verifyToken, isAdmin, DevisControleur.supprimer);

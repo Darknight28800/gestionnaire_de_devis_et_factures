@@ -18,15 +18,23 @@
     .input-search {
         padding: 0.7rem 1rem;
         border-radius: var(--radius);
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--gris-200);
+        background: var(--fond-carte);
+        color: var(--texte);
         width: 250px;
         font-size: 0.95rem;
 
         &:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            box-shadow: 0 0 0 3px var(--primary-soft);
             outline: none;
         }
+    }
+
+    &__actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
     }
 }
 

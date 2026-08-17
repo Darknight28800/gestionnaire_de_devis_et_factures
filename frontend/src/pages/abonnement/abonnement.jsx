@@ -1,0 +1,168 @@
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import api from "../../api/axios";
+import useAuth from "../../hooks/useAuth";
+import "../../styles/pages/_abonnement.scss";
+
+const LABELS_STATUT = {
+    attente_carte: "Aucun abonnement démarré",
+    essai: "Essai gratuit en cours",
+    actif: "Abonnement actif",
+    impaye: "Paiement échoué",
+    annule: "Abonnement résilié"
+};
+
+function formaterLimite(valeur) {
+    return valeur === null || valeur === undefined ? "Illimité" : valeur;
+}
+
+export default function Abonnement() {
+    const { utilisateur } = useAuth();
+    const [searchParams] = useSearchParams();
+    const [statut, setStatut] = useState(null);
+    const [offresInfo, setOffresInfo] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [chargementOffre, setChargementOffre] = useState(null);
+    const [chargementPortail, setChargementPortail] = useState(false);
+    const [erreur, setErreur] = useState(null);
+
+    const paiementRetour = searchParams.get("paiement");
+
+    const charger = async () => {
+        try {
+            const [resStatut, resOffres] = await Promise.all([
+                api.get("/abonnement/statut"),
+                api.get("/abonnement/offres")
+            ]);
+            setStatut(resStatut.data);
+            setOffresInfo(resOffres.data);
+        } catch (err) {
+            console.error("Erreur chargement abonnement :", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        charger();
+    }, []);
+
+    const choisirOffre = async (offreCode) => {
+        setErreur(null);
+        setChargementOffre(offreCode);
+        try {
+            const res = await api.post("/abonnement/creer-session-paiement", { offreCode });
+            window.location.href = res.data.url;
+        } catch (err) {
+            setErreur(err.response?.data?.message || "Impossible de démarrer le paiement pour le moment.");
+            setChargementOffre(null);
+        }
+    };
+
+    const ouvrirPortail = async () => {
+        setErreur(null);
+        setChargementPortail(true);
+        try {
+            const res = await api.post("/abonnement/portail");
+            window.location.href = res.data.url;
+        } catch (err) {
+            setErreur(err.response?.data?.message || "Impossible d'ouvrir le portail de facturation.");
+            setChargementPortail(false);
+        }
+    };
+
+    if (loading) return <p>Chargement…</p>;
+
+    const estAdmin = utilisateur?.role === "admin";
+    const stripePret = offresInfo?.stripeConfigure;
+
+    return (
+        <div className="page-abonnement">
+            <h1 className="page-title">Abonnement</h1>
+
+            {paiementRetour === "succes" && (
+                <p className="message message--succes">
+                    ✅ Merci ! Votre carte a bien été enregistrée. Votre essai gratuit démarre maintenant.
+                </p>
+            )}
+            {paiementRetour === "annule" && (
+                <p className="message message--erreur">Paiement annulé — aucune modification n'a été effectuée.</p>
+            )}
+            {erreur && <p className="message message--erreur">{erreur}</p>}
+
+            {!stripePret && (
+                <div className="callout callout--info">
+                    Le paiement n'est pas encore configuré pour cette installation (clés Stripe manquantes).
+                    {estAdmin ? " Renseignez STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY et STRIPE_WEBHOOK_SECRET côté serveur pour l'activer." : ""}
+                </div>
+            )}
+
+            <div className={`carte-statut carte-statut--${statut.statut}`}>
+                <h2>{LABELS_STATUT[statut.statut] || statut.statut}</h2>
+
+                {statut.statut === "essai" && (
+                    <p>
+                        Offre <strong>{statut.offre?.nom}</strong> — se termine le{" "}
+                        <strong>{new Date(statut.essaiFin).toLocaleDateString()}</strong>
+                        {" "}({statut.joursRestants} jour{statut.joursRestants > 1 ? "s" : ""} restant{statut.joursRestants > 1 ? "s" : ""}).
+                        Votre carte enregistrée sera débitée automatiquement à la fin de l'essai.
+                    </p>
+                )}
+                {statut.statut === "actif" && (
+                    <p>Offre <strong>{statut.offre?.nom}</strong> — {statut.offre?.prix_mensuel} €/mois.</p>
+                )}
+                {statut.statut === "impaye" && (
+                    <p>Le dernier prélèvement a échoué. Mettez à jour votre moyen de paiement pour ne pas perdre l'accès à l'application.</p>
+                )}
+                {statut.statut === "attente_carte" && (
+                    <p>Choisissez une offre ci-dessous pour démarrer votre essai gratuit de {offresInfo.dureeEssaiJours} jours (carte requise, aucun prélèvement avant la fin de l'essai).</p>
+                )}
+                {statut.statut === "annule" && (
+                    <p>Choisissez une nouvelle offre ci-dessous pour réactiver l'accès.</p>
+                )}
+
+                {!estAdmin && (
+                    <p className="carte-statut__note">Seul un administrateur peut gérer l'abonnement. Contactez-le si besoin.</p>
+                )}
+
+                {estAdmin && ["actif", "impaye"].includes(statut.statut) && stripePret && (
+                    <button className="btn btn-primaire" onClick={ouvrirPortail} disabled={chargementPortail}>
+                        {chargementPortail ? "Ouverture..." : "Gérer mon abonnement"}
+                    </button>
+                )}
+            </div>
+
+            <h2 className="offres-titre">Nos offres</h2>
+            <div className="grille-offres">
+                {offresInfo.offres.map((offre) => (
+                    <div key={offre.id} className="carte-offre">
+                        <h3>{offre.nom}</h3>
+                        <p className="carte-offre__description">{offre.description}</p>
+                        <p className="carte-offre__prix">
+                            {offre.prix_mensuel} € <span>/ mois</span>
+                        </p>
+                        <ul>
+                            <li>{formaterLimite(offre.max_utilisateurs)} utilisateur{offre.max_utilisateurs !== 1 ? "s" : ""}</li>
+                            <li>{formaterLimite(offre.max_devis_mois)} devis / mois</li>
+                            <li>{formaterLimite(offre.max_factures_mois)} factures / mois</li>
+                        </ul>
+
+                        {estAdmin && (
+                            <button
+                                className="btn btn-primaire"
+                                disabled={!stripePret || chargementOffre === offre.code || statut.offre?.id === offre.id}
+                                onClick={() => choisirOffre(offre.code)}
+                            >
+                                {statut.offre?.id === offre.id
+                                    ? "Offre actuelle"
+                                    : chargementOffre === offre.code
+                                        ? "Redirection..."
+                                        : "Choisir cette offre"}
+                            </button>
+                        )}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}

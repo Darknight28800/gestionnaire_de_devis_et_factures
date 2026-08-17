@@ -3,13 +3,26 @@ import { DevisLigneModele } from '../modeles/devisLigneModele.js';
 import { HistoriqueModele } from "../modeles/historiqueModele.js";
 import { ClientModele } from "../modeles/clientModele.js";
 import { LogModele } from "../modeles/logModele.js";
+import { ParametresModele } from "../modeles/parametresModele.js";
 import { genererPdfDevis } from "../utils/pdf.js";
+import { DUREE_CONSERVATION_ANNEES } from "../config/archivage.js";
+
+const identiteUtilisateur = (req) => req.utilisateur.email || `utilisateur #${req.utilisateur.id}`;
 
 export const DevisControleur = {
     async liste(req, res, next) {
         try {
             const devis = await DevisModele.tous();
             res.json(devis);
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    async archives(req, res, next) {
+        try {
+            const devis = await DevisModele.archives();
+            res.json({ devis, dureeConservationAnnees: DUREE_CONSERVATION_ANNEES });
         } catch (e) {
             next(e);
         }
@@ -51,7 +64,7 @@ export const DevisControleur = {
             }
 
             await HistoriqueModele.ajouter("devis", devis.id, "Devis créé");
-            await LogModele.ajouter(req.utilisateur.email || `utilisateur #${req.utilisateur.id}`, `Création du devis #${devis.id}`);
+            await LogModele.ajouter(identiteUtilisateur(req), `Création du devis #${devis.id}`);
 
             res.status(201).json({ message: "Devis créé", devis_id: devis.id });
         } catch (e) {
@@ -78,7 +91,7 @@ export const DevisControleur = {
             }
 
             await HistoriqueModele.ajouter("devis", req.params.id, "Devis mis à jour");
-            await LogModele.ajouter(req.utilisateur.email || `utilisateur #${req.utilisateur.id}`, `Modification du devis #${req.params.id}`);
+            await LogModele.ajouter(identiteUtilisateur(req), `Modification du devis #${req.params.id}`);
 
             res.json({ message: "Devis mis à jour", devis });
         } catch (e) {
@@ -93,8 +106,39 @@ export const DevisControleur = {
 
             const lignes = await DevisLigneModele.parDevis(req.params.id);
             const client = await ClientModele.trouverParId(devis.client_id);
+            const parametres = await ParametresModele.obtenir();
 
-            genererPdfDevis({ devis, client, lignes, res });
+            genererPdfDevis({ devis, client, lignes, res }, parametres);
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    async archiver(req, res, next) {
+        try {
+            const devis = await DevisModele.parId(req.params.id);
+            if (!devis) return res.status(404).json({ message: "Devis introuvable" });
+
+            await DevisModele.archiver(req.params.id);
+            await HistoriqueModele.ajouter("devis", req.params.id, "Devis archivé");
+            await LogModele.ajouter(identiteUtilisateur(req), `Archivage du devis #${req.params.id}`);
+
+            res.json({ message: "Devis archivé" });
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    async desarchiver(req, res, next) {
+        try {
+            const devis = await DevisModele.parId(req.params.id);
+            if (!devis) return res.status(404).json({ message: "Devis introuvable" });
+
+            await DevisModele.desarchiver(req.params.id);
+            await HistoriqueModele.ajouter("devis", req.params.id, "Devis désarchivé");
+            await LogModele.ajouter(identiteUtilisateur(req), `Désarchivage du devis #${req.params.id}`);
+
+            res.json({ message: "Devis désarchivé" });
         } catch (e) {
             next(e);
         }
@@ -108,7 +152,7 @@ export const DevisControleur = {
             // 2) Supprimer le devis
             await DevisModele.supprimer(req.params.id);
 
-            await LogModele.ajouter(req.utilisateur.email || `utilisateur #${req.utilisateur.id}`, `Suppression du devis #${req.params.id}`);
+            await LogModele.ajouter(identiteUtilisateur(req), `Suppression du devis #${req.params.id}`);
 
             res.status(200).json({ message: "Devis supprimé avec succès" });
         } catch (e) {

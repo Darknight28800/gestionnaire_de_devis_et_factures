@@ -1,3 +1,10 @@
+/* Cellule d'actions (colonne "Actions" des tableaux : liens/boutons alignés) */
+.actions-cellule {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
 @media (max-width: 900px) {
     .app-layout {
         grid-template-columns: 1fr;

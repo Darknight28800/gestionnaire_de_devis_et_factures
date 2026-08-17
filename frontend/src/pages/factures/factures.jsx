@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import { Link } from "react-router-dom";
 import Modal from "../../composants/modal";
+import useAuth from "../../hooks/useAuth";
 import "../../styles/pages/_factures.scss";
 
 const LIGNE_VIDE = { description: "", quantite: 1, prix: 0 };
 
 export default function Factures() {
+    const { utilisateur } = useAuth();
     const [factures, setFactures] = useState([]);
     const [clients, setClients] = useState([]);
     const [search, setSearch] = useState("");
@@ -86,14 +88,39 @@ export default function Factures() {
         setForm({ ...form, lignes });
     };
 
-    const totalHT = form.lignes.reduce((sum, l) => sum + l.quantite * l.prix, 0);
+    /* Vide le champ dès qu'on clique dedans, pour que l'utilisateur n'ait jamais
+       à effacer manuellement une valeur existante avant de taper la sienne. */
+    const viderChamp = (index, field) => {
+        changerLigne(index, field, "");
+    };
+
+    /* Si l'utilisateur quitte le champ sans rien saisir, on remet une valeur par défaut
+       valide pour ne pas casser le calcul ni l'enregistrement. */
+    const remplirSiVide = (index, field, valeurDefaut) => {
+        if (form.lignes[index][field] === "") {
+            changerLigne(index, field, valeurDefaut);
+        }
+    };
+
+    const totalHT = form.lignes.reduce(
+        (sum, l) => sum + (Number(l.quantite) || 0) * (Number(l.prix) || 0),
+        0
+    );
     const totalTVA = totalHT * 0.2;
     const totalTTC = totalHT + totalTVA;
 
     const envoyer = async (e) => {
         e.preventDefault();
 
-        const data = { ...form, montant: totalHT };
+        const data = {
+            ...form,
+            lignes: form.lignes.map((l) => ({
+                ...l,
+                quantite: Number(l.quantite) || 0,
+                prix: Number(l.prix) || 0
+            })),
+            montant: totalHT
+        };
 
         try {
             if (modeEdition && factureActuelle) {
@@ -110,13 +137,25 @@ export default function Factures() {
         }
     };
 
+    const supprimerFacture = async (f) => {
+        if (!window.confirm(`Supprimer la facture #${f.id} ?`)) return;
+
+        try {
+            await api.delete(`/factures/${f.id}`);
+            charger();
+        } catch (err) {
+            console.error(err);
+            alert("Erreur lors de la suppression de la facture.");
+        }
+    };
+
     return (
         <div className="factures-page">
 
             <div className="factures-header">
                 <h1>Factures</h1>
 
-                <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+                <div className="factures-header__actions">
                     <input
                         type="text"
                         className="input-search"
@@ -156,13 +195,18 @@ export default function Factures() {
                                 </span>
                             </td>
 
-                            <td style={{ display: "flex", gap: "0.75rem" }}>
+                            <td className="actions-cellule">
                                 <Link className="btn-lien" to={`/factures/${f.id}`}>
                                     Voir →
                                 </Link>
                                 <button className="btn-lien" onClick={() => ouvrirEdition(f)}>
                                     Modifier
                                 </button>
+                                {utilisateur?.role === "admin" && (
+                                    <button className="btn-texte btn-danger" onClick={() => supprimerFacture(f)}>
+                                        Supprimer
+                                    </button>
+                                )}
                             </td>
                         </tr>
                     ))}
@@ -195,6 +239,7 @@ export default function Factures() {
                 open={modalOpen}
                 title={modeEdition ? "Modifier la facture" : "Nouvelle facture"}
                 onClose={() => setModalOpen(false)}
+                taille="large"
             >
                 <form onSubmit={envoyer} className="form-devis">
 
@@ -225,28 +270,46 @@ export default function Factures() {
 
                     <h3>Lignes de la facture</h3>
 
+                    <div className="ligne-devis ligne-devis--entete">
+                        <span>Description</span>
+                        <span>Quantité</span>
+                        <span>Prix unitaire (€)</span>
+                        <span></span>
+                    </div>
+
                     {form.lignes.map((ligne, index) => (
                         <div key={index} className="ligne-devis">
                             <input
-                                placeholder="Description"
+                                placeholder="Ex : Prestation, produit..."
+                                aria-label="Description de la ligne"
                                 value={ligne.description}
                                 onChange={(e) => changerLigne(index, "description", e.target.value)}
                             />
                             <input
                                 type="number"
                                 min="1"
+                                aria-label="Quantité"
+                                title="Quantité"
                                 value={ligne.quantite}
-                                onChange={(e) => changerLigne(index, "quantite", Number(e.target.value))}
+                                onFocus={() => viderChamp(index, "quantite")}
+                                onBlur={() => remplirSiVide(index, "quantite", 1)}
+                                onChange={(e) => changerLigne(index, "quantite", e.target.value === "" ? "" : Number(e.target.value))}
                             />
                             <input
                                 type="number"
                                 min="0"
+                                step="0.01"
+                                aria-label="Prix unitaire en euros"
+                                title="Prix unitaire (€)"
                                 value={ligne.prix}
-                                onChange={(e) => changerLigne(index, "prix", Number(e.target.value))}
+                                onFocus={() => viderChamp(index, "prix")}
+                                onBlur={() => remplirSiVide(index, "prix", 0)}
+                                onChange={(e) => changerLigne(index, "prix", e.target.value === "" ? "" : Number(e.target.value))}
                             />
                             <button
                                 type="button"
-                                className="btn-texte btn-danger"
+                                className="btn-icone"
+                                aria-label="Supprimer cette ligne"
                                 onClick={() => supprimerLigne(index)}
                             >
                                 🗑️

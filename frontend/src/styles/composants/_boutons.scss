@@ -1,37 +1,118 @@
+@use "../base/mixins";
+
 .btn {
     border: none;
     cursor: pointer;
     font-size: 0.9rem;
-    border-radius: var(--radius);
-    transition: 0.2s ease;
+    font-family: inherit;
 
     &-primaire {
-        background: var(--primary);
-        color: #fff;
-        padding: 0.6rem 1.2rem;
-        font-weight: 600;
+        @include mixins.bouton-premium(var(--couleur-primaire), #fff, var(--couleur-primaire-hover));
+        padding: 0.65rem 1.3rem;
 
-        &:hover {
-            background: var(--primary-hover);
+        &.btn-primaire--compact {
+            padding: 0.4rem 0.85rem;
+            font-size: 0.83rem;
         }
     }
 
     &-texte {
-        background: transparent;
-        color: var(--text-light);
-        padding: 0.4rem 0.6rem;
-
-        &:hover {
-            background: var(--bg-hover);
-        }
+        @include mixins.bouton-fantome();
+        padding: 0.5rem 0.9rem;
     }
 
     &-danger {
+        @include mixins.bouton-fantome(var(--danger), var(--danger));
+        padding: 0.5rem 0.9rem;
+
+        &:hover:not(:disabled) {
+            background: var(--danger-fond);
+        }
+    }
+}
+
+/* Liens d'action dans les tableaux (Voir, Modifier...) */
+.btn-lien {
+    color: var(--couleur-primaire);
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-family: inherit;
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+    transition: background 0.16s ease, transform 0.16s ease;
+
+    &:hover {
+        background: var(--primary-soft);
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0) scale(0.96);
+    }
+
+    &.btn-danger {
         color: var(--danger);
 
         &:hover {
-            background: #fee2e2;
-            color: var(--danger-hover);
+            background: var(--danger-fond);
         }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: background 0.16s ease;
+        &:hover, &:active { transform: none; }
+    }
+}
+
+/* Boutons ronds icône seule (ex : 🗑️ sur une ligne de devis/facture) */
+.btn-icone {
+    @include mixins.bouton-fantome();
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--gris-200);
+
+    &:hover:not(:disabled) {
+        background: var(--danger-fond);
+        border-color: var(--danger-fond);
+        color: var(--danger);
+    }
+}
+
+/* ============================
+   ALIAS "ADMIN" — mêmes boutons, autre convention de nommage
+   utilisés dans les pages Administration (utilisateurs, rôles, logs)
+   ============================ */
+
+.btn-primary {
+    @include mixins.bouton-premium(var(--couleur-primaire), #fff, var(--couleur-primaire-hover));
+    padding: 0.65rem 1.1rem;
+    font-size: 0.9rem;
+}
+
+.btn-secondary {
+    @include mixins.bouton-premium(var(--gris-200), var(--texte), var(--gris-300));
+    padding: 0.65rem 1.1rem;
+    font-size: 0.9rem;
+}
+
+.btn-edit {
+    @include mixins.bouton-premium(var(--couleur-primaire), #fff, var(--couleur-primaire-hover));
+    padding: 0.4rem 0.85rem;
+    font-size: 0.83rem;
+    margin-right: 6px;
+}
+
+.btn-delete {
+    @include mixins.bouton-premium(var(--danger), #fff, var(--danger-hover));
+    padding: 0.4rem 0.85rem;
+    font-size: 0.83rem;
 }

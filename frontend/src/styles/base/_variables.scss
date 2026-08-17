@@ -1,50 +1,62 @@
 /* ============================
-    VARIABLES GLOBALES (CSS)
+    DESIGN TOKENS — Bleu corporate raffiné
+    Source unique de vérité : les alias anglais (--bg, --text, --primary...)
+    pointent tous vers les tokens français ci-dessous, pour ne plus jamais
+    diverger entre les fichiers qui utilisent l'une ou l'autre convention.
    ============================ */
 
 :root {
-    /* Couleurs dynamiques venant de /parametres */
-    --couleur-primaire: #4f46e5;
-    --couleur-secondaire: #1cc88a;
-    --couleur-accent: #36b9cc;
+    /* Couleurs de marque (personnalisables depuis /parametres) */
+    --couleur-primaire: #1d4ed8;
+    --couleur-primaire-hover: #1740ae;
+    --couleur-secondaire: #1e3a8a;
+    --couleur-accent: #0891b2;
 
-    /* Couleurs neutres */
-    --gris-100: #f3f4f6;
-    --gris-200: #e5e7eb;
-    --gris-300: #d1d5db;
-    --gris-400: #9ca3af;
-    --gris-500: #6b7280;
-    --gris-600: #4b5563;
-    --gris-700: #374151;
-    --gris-800: #1f2937;
-    --gris-900: #111827;
+    /* Neutres (bleu-gris, cohérents avec la marque) */
+    --gris-100: #f1f4f9;
+    --gris-200: #e2e7f0;
+    --gris-300: #cbd3e1;
+    --gris-400: #99a3b7;
+    --gris-500: #667085;
+    --gris-600: #475467;
+    --gris-700: #344054;
+    --gris-800: #1d2939;
+    --gris-900: #101828;
 
     /* Fond & texte */
-    --fond: #ffffff;
+    --fond: #f7f9fc;
     --fond-carte: #ffffff;
-    --texte: #111827;
+    --texte: #101828;
+    --texte-clair: #667085;
     --texte-inverse: #ffffff;
 
-    /* Sidebar */
-    --sidebar-bg: var(--fond);
-    --sidebar-border: var(--gris-200);
+    /* Sémantique */
+    --succes: #15803d;
+    --succes-fond: #dcfce7;
+    --danger: #b91c1c;
+    --danger-hover: #991b1b;
+    --danger-fond: #fee2e2;
+    --alerte: #b45309;
+    --alerte-fond: #fef3e2;
 
-    /* Header */
-    --header-bg: var(--fond);
+    /* Sidebar / Header */
+    --sidebar-bg: var(--fond-carte);
+    --sidebar-border: var(--gris-200);
+    --header-bg: var(--fond-carte);
     --header-border: var(--gris-200);
 
-    /* Hover */
+    /* Survol */
     --hover: var(--gris-100);
 
-    /* Radius */
+    /* Rayons */
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 14px;
 
-    /* Ombres */
-    --shadow-sm: 0 2px 6px rgba(0,0,0,0.05);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-    --shadow-lg: 0 6px 18px rgba(0,0,0,0.12);
+    /* Ombres (teintées bleu-gris plutôt que noir pur) */
+    --shadow-sm: 0 2px 6px rgba(16, 24, 40, 0.06);
+    --shadow-md: 0 4px 14px rgba(16, 24, 40, 0.08);
+    --shadow-lg: 0 10px 30px rgba(16, 24, 40, 0.14);
 
     /* Espacements */
     --space-xs: 4px;
@@ -54,61 +66,103 @@
     --space-xl: 40px;
 
     /* Typographie */
-    --font-base: "Inter", sans-serif;
+    --font-base: "Inter", -apple-system, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
 
     /* Breakpoints */
     --bp-sm: 576px;
     --bp-md: 768px;
     --bp-lg: 992px;
     --bp-xl: 1200px;
+
+    /* Footer (bloc de marque, toujours sombre, indépendant du thème) */
+    --footer-bg: #10203d;
+
+    /* Glassmorphism (cards, KPI) */
+    --glass-bg: rgba(255, 255, 255, 0.68);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-blur: blur(18px) saturate(160%);
+    --glass-shadow: 0 8px 30px rgba(29, 78, 216, 0.1), 0 2px 8px rgba(16, 24, 40, 0.06);
+
+    /* ---- Alias anglais (mêmes valeurs, autre convention de nommage) ---- */
+    --bg: var(--fond);
+    --bg-card: var(--fond-carte);
+    --bg-hover: var(--hover);
+    --text: var(--texte);
+    --text-light: var(--texte-clair);
+    --primary: var(--couleur-primaire);
+    --primary-hover: var(--couleur-primaire-hover);
+    --primary-dark: var(--couleur-primaire-hover);
+    --success: var(--succes);
+    --warning: var(--alerte);
+    --warning-soft: var(--alerte-fond);
+    --primary-soft: #e8eefd;
+    --radius: var(--radius-md);
+    --shadow: var(--shadow-md);
 }
 
 /* ============================
-        DARK MODE
+    MODE SOMBRE
+    Activé via body.dark (bouton lune dans le header).
    ============================ */
 
 .dark {
-    --fond: #0f172a;
-    --fond-carte: #1e293b;
-    --texte: #f8fafc;
-    --texte-inverse: #0f172a;
+    --couleur-primaire: #3b62e8;
+    --couleur-primaire-hover: #5578ee;
+    --couleur-secondaire: #6d97f2;
 
-    --sidebar-bg: #1e293b;
-    --sidebar-border: #334155;
+    --gris-100: #1b2438;
+    --gris-200: #232d42;
+    --gris-300: #303c56;
+    --gris-400: #4a5568;
+    --gris-500: #8a93a6;
+    --gris-600: #a7afc0;
+    --gris-700: #c3c9d6;
+    --gris-800: #dde1e9;
+    --gris-900: #f3f5f8;
 
-    --header-bg: #1e293b;
-    --header-border: #334155;
+    --fond: #0b1220;
+    --fond-carte: #121a2b;
+    --texte: #edf1f7;
+    --texte-clair: #8a93a6;
+    --texte-inverse: #0b1220;
 
-    --hover: #334155;
-}
+    --succes: #34d17c;
+    --succes-fond: #10291c;
+    --danger: #f37272;
+    --danger-hover: #f68d8d;
+    --danger-fond: #351414;
+    --alerte: #e0a542;
+    --alerte-fond: #362408;
 
-/* ============================
-   DARK MODE AUTOMATIQUE
-   ============================ */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --fond: #121212;
-        --fond-carte: #1e1e1e;
-        --texte: #eaeaea;
-        --gris-100: #1f1f1f;
-        --gris-200: #2a2a2a;
-        --gris-300: #3a3a3a;
-        --gris-700: #555;
-        --gris-800: #2c2c2c;
-        --couleur-primaire: #6a5acd; /* bleu-violet du logo */
-    }
+    --sidebar-bg: var(--fond-carte);
+    --sidebar-border: var(--gris-200);
+    --header-bg: var(--fond-carte);
+    --header-border: var(--gris-200);
+    --hover: var(--gris-100);
+    --footer-bg: #0c1730;
 
-    body {
-        background: var(--fond);
-        color: var(--texte);
-    }
+    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
 
-    a, button {
-        color: var(--texte);
-    }
+    --glass-bg: rgba(18, 26, 43, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 30px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.25);
 
-    .card, .admin-card, .table-logs, .table-roles {
-        background: var(--fond-carte);
-        color: var(--texte);
-    }
+    /* ---- Alias anglais : redéclarés ici pour suivre les valeurs sombres ----
+       (un alias var(--x) déclaré une seule fois à :root se fige à la valeur de :root ;
+       il doit être redéclaré dans chaque bloc de thème pour rester synchronisé) */
+    --bg: var(--fond);
+    --bg-card: var(--fond-carte);
+    --bg-hover: var(--hover);
+    --text: var(--texte);
+    --text-light: var(--texte-clair);
+    --primary: var(--couleur-primaire);
+    --primary-hover: var(--couleur-primaire-hover);
+    --primary-dark: var(--couleur-primaire-hover);
+    --success: var(--succes);
+    --warning: var(--alerte);
+    --warning-soft: var(--alerte-fond);
+    --primary-soft: #1b2a4a;
+    --shadow: var(--shadow-md);
 }

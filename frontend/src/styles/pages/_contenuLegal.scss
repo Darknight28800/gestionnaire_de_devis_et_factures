@@ -1,0 +1,43 @@
+.page-legal {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--texte);
+        margin: 0;
+    }
+
+    h2 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--texte);
+        margin: 0 0 0.4rem;
+    }
+
+    p {
+        color: var(--texte-clair);
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .page-legal__maj {
+        font-size: 0.85rem;
+        color: var(--texte-clair);
+        margin: -1rem 0 0;
+    }
+
+    a {
+        color: var(--couleur-primaire);
+    }
+}

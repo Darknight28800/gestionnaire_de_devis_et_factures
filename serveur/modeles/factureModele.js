@@ -1,10 +1,21 @@
 import pool from "../config/base_de_donnees.js";
+import { DUREE_CONSERVATION_ANNEES } from "../config/archivage.js";
 
 export class FactureModele {
 
-    // 📌 Récupérer toutes les factures
+    // 📌 Récupérer toutes les factures (non archivées)
     static async tous() {
-        const [rows] = await pool.query("SELECT * FROM factures ORDER BY id DESC");
+        const [rows] = await pool.query("SELECT * FROM factures WHERE archive_le IS NULL ORDER BY id DESC");
+        return rows;
+    }
+
+    // 📌 Récupérer les factures archivées
+    static async archives() {
+        await this.purgerExpires();
+
+        const [rows] = await pool.query(
+            "SELECT * FROM factures WHERE archive_le IS NOT NULL ORDER BY archive_le DESC"
+        );
         return rows;
     }
 
@@ -67,7 +78,29 @@ export class FactureModele {
         return true;
     }
 
-    // 📌 Route fusionnée : pagination + recherche + tri
+    // 📌 Archiver / désarchiver
+    static async archiver(id) {
+        await pool.query("UPDATE factures SET archive_le = NOW() WHERE id = ?", [id]);
+        return true;
+    }
+
+    static async desarchiver(id) {
+        await pool.query("UPDATE factures SET archive_le = NULL WHERE id = ?", [id]);
+        return true;
+    }
+
+    // 📌 Purge définitive des factures archivées depuis plus de N années (conservation légale)
+    static async purgerExpires() {
+        const [result] = await pool.query(
+            `DELETE FROM factures
+             WHERE archive_le IS NOT NULL
+               AND archive_le < DATE_SUB(NOW(), INTERVAL ? YEAR)`,
+            [DUREE_CONSERVATION_ANNEES]
+        );
+        return result.affectedRows;
+    }
+
+    // 📌 Route fusionnée : pagination + recherche + tri (factures non archivées uniquement)
     static async rechercherOuPaginer({ search = null, page = 1, limit = 10, sort = "id", order = "DESC" }) {
         const offset = (page - 1) * limit;
 
@@ -78,17 +111,17 @@ export class FactureModele {
         // Ordre autorisé
         order = order.toUpperCase() === "ASC" ? "ASC" : "DESC";
 
-        let sqlWhere = "";
+        let sqlWhere = "WHERE archive_le IS NULL";
         let params = [];
 
         // Recherche activée ?
         if (search) {
             const like = `%${search}%`;
-            sqlWhere = `
-                WHERE id LIKE ? 
+            sqlWhere += `
+                AND (id LIKE ?
                 OR montant LIKE ?
                 OR statut LIKE ?
-                OR date_facture LIKE ?
+                OR date_facture LIKE ?)
             `;
             params.push(like, like, like, like);
         }

@@ -1,5 +1,5 @@
 .footer-premium {
-    background: var(--couleur-primaire);
+    background: var(--footer-bg);
     padding: 50px 60px;
     color: #fff;
     margin-top: 40px;
@@ -50,4 +50,21 @@
 .footer-col.brand h3 {
     font-size: 1.4rem;
     font-weight: 800;
+}
+
+.footer-col.brand p {
+    margin: 0 0 6px;
+
+    &:last-child {
+        margin-top: 10px;
+        opacity: 0.65;
+        font-size: 0.85rem;
+    }
+}
+
+.footer-col.brand p.footer-col__credit {
+    opacity: 0.6;
+    font-size: 0.8rem;
+    font-style: italic;
+    margin: -8px 0 14px;
 }

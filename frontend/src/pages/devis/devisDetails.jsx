@@ -65,6 +65,24 @@ export default function DevisDetail() {
         }
     };
 
+    const archiver = async () => {
+        try {
+            await api.patch(`/devis/${id}/archiver`);
+            await rechargerDevis();
+        } catch (err) {
+            console.error("Erreur archivage :", err);
+        }
+    };
+
+    const desarchiver = async () => {
+        try {
+            await api.patch(`/devis/${id}/desarchiver`);
+            await rechargerDevis();
+        } catch (err) {
+            console.error("Erreur désarchivage :", err);
+        }
+    };
+
     if (!devis) return <p>Chargement...</p>;
 
     const totalHT = devis.lignes.reduce(
@@ -81,14 +99,27 @@ export default function DevisDetail() {
                 <h1>Devis #{devis.id}</h1>
 
                 <div className="actions">
-                    {devis.statut === "accepte" && (
+                    {devis.statut === "accepte" && !devis.archive_le && (
                         <button className="btn-primaire" onClick={convertirEnFacture}>🧾 Convertir en facture</button>
                     )}
                     <button className="btn-texte" onClick={envoyerEmail}>✉️ Envoyer</button>
                     <button className="btn-primaire" onClick={telechargerPDF}>📄 Générer PDF</button>
+                    {devis.archive_le ? (
+                        <button className="btn-texte" onClick={desarchiver}>📤 Désarchiver</button>
+                    ) : (
+                        (devis.statut === "accepte" || devis.statut === "refuse") && (
+                            <button className="btn-texte" onClick={archiver}>🗄️ Archiver</button>
+                        )
+                    )}
                     <Link className="btn-texte" to="/devis">← Retour</Link>
                 </div>
             </div>
+
+            {devis.archive_le && (
+                <p className="message message--succes">
+                    📦 Ce devis est archivé depuis le {new Date(devis.archive_le).toLocaleDateString()}.
+                </p>
+            )}
 
             <div className="infos-grid">
 

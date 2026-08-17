@@ -22,6 +22,15 @@ export const UtilisateurModele = {
         return total;
     },
 
+    async mettreAJourNom(id, nom) {
+        await pool.query("UPDATE utilisateurs SET nom = ? WHERE id = ?", [nom, id]);
+        return this.trouverParId(id);
+    },
+
+    async mettreAJourMotDePasse(id, mot_de_passe) {
+        await pool.query("UPDATE utilisateurs SET mot_de_passe = ? WHERE id = ?", [mot_de_passe, id]);
+    },
+
     async creer({ nom = null, email, mot_de_passe, role = "utilisateur" }) {
         const [result] = await pool.query(
         `INSERT INTO utilisateurs (nom, email, mot_de_passe, role)

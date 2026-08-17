@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS clients (
     ville          VARCHAR(100) NULL,
     code_postal    VARCHAR(20)  NULL,
     pays           VARCHAR(100) NULL,
+    statut         VARCHAR(20)  NOT NULL DEFAULT 'actif',
     date_creation  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     KEY idx_clients_email (email)
 ) ENGINE=InnoDB;
@@ -57,13 +58,15 @@ CREATE TABLE IF NOT EXISTS devis (
     description    TEXT NULL,
     statut         VARCHAR(50) NOT NULL DEFAULT 'brouillon',
     date_creation  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    archive_le     DATETIME NULL,
     CONSTRAINT fk_devis_client
         FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE RESTRICT,
     CONSTRAINT fk_devis_utilisateur
         FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id) ON DELETE SET NULL,
     KEY idx_devis_client (client_id),
     KEY idx_devis_utilisateur (utilisateur_id),
-    KEY idx_devis_statut (statut)
+    KEY idx_devis_statut (statut),
+    KEY idx_devis_archive (archive_le)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS devis_lignes (
@@ -90,6 +93,7 @@ CREATE TABLE IF NOT EXISTS factures (
     date_paiement  DATE NULL,
     statut         VARCHAR(50) NOT NULL DEFAULT 'non_payee',
     date_creation  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    archive_le     DATETIME NULL,
     CONSTRAINT fk_factures_devis
         FOREIGN KEY (devis_id) REFERENCES devis(id) ON DELETE SET NULL,
     CONSTRAINT fk_factures_client
@@ -99,7 +103,8 @@ CREATE TABLE IF NOT EXISTS factures (
     KEY idx_factures_devis (devis_id),
     KEY idx_factures_client (client_id),
     KEY idx_factures_utilisateur (utilisateur_id),
-    KEY idx_factures_statut_date (statut, date_facture)
+    KEY idx_factures_statut_date (statut, date_facture),
+    KEY idx_factures_archive (archive_le)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS facture_lignes (
@@ -129,23 +134,31 @@ CREATE TABLE IF NOT EXISTS historique (
 -- Paramètres de l'entreprise (ligne unique id = 1)
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS parametres (
-    id                  INT PRIMARY KEY,
-    nom_entreprise      VARCHAR(150) NULL,
-    email               VARCHAR(255) NULL,
-    telephone           VARCHAR(50)  NULL,
-    adresse             VARCHAR(255) NULL,
-    couleur_primaire    VARCHAR(20)  NULL,
-    couleur_secondaire  VARCHAR(20)  NULL,
-    couleur_fond        VARCHAR(20)  NULL,
-    couleur_texte       VARCHAR(20)  NULL,
-    logo_url            VARCHAR(255) NULL
+    id                    INT PRIMARY KEY,
+    nom_entreprise        VARCHAR(150) NULL,
+    email                 VARCHAR(255) NULL,
+    telephone             VARCHAR(50)  NULL,
+    adresse                VARCHAR(255) NULL,
+    couleur_primaire      VARCHAR(20)  NULL,
+    couleur_secondaire    VARCHAR(20)  NULL,
+    couleur_fond          VARCHAR(20)  NULL,
+    couleur_texte         VARCHAR(20)  NULL,
+    logo_url              VARCHAR(255) NULL,
+    -- Informations légales et de facturation (utilisées sur les PDF devis/factures)
+    siret                 VARCHAR(20)  NULL,
+    forme_juridique       VARCHAR(150) NULL,
+    hebergeur             VARCHAR(255) NULL,
+    mention_tva           VARCHAR(255) NULL,
+    iban                  VARCHAR(50)  NULL,
+    bic                   VARCHAR(20)  NULL,
+    delai_paiement_jours  INT NULL DEFAULT 30
 ) ENGINE=InnoDB;
 
 -- Ligne de paramètres vierge : l'entreprise renseigne ses propres informations
 -- depuis la page Paramètres au premier lancement. Seules des couleurs de thème
 -- neutres par défaut sont pré-remplies.
 INSERT INTO parametres (id, nom_entreprise, email, telephone, adresse, couleur_primaire, couleur_secondaire, couleur_fond, couleur_texte, logo_url)
-VALUES (1, NULL, NULL, NULL, NULL, '#2563eb', '#1e293b', '#ffffff', '#0f172a', NULL)
+VALUES (1, NULL, NULL, NULL, NULL, '#1d4ed8', '#1e3a8a', '#ffffff', '#101828', NULL)
 ON DUPLICATE KEY UPDATE id = id;
 
 -- ------------------------------------------------------------
@@ -173,6 +186,50 @@ CREATE TABLE IF NOT EXISTS roles (
     date_creation  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uq_roles_nom (nom)
 ) ENGINE=InnoDB;
+
+-- ------------------------------------------------------------
+-- Offres d'abonnement (catalogue des 3 formules)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS offres_abonnement (
+    id                  INT AUTO_INCREMENT PRIMARY KEY,
+    code                VARCHAR(50) NOT NULL,
+    nom                 VARCHAR(100) NOT NULL,
+    description         VARCHAR(255) NULL,
+    prix_mensuel        DECIMAL(8,2) NOT NULL,
+    max_utilisateurs    INT NULL,   -- NULL = illimité
+    max_devis_mois      INT NULL,   -- NULL = illimité
+    max_factures_mois   INT NULL,   -- NULL = illimité
+    stripe_price_id     VARCHAR(100) NULL,
+    ordre               INT NOT NULL DEFAULT 0,
+    UNIQUE KEY uq_offres_code (code)
+) ENGINE=InnoDB;
+
+INSERT INTO offres_abonnement (code, nom, description, prix_mensuel, max_utilisateurs, max_devis_mois, max_factures_mois, ordre) VALUES
+('independant', 'Indépendant', 'Pour les indépendants et micro-entreprises', 9.00, 1, 20, 20, 1),
+('pme', 'PME', 'Pour les petites et moyennes équipes', 19.00, 5, 100, 100, 2),
+('grande_entreprise', 'Grande entreprise', 'Utilisateurs et volume illimités', 39.00, NULL, NULL, NULL, 3)
+ON DUPLICATE KEY UPDATE code = code;
+
+-- ------------------------------------------------------------
+-- Abonnement de l'installation (ligne unique id = 1)
+-- Une installation = une entreprise = un abonnement partagé par tous ses utilisateurs.
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS abonnement (
+    id                      INT PRIMARY KEY,
+    offre_id                INT NULL,
+    statut                  VARCHAR(30) NOT NULL DEFAULT 'attente_carte',
+    essai_debut             DATETIME NULL,
+    essai_fin               DATETIME NULL,
+    stripe_customer_id      VARCHAR(100) NULL,
+    stripe_subscription_id  VARCHAR(100) NULL,
+    rappel_envoye           TINYINT(1) NOT NULL DEFAULT 0,
+    date_maj                DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_abonnement_offre
+        FOREIGN KEY (offre_id) REFERENCES offres_abonnement(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+INSERT INTO abonnement (id, statut) VALUES (1, 'attente_carte')
+ON DUPLICATE KEY UPDATE id = id;
 
 -- ------------------------------------------------------------
 -- Logs d'activité admin (piste d'audit consultée depuis /admin/logs)

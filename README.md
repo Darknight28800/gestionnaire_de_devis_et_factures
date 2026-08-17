@@ -101,6 +101,20 @@ frontend/
   src/api/axios.js        Client HTTP centralisé
 ```
 
+## Archivage
+
+Les devis (acceptés/refusés) et factures (payées) peuvent être archivés depuis leur page de détail. Les éléments archivés :
+
+- disparaissent des listes actives (Devis, Factures) mais restent consultables depuis **Archives**
+- sont conservés **5 ans maximum** à partir de la date d'archivage (durée définie dans `serveur/config/archivage.js`)
+- peuvent être désarchivés à tout moment avant expiration
+
+Passé ce délai, ils sont supprimés définitivement :
+- automatiquement à chaque consultation de la page Archives (purge différée)
+- ou manuellement via le bouton "Purger les archives expirées" (admin), qui appelle `POST /admin/purger-archives`
+
+Pour une purge garantie même sans consultation régulière, planifiez un appel périodique (cron externe, tâche planifiée) vers cet endpoint.
+
 ## Tests
 
 ```bash

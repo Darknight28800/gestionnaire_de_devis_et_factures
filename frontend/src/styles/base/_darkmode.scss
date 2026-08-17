@@ -1,46 +1,17 @@
 /* ============================
-    DARK MODE GLOBAL
-   ============================ */
+   AJUSTEMENTS MODE SOMBRE
+   (les couleurs elles-mêmes viennent de la classe .dark dans _variables.scss ;
+   ce fichier ne couvre que ce qui n'est pas encore piloté par les tokens)
 
-[data-theme="dark"] {
-    --bg: #0d1117;
-    --bg-card: #161b22;
-    --bg-hover: #1e2631;
-
-    --text: #e6edf3;
-    --text-light: #9ba3af;
-
-    --primary: #3b82f6;
-    --primary-hover: #60a5fa;
-
-    --danger: #f87171;
-    --danger-hover: #ef4444;
-
-    --sidebar-bg: #161b22;
-    --sidebar-border: #30363d;
-
-    --header-bg: #161b22;
-    --header-border: #30363d;
-
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-}
-
-/* ============================
-   DARK MODE GLOBAL FIX
+   ATTENTION : l'échelle --gris-N est INVERSÉE dans .dark (voir _variables.scss) :
+   --gris-100/200/300 y sont les teintes SOMBRES, --gris-700/800/900 y sont les
+   teintes CLAIRES. Toute règle ci-dessous qui veut un fond sombre doit donc
+   utiliser --gris-100/200/300, jamais --gris-700/800/900 (sinon fond clair +
+   texte clair = illisible).
    ============================ */
 
 body.dark {
     background: var(--fond);
-    color: var(--texte);
-}
-
-/* CARTES */
-body.dark .card,
-body.dark .chart,
-body.dark .list,
-body.dark .parametres-section {
-    background: var(--gris-800);
-    border-color: var(--gris-700);
     color: var(--texte);
 }
 
@@ -55,58 +26,45 @@ body.dark h5 {
 
 /* TABLEAUX */
 body.dark table {
-    background: var(--gris-800);
+    background: var(--gris-200);
     color: var(--texte);
-    border-color: var(--gris-700);
+    border-color: var(--gris-300);
 }
 
 body.dark table th {
-    background: var(--gris-700);
+    background: var(--gris-300);
     color: var(--texte);
 }
 
 body.dark table td {
-    border-color: var(--gris-700);
+    border-color: var(--gris-300);
     color: var(--texte);
 }
 
-/* INPUTS + SELECTS */
-body.dark input,
-body.dark select,
-body.dark textarea {
-    background: var(--gris-800);
-    border-color: var(--gris-700);
+/* INPUTS + SELECTS + BOUTONS non stylés : valeurs de repli en mode sombre pour les
+   champs qui n'ont pas de classe dédiée (beaucoup de formulaires stylent leurs champs
+   via un sélecteur descendant type .form-ligne input, sans classe sur l'input lui-même).
+   :where() ramène la spécificité de ce bloc à zéro, pour qu'il ne puisse JAMAIS l'emporter
+   sur une règle plus ciblée (ex. .form-ligne input), quel que soit l'ordre des fichiers. */
+:where(body.dark input, body.dark select, body.dark textarea) {
+    background: var(--gris-200);
+    border-color: var(--gris-300);
     color: var(--texte);
 }
 
 body.dark input::placeholder,
 body.dark textarea::placeholder {
-    color: var(--gris-400);
+    color: var(--gris-500);
 }
 
-/* BOUTONS */
-body.dark button {
-    background: var(--gris-700);
+:where(body.dark button) {
+    background: var(--gris-300);
     color: var(--texte);
-    border-color: var(--gris-600);
+    border-color: var(--gris-400);
 }
 
-body.dark button:hover {
-    background: var(--gris-600);
-}
-
-/* STATUTS */
-body.dark .statut-payee {
-    color: #10b981;
-}
-
-body.dark .statut-non-payee {
-    color: #ef4444;
-}
-
-/* LISTES */
-body.dark .list li {
-    border-color: var(--gris-700);
+:where(body.dark button:hover) {
+    background: var(--gris-400);
 }
 
 /* SECTIONS PARAMÈTRES */
@@ -116,8 +74,8 @@ body.dark .parametres-section label {
 
 /* CHAMPS DE COULEUR */
 body.dark input[type="color"] {
-    background: var(--gris-700);
-    border-color: var(--gris-600);
+    background: var(--gris-300);
+    border-color: var(--gris-400);
 }
 
 /* BOUTON "Nouveau devis" */
@@ -129,4 +87,3 @@ body.dark .btn-primary {
 body.dark .btn-primary:hover {
     opacity: 0.85;
 }
-

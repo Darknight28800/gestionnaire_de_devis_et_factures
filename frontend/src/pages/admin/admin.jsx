@@ -74,6 +74,15 @@ export default function Admin() {
                 <p>Consulter l’historique des actions du système.</p>
             </Link>
             </motion.div>
+
+            {/* CARTE 4 */}
+            <motion.div variants={card}>
+            <Link to="/admin/tickets" className="admin-card">
+                <div className="icon">🎫</div>
+                <h3>Tickets de support</h3>
+                <p>Consulter et traiter les demandes des utilisateurs.</p>
+            </Link>
+            </motion.div>
         </motion.div>
         </motion.div>
     );

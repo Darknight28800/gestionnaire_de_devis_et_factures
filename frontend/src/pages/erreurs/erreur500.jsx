@@ -1,6 +1,6 @@
 export default function Erreur500() {
     return (
-        <div className="page page-erreur">
+        <div className="page page-erreur page-erreur--500">
             <h1 className="erreur-code">500</h1>
             <p className="erreur-message">Une erreur interne est survenue.</p>
 

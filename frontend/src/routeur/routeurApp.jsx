@@ -12,12 +12,15 @@ import Devis from "../pages/devis/devis";
 import DevisDetail from "../pages/devis/devisDetails";
 import Factures from "../pages/factures/factures";
 import FactureDetail from "../pages/factures/factureDetail";
+import Archives from "../pages/archives/archives";
+import Abonnement from "../pages/abonnement/abonnement";
 
 import Profil from "../pages/profil/profil";
 import Admin from "../pages/admin/admin";
 import Utilisateurs from "../pages/admin/utilisateurs";
 import Roles from "../pages/admin/roles";
 import Logs from "../pages/admin/logs";
+import Tickets from "../pages/admin/tickets";
 
 import Support from "../pages/support/support";
 import Contact from "../pages/support/contact";
@@ -52,6 +55,8 @@ export default function RouteurApp() {
                         <Route path="/devis/:id" element={<DevisDetail />} />
                         <Route path="/factures" element={<Factures />} />
                         <Route path="/factures/:id" element={<FactureDetail />} />
+                        <Route path="/archives" element={<Archives />} />
+                        <Route path="/abonnement" element={<Abonnement />} />
 
                         <Route path="/profil" element={<Profil />} />
                         <Route path="/parametres" element={<Parametres />} />
@@ -59,8 +64,8 @@ export default function RouteurApp() {
                         {/* Support */}
                         <Route path="/support" element={<Support />} />
                         <Route path="/support/contact" element={<Contact />} />
-                        <Route path="/mentions-legales" element={<MentionsLegales />} />
-                        <Route path="/confidentialite" element={<Confidentialite />} />
+                        <Route path="/support/mentions-legales" element={<MentionsLegales />} />
+                        <Route path="/support/confidentialite" element={<Confidentialite />} />
 
                         {/* Déconnexion */}
                         <Route path="/logout" element={<Logout />} />
@@ -75,6 +80,7 @@ export default function RouteurApp() {
                         <Route path="/admin/utilisateurs" element={<Utilisateurs />} />
                         <Route path="/admin/roles" element={<Roles />} />
                         <Route path="/admin/logs" element={<Logs />} />
+                        <Route path="/admin/tickets" element={<Tickets />} />
                     </Route>
                 </Route>
 

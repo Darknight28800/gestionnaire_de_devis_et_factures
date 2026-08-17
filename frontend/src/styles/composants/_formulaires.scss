@@ -1,0 +1,54 @@
+/* Styles de formulaire génériques réutilisables (profil, support...) */
+
+.form-ligne {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+
+    label {
+        color: var(--text-light, var(--texte));
+        font-size: 0.85rem;
+    }
+
+    input,
+    select,
+    textarea {
+        padding: 0.7rem 1rem;
+        border-radius: var(--radius, 8px);
+        border: 1px solid var(--gris-300, #e2e8f0);
+        font-size: 0.95rem;
+        font-family: inherit;
+        background: var(--fond, #fff);
+        color: var(--texte);
+        resize: vertical;
+
+        &:focus {
+            border-color: var(--primary, var(--couleur-primaire));
+            box-shadow: 0 0 0 3px var(--primary-soft);
+            outline: none;
+        }
+    }
+
+    .btn {
+        align-self: flex-start;
+        margin-top: 0.4rem;
+    }
+}
+
+.message {
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--radius, 8px);
+    font-size: 0.88rem;
+    margin: 0;
+
+    &--succes {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    &--erreur {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+}

@@ -128,7 +128,7 @@ export default function Clients() {
 
         } catch (e) {
             console.error(e);
-            alert("Erreur lors de la suppression du client.");
+            alert(e.response?.data?.message || "Erreur lors de la suppression du client.");
         }
     };
 

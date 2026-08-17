@@ -35,6 +35,13 @@ export const ClientControleur = {
         try {
             await ClientModele.supprimer(req.params.id);
             res.status(204).end();
-        } catch (e) { next(e); }
+        } catch (e) {
+            if (e.code === "ER_ROW_IS_REFERENCED_2" || e.code === "ER_ROW_IS_REFERENCED") {
+                return res.status(409).json({
+                    message: "Impossible de supprimer ce client : il a des devis ou factures associés (conservation obligatoire de l'historique de facturation). Vous pouvez le désactiver (statut « Inactif ») à la place."
+                });
+            }
+            next(e);
+        }
     }
 };

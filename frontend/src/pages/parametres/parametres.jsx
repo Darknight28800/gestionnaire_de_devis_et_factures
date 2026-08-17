@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
-import api from "../../api/axios";
+import api, { resoudreUrlFichier } from "../../api/axios";
 import "../../styles/pages/_parametres.scss";
+
+/* Couleurs de base de l'app (thème "Bleu corporate raffiné", cf. schema.sql / _variables.scss) */
+const COULEURS_PAR_DEFAUT = {
+    couleur_primaire: "#1d4ed8",
+    couleur_secondaire: "#1e3a8a",
+    couleur_fond: "#ffffff",
+    couleur_texte: "#101828"
+};
 
 export default function Parametres() {
     const [loading, setLoading] = useState(true);
@@ -12,10 +20,14 @@ export default function Parametres() {
         telephone: "",
         adresse: "",
         logo_url: "",
-        couleur_primaire: "#2563eb",
-        couleur_secondaire: "#10b981",
-        couleur_fond: "#0f172a",
-        couleur_texte: "#f9fafb"
+        ...COULEURS_PAR_DEFAUT,
+        siret: "",
+        forme_juridique: "",
+        hebergeur: "",
+        mention_tva: "",
+        iban: "",
+        bic: "",
+        delai_paiement_jours: 30
     });
 
     const [logoFile, setLogoFile] = useState(null);
@@ -34,13 +46,20 @@ export default function Parametres() {
                     telephone: data.telephone || "",
                     adresse: data.adresse || "",
                     logo_url: data.logo_url || "",
-                    couleur_primaire: data.couleur_primaire || "#2563eb",
-                    couleur_secondaire: data.couleur_secondaire || "#10b981",
-                    couleur_fond: data.couleur_fond || "#0f172a",
-                    couleur_texte: data.couleur_texte || "#f9fafb"
+                    couleur_primaire: data.couleur_primaire || COULEURS_PAR_DEFAUT.couleur_primaire,
+                    couleur_secondaire: data.couleur_secondaire || COULEURS_PAR_DEFAUT.couleur_secondaire,
+                    couleur_fond: data.couleur_fond || COULEURS_PAR_DEFAUT.couleur_fond,
+                    couleur_texte: data.couleur_texte || COULEURS_PAR_DEFAUT.couleur_texte,
+                    siret: data.siret || "",
+                    forme_juridique: data.forme_juridique || "",
+                    hebergeur: data.hebergeur || "",
+                    mention_tva: data.mention_tva || "",
+                    iban: data.iban || "",
+                    bic: data.bic || "",
+                    delai_paiement_jours: data.delai_paiement_jours || 30
                 });
 
-                setLogoPreview(data.logo_url || "");
+                setLogoPreview(resoudreUrlFichier(data.logo_url) || "");
             } catch (err) {
                 console.error("Erreur chargement paramètres :", err);
             } finally {
@@ -61,6 +80,10 @@ export default function Parametres() {
     const handleColorChange = (e) => {
         const { name, value } = e.target;
         setParametres((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const reinitialiserCouleurs = () => {
+        setParametres((prev) => ({ ...prev, ...COULEURS_PAR_DEFAUT }));
     };
 
     /* Gestion logo */
@@ -93,7 +116,7 @@ export default function Parametres() {
                     logo_url: resLogo.data.logo_url
                 }));
 
-                setLogoPreview(resLogo.data.logo_url);
+                setLogoPreview(resoudreUrlFichier(resLogo.data.logo_url));
             }
         } catch (err) {
             console.error("Erreur enregistrement :", err);
@@ -192,9 +215,103 @@ export default function Parametres() {
                     </div>
                 </section>
 
+                {/* FACTURATION & MENTIONS LÉGALES */}
+                <section className="parametres-section">
+                    <h2>Facturation &amp; mentions légales</h2>
+                    <p className="parametres-section__aide">
+                        Ces informations apparaissent sur vos devis/factures PDF, ainsi que sur les pages
+                        Mentions légales et Contact de l'application.
+                    </p>
+
+                    <div className="parametres-form">
+                        <div className={`field ${parametres.siret ? "filled" : ""}`}>
+                            <input
+                                type="text"
+                                name="siret"
+                                value={parametres.siret}
+                                onChange={handleChange}
+                                placeholder=" "
+                            />
+                            <label>Numéro SIRET</label>
+                        </div>
+
+                        <div className={`field ${parametres.forme_juridique ? "filled" : ""}`}>
+                            <input
+                                type="text"
+                                name="forme_juridique"
+                                value={parametres.forme_juridique}
+                                onChange={handleChange}
+                                placeholder=" "
+                            />
+                            <label>Forme juridique (ex : Auto-entrepreneur, SASU au capital de 1000 €)</label>
+                        </div>
+
+                        <div className={`field field--large ${parametres.hebergeur ? "filled" : ""}`}>
+                            <input
+                                type="text"
+                                name="hebergeur"
+                                value={parametres.hebergeur}
+                                onChange={handleChange}
+                                placeholder=" "
+                            />
+                            <label>Hébergeur de l'application (si hébergée en ligne)</label>
+                        </div>
+
+                        <div className={`field ${parametres.delai_paiement_jours ? "filled" : ""}`}>
+                            <input
+                                type="number"
+                                min="0"
+                                name="delai_paiement_jours"
+                                value={parametres.delai_paiement_jours}
+                                onChange={handleChange}
+                                placeholder=" "
+                            />
+                            <label>Délai de paiement (jours)</label>
+                        </div>
+
+                        <div className={`field ${parametres.iban ? "filled" : ""}`}>
+                            <input
+                                type="text"
+                                name="iban"
+                                value={parametres.iban}
+                                onChange={handleChange}
+                                placeholder=" "
+                            />
+                            <label>IBAN</label>
+                        </div>
+
+                        <div className={`field ${parametres.bic ? "filled" : ""}`}>
+                            <input
+                                type="text"
+                                name="bic"
+                                value={parametres.bic}
+                                onChange={handleChange}
+                                placeholder=" "
+                            />
+                            <label>BIC</label>
+                        </div>
+
+                        <div className={`field field--large ${parametres.mention_tva ? "filled" : ""}`}>
+                            <input
+                                type="text"
+                                name="mention_tva"
+                                value={parametres.mention_tva}
+                                onChange={handleChange}
+                                placeholder=" "
+                            />
+                            <label>Mention TVA (ex : « TVA non applicable, art. 293 B du CGI »)</label>
+                        </div>
+                    </div>
+                </section>
+
                 {/* COULEURS */}
                 <section className="parametres-section">
-                    <h2>Couleurs du thème</h2>
+                    <div className="parametres-section__entete">
+                        <h2>Couleurs du thème</h2>
+                        <button type="button" className="btn-texte" onClick={reinitialiserCouleurs}>
+                            ↺ Réinitialiser aux couleurs par défaut
+                        </button>
+                    </div>
 
                     <div className="color-grid">
                         {[

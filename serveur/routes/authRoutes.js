@@ -15,6 +15,8 @@ const router = Router();
     Profil via contrôleur
     --------------------------------*/
     router.get("/profil", verifyToken, AuthControleur.profil);
+    router.put("/profil", verifyToken, AuthControleur.mettreAJourProfil);
+    router.put("/mot-de-passe", verifyToken, AuthControleur.changerMotDePasse);
 
     /* ------------------------------
     GET /auth/me — retourne l'utilisateur connecté
