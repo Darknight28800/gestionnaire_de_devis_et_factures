@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import api from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "../../styles/pages/_connexion.scss";
+
+const EMAIL_DEMO = "demo@facturepro.app";
+const MOT_DE_PASSE_DEMO = "Demo1234!";
 
 export default function Connexion() {
     const [mode, setMode] = useState("connexion"); // "connexion" | "inscription"
@@ -11,12 +14,21 @@ export default function Connexion() {
     const [motdepasse, setMotdepasse] = useState("");
     const [erreur, setErreur] = useState(null);
     const [envoi, setEnvoi] = useState(false);
+    const [connexionDemo, setConnexionDemo] = useState(false);
     const { connexion } = useAuth();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const demoLancee = useRef(false);
 
     const basculerMode = (nouveauMode) => {
         setMode(nouveauMode);
         setErreur(null);
+    };
+
+    const seConnecter = async (emailConnexion, motdepasseConnexion) => {
+        const res = await api.post("/auth/connexion", { email: emailConnexion, password: motdepasseConnexion });
+        connexion(res.data.token, res.data.utilisateur);
+        navigate("/");
     };
 
     const handleSubmit = async (e) => {
@@ -29,15 +41,41 @@ export default function Connexion() {
                 await api.post("/auth/inscription", { nom, email, password: motdepasse });
             }
 
-            const res = await api.post("/auth/connexion", { email, password: motdepasse });
-            connexion(res.data.token, res.data.utilisateur);
-            navigate("/");
+            await seConnecter(email, motdepasse);
         } catch (err) {
             setErreur(err.response?.data?.message || "Une erreur est survenue.");
         } finally {
             setEnvoi(false);
         }
     };
+
+    // Accès démo direct depuis le portfolio (?demo=1) : connexion automatique
+    // avec le compte de démonstration, sans que le visiteur ait à saisir d'identifiants.
+    useEffect(() => {
+        if (searchParams.get("demo") !== "1" || demoLancee.current) return;
+        demoLancee.current = true;
+        setConnexionDemo(true);
+
+        seConnecter(EMAIL_DEMO, MOT_DE_PASSE_DEMO).catch((err) => {
+            setConnexionDemo(false);
+            setErreur(err.response?.data?.message || "La démo est momentanément indisponible.");
+        });
+    }, [searchParams]);
+
+    if (connexionDemo) {
+        return (
+            <div className="page-connexion">
+                <div className="page-connexion__fond" aria-hidden="true"></div>
+                <div className="carte-connexion">
+                    <div className="carte-connexion__marque">
+                        <img src="/assets/logo-facturepro.svg" alt="" className="carte-connexion__logo" />
+                        <span>FacturePro</span>
+                    </div>
+                    <p className="carte-connexion__sous-titre">Connexion à la version démo…</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="page-connexion">
