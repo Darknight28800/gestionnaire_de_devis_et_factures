@@ -1,124 +1,176 @@
 /* ============================
    HEADER PREMIUM FACTUREPRO
 ============================ */
-    .header {
+.header {
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    padding: 20px 32px; /* Premium spacing */
-    background: var(--fond-carte);
+    padding: 18px 32px;
+    background: color-mix(in srgb, var(--fond-carte) 92%, transparent);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
 
-    border-bottom: 2px solid var(--gris-200); /* Ligne nette */
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 4px 20px rgba(16, 24, 40, 0.06);
 
-    min-height: 95px; /* Empêche le logo de dépasser */
+    min-height: 88px;
     box-sizing: border-box;
-    }
+    position: sticky;
+    top: 0;
+    z-index: 1800;
+    overflow: hidden;
+}
 
-    /* Zone gauche */
-    .header__left {
+/* Même reflet satiné que le fond principal, pour continuité visuelle */
+.header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(112deg, transparent 55%, color-mix(in srgb, #fff 70%, transparent) 68%, transparent 80%);
+
+    body.dark & {
+        background: linear-gradient(112deg, transparent 55%, color-mix(in srgb, #fff 6%, transparent) 68%, transparent 80%);
+    }
+}
+
+.header > * {
+    position: relative;
+}
+
+/* Zone gauche */
+.header__left {
     display: flex;
     align-items: center;
-    gap: 18px; /* Premium spacing */
-    }
+    gap: 16px;
+}
 
-    /* Burger menu (mobile) */
-    .header__burger {
+/* Burger menu (mobile) */
+.header__burger {
     display: none;
     background: transparent;
     border: none;
     font-size: 1.6rem;
     cursor: pointer;
-    }
+    color: var(--texte);
+}
 
-    /* Logo premium */
-    .header__logo {
-    height: 72px; /* Taille premium */
-    width: auto;
-    object-fit: contain;
-    display: block;
-    }
-
-    /* Placeholder si pas de logo */
-    .header__logo-placeholder {
-    width: 160px;
-    height: 60px;
-    background: var(--gris-200);
-    border-radius: var(--radius-md);
+/* Badge dégradé autour du logo */
+.header__logo-badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--gris-600);
-    font-size: 0.9rem;
-    }
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--couleur-primaire), var(--couleur-accent, #0891b2));
+    box-shadow: 0 6px 16px -4px color-mix(in srgb, var(--couleur-primaire) 55%, transparent),
+        0 1px 0 rgba(255, 255, 255, 0.35) inset;
+}
 
-    /* Titre entreprise */
-    .header__title {
-    font-size: 1.6rem;
-    font-weight: 700;
+/* Logo premium */
+.header__logo {
+    height: 34px;
+    width: 34px;
+    object-fit: contain;
+    display: block;
+}
+
+/* Titre entreprise */
+.header__title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
     color: var(--texte);
     margin: 0;
-    }
+}
 
-    /* Zone droite */
-    .header__right {
+/* Zone droite */
+.header__right {
     display: flex;
     align-items: center;
-    gap: 22px;
-    }
+    gap: 16px;
+}
 
-    /* Bouton dark mode */
-    .btn-darkmode {
-    background: transparent;
-    border: none;
-    font-size: 1.6rem;
+/* Bouton dark mode */
+.btn-darkmode {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    font-size: 1.2rem;
     cursor: pointer;
     color: var(--texte);
-    }
+    transition: transform 0.16s ease;
 
-    /* Avatar + menu */
-    .header__user {
+    &:hover {
+        transform: translateY(-2px);
+    }
+}
+
+/* Avatar + menu */
+.header__user {
     display: flex;
     align-items: center;
     gap: 10px;
     cursor: pointer;
     position: relative;
-    }
+    padding: 4px 14px 4px 4px;
+    border-radius: 999px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--texte);
+}
 
-    .header__avatar {
-    width: 42px;
-    height: 42px;
+.header__avatar {
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
-    }
+}
 
-    .header__avatar--initiales {
+.header__avatar--initiales {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--primary, var(--couleur-primaire));
+    background: linear-gradient(135deg, var(--couleur-primaire), var(--couleur-accent, #0891b2));
     color: #fff;
     font-weight: 700;
-    font-size: 0.9rem;
-    }
+    font-size: 0.85rem;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset;
+}
 
-    /* Menu utilisateur */
-    .user-menu {
+/* Menu utilisateur */
+.user-menu {
     position: absolute;
-    top: 60px;
+    top: 56px;
     right: 0;
     background: var(--fond-carte);
     border: 1px solid var(--gris-200);
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 10px 0;
     width: 180px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
     z-index: 2100;
-    }
+}
 
-    .user-menu a {
+.user-menu a {
     padding: 0.7rem 1rem;
     text-decoration: none;
     color: var(--texte);
@@ -128,34 +180,35 @@
     &:hover {
         background: var(--hover);
     }
-    }
+}
 
-    /* MOBILE */
-    @media (max-width: 768px) {
+/* MOBILE */
+@media (max-width: 768px) {
     .header__burger {
         display: inline-block;
     }
 
     .header__title {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
+    }
+
+    .header__logo-badge {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
     }
 
     .header__logo {
-        height: 55px; /* plus petit sur mobile */
+        height: 26px;
+        width: 26px;
+    }
+
+    .header__user span:not(.header__avatar) {
+        display: none;
     }
 
     .header {
-        min-height: 80px;
-        padding: 16px 20px;
-        }
+        min-height: 76px;
+        padding: 14px 18px;
     }
-
-    /* DARK MODE */
-    body.dark .header {
-        border-bottom-color: var(--gris-200);
-        box-shadow: 0 2px 10px rgba(0,0,0,0.25);
-    }
-
-    body.dark .header__logo {
-    filter: brightness(1.1);
 }

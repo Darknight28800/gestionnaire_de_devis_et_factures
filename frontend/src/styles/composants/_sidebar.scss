@@ -1,23 +1,63 @@
 .sidebar {
-    width: 260px;
-    background: var(--sidebar-bg);
-    border-right: 1px solid var(--sidebar-border);
+    width: 225px;
+    background: linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--fond-marque) 96%, #2b3e7a 4%) 0%,
+        color-mix(in srgb, var(--fond-marque) 88%, #0a1128 12%) 55%,
+        color-mix(in srgb, var(--fond-marque) 70%, #0a1128 30%) 100%
+    );
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
     height: 100vh;
     padding: var(--space-lg) var(--space-md);
     display: flex;
     flex-direction: column;
     gap: var(--space-lg);
     transition: width 0.3s ease, left 0.3s ease;
-    position: relative;
+    position: sticky;
+    top: 0;
+    flex-shrink: 0;
+    overflow: hidden;
     z-index: 2000;
+    box-shadow: 4px 0 28px rgba(4, 10, 25, 0.28);
+}
+
+/* En dark mode, la sidebar se fond dans le fond de page plutôt que de garder le bleu de marque */
+.dark .sidebar {
+    background: linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--couleur-primaire) 18%, var(--fond)) 0%,
+        var(--fond) 60%,
+        color-mix(in srgb, var(--couleur-accent, #0891b2) 10%, var(--fond)) 100%
+    );
+}
+
+/* Reflet glossy diagonal, façon verre — même langage visuel que le header/les cartes */
+.sidebar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(220px 320px at -10% 0%, rgba(255, 255, 255, 0.16), transparent 60%),
+        linear-gradient(125deg, transparent 45%, rgba(255, 255, 255, 0.06) 52%, transparent 60%);
+}
+
+.sidebar > * {
+    position: relative;
+    z-index: 1;
 }
 
 .sidebar.collapsed {
     width: 80px;
 
-    .sidebar_link span {
+    .sidebar_link span:not(.sidebar_icon) {
         opacity: 0;
         pointer-events: none;
+    }
+
+    .sidebar_badge {
+        display: none;
     }
 }
 
@@ -30,54 +70,101 @@
 
 .sidebar_logo {
     font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--texte);
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: #fff;
 }
 
 .sidebar_toggle {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.08);
     border: none;
-    font-size: 1.4rem;
+    border-radius: var(--radius-sm);
+    width: 34px;
+    height: 34px;
+    font-size: 1.1rem;
     cursor: pointer;
-    color: var(--texte);
+    color: #fff;
+    transition: background 0.2s ease;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.18);
+    }
 }
 
 /* NAVIGATION */
 .sidebar_nav {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.35rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
 }
 
 .sidebar_link {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.7rem 0.9rem;
+    padding: 0.65rem 0.9rem;
     border-radius: var(--radius-md);
     font-size: 0.95rem;
     font-weight: 500;
-    color: var(--texte);
+    color: rgba(255, 255, 255, 0.78);
     text-decoration: none;
     transition: background 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
 
     &:hover {
-        background: var(--hover);
+        background: rgba(255, 255, 255, 0.09);
+        color: #fff;
     }
 
     &.active {
-        background: var(--couleur-primaire);
+        background: linear-gradient(135deg, var(--couleur-primaire), var(--couleur-accent, #0891b2));
         color: #fff;
+        box-shadow: 0 8px 20px -4px color-mix(in srgb, var(--couleur-primaire) 75%, transparent),
+            0 1px 0 rgba(255, 255, 255, 0.3) inset;
+
+        .sidebar_icon {
+            background: rgba(255, 255, 255, 0.22);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset;
+        }
     }
+}
+
+.sidebar_icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2em;
+    height: 2em;
+    flex-shrink: 0;
+    font-size: 1rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+    transition: background 0.2s ease;
+}
+
+.sidebar_badge {
+    margin-left: auto;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    padding: 2px 7px;
+    border-radius: 999px;
 }
 
 /* Déconnexion */
 .sidebar_logout {
     margin-top: auto;
-    color: #b91c1c;
+    color: #ff9a9a;
 
     &:hover {
-        background: rgba(239, 68, 68, 0.08);
+        background: rgba(239, 68, 68, 0.18);
+        color: #ffc2c2;
     }
 }
 
@@ -86,7 +173,7 @@
     .sidebar {
         position: fixed;
         top: 0;
-        left: -260px;
+        left: -225px;
     }
 
     .sidebar.open {

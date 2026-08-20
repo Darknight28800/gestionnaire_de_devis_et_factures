@@ -20,6 +20,7 @@ export default function TableauDeBord() {
     const [recentDevis, setRecentDevis] = useState([]);
     const [recentFactures, setRecentFactures] = useState([]);
     const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+    const [erreur, setErreur] = useState(null);
 
     /* Observer le changement de thème (dark/light) */
     useEffect(() => {
@@ -43,12 +44,18 @@ export default function TableauDeBord() {
                 setRecentFactures(res.data.recent_factures);
             } catch (err) {
                 console.error("Erreur lors du chargement du tableau de bord :", err);
+                setErreur(
+                    err.response?.status === 401
+                        ? "Votre session a expiré, merci de vous reconnecter."
+                        : "Impossible de charger le tableau de bord. Réessayez dans un instant."
+                );
             }
         };
 
         charger();
     }, []);
 
+    if (erreur) return <p className="dashboard__erreur">{erreur}</p>;
     if (!stats) return <p>Chargement...</p>;
 
     /* Couleurs dynamiques selon le thème */
@@ -111,7 +118,7 @@ export default function TableauDeBord() {
 
             {/* CARTES PREMIUM */}
             <div className="dashboard__cards">
-                <div className="card">
+                <div className="card card--violet">
                     <div className="card__icon">👥</div>
                     <div className="card__info">
                         <h3>{stats.total_clients}</h3>
@@ -119,7 +126,7 @@ export default function TableauDeBord() {
                     </div>
                 </div>
 
-                <div className="card">
+                <div className="card card--bleu">
                     <div className="card__icon">📄</div>
                     <div className="card__info">
                         <h3>{stats.total_devis}</h3>
@@ -127,7 +134,7 @@ export default function TableauDeBord() {
                     </div>
                 </div>
 
-                <div className="card">
+                <div className="card card--ambre">
                     <div className="card__icon">💰</div>
                     <div className="card__info">
                         <h3>{stats.total_factures}</h3>
@@ -135,7 +142,7 @@ export default function TableauDeBord() {
                     </div>
                 </div>
 
-                <div className="card">
+                <div className="card card--bleu">
                     <div className="card__icon">✔️</div>
                     <div className="card__info">
                         <h3>{stats.factures_payees}</h3>
@@ -143,7 +150,7 @@ export default function TableauDeBord() {
                     </div>
                 </div>
 
-                <div className="card">
+                <div className="card card--rose">
                     <div className="card__icon">⏳</div>
                     <div className="card__info">
                         <h3>{stats.factures_non_payees}</h3>
@@ -151,7 +158,7 @@ export default function TableauDeBord() {
                     </div>
                 </div>
 
-                <div className="card">
+                <div className="card card--vert">
                     <div className="card__icon">💵</div>
                     <div className="card__info">
                         <h3>{stats.montant_total} €</h3>
@@ -159,7 +166,7 @@ export default function TableauDeBord() {
                     </div>
                 </div>
 
-                <div className="card">
+                <div className="card card--vert">
                     <div className="card__icon">🟢</div>
                     <div className="card__info">
                         <h3>{stats.montant_paye} €</h3>
@@ -167,7 +174,7 @@ export default function TableauDeBord() {
                     </div>
                 </div>
 
-                <div className="card">
+                <div className="card card--jaune">
                     <div className="card__icon">🟡</div>
                     <div className="card__info">
                         <h3>{stats.montant_attente} €</h3>

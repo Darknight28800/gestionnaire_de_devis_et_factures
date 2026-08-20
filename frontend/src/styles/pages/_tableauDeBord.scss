@@ -1,11 +1,42 @@
 @use "../base/mixins";
 
 .dashboard {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--space-xl);
+    gap: var(--space-lg);
     padding: var(--space-lg);
     color: var(--texte);
+    isolation: isolate;
+}
+
+/* Fond glacé : quelques nappes de lumière douces + un liseré diagonal, façon verre dépoli */
+.dashboard::before {
+    content: "";
+    position: absolute;
+    inset: -40px -20px auto -20px;
+    height: 520px;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(560px 320px at 12% 0%, color-mix(in srgb, var(--couleur-primaire) 16%, transparent), transparent 65%),
+        radial-gradient(480px 300px at 88% 10%, color-mix(in srgb, var(--couleur-accent, #0891b2) 14%, transparent), transparent 70%),
+        linear-gradient(115deg, transparent 40%, color-mix(in srgb, #fff 35%, transparent) 48%, transparent 56%);
+    opacity: 0.9;
+
+    body.dark & {
+        opacity: 0.5;
+        background:
+            radial-gradient(560px 320px at 12% 0%, color-mix(in srgb, var(--couleur-primaire) 30%, transparent), transparent 65%),
+            radial-gradient(480px 300px at 88% 10%, color-mix(in srgb, var(--couleur-accent, #0891b2) 24%, transparent), transparent 70%),
+            linear-gradient(115deg, transparent 40%, color-mix(in srgb, #fff 6%, transparent) 48%, transparent 56%);
+    }
+}
+
+.dashboard__erreur {
+    padding: var(--space-lg);
+    color: var(--danger);
+    font-weight: 600;
 }
 
 /* TITRE */
@@ -16,18 +47,69 @@
 }
 
 /* ============================
-    CARTES PREMIUM
+    CARTES PREMIUM — verre glossy avec badge d'icône teinté
    ============================ */
 .dashboard__cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: var(--space-lg);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-md);
 }
 
 .dashboard__cards .card {
+    position: relative;
     flex-direction: row;
     align-items: center;
-    gap: var(--space-md);
+    gap: 12px;
+    overflow: hidden;
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: var(--glass-shadow), 0 1px 0 color-mix(in srgb, #fff 50%, transparent) inset;
+
+    /* Contour verre : liseré fin, avec un point lumineux qui accroche la lumière en haut à
+       gauche (et un plus discret en bas à droite) plutôt qu'une bordure uniforme */
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1px;
+        background:
+            radial-gradient(60px 60px at 14% 8%, rgba(255, 255, 255, 0.95), transparent 60%),
+            radial-gradient(50px 50px at 92% 96%, rgba(255, 255, 255, 0.4), transparent 65%),
+            linear-gradient(rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.14));
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+
+        body.dark & {
+            background:
+                radial-gradient(60px 60px at 14% 8%, rgba(255, 255, 255, 0.55), transparent 60%),
+                radial-gradient(50px 50px at 92% 96%, rgba(255, 255, 255, 0.2), transparent 65%),
+                linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));
+        }
+    }
+
+    /* Reflet glossy façon vitre — halo en haut à gauche + liseré diagonal qui balaie la carte */
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(140px 90px at 12% -10%, color-mix(in srgb, #fff 45%, transparent), transparent 70%),
+            linear-gradient(120deg, transparent 55%, color-mix(in srgb, #fff 25%, transparent) 68%, transparent 82%);
+        pointer-events: none;
+
+        body.dark & {
+            background:
+                radial-gradient(140px 90px at 12% -10%, color-mix(in srgb, #fff 16%, transparent), transparent 70%),
+                linear-gradient(120deg, transparent 55%, color-mix(in srgb, #fff 8%, transparent) 68%, transparent 82%);
+        }
+    }
+
+    &:hover {
+        transform: translateY(-4px);
+    }
 
     @for $i from 1 through 8 {
         &:nth-child(#{$i}) {
@@ -37,19 +119,48 @@
 }
 
 .card__icon {
-    font-size: 2rem;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    box-shadow: 0 2px 0 rgba(255, 255, 255, 0.65) inset, 0 -6px 10px rgba(0, 0, 0, 0.08) inset,
+        0 6px 16px -4px var(--lueur-icone, rgba(16, 24, 40, 0.35));
+}
+
+/* Teintes des badges — pastel doux et glossy pour la 1re ligne (façon image de référence),
+   cercles pleins pour Montant payé / En attente qui doivent ressortir davantage.
+   --lueur-icone teinte l'ombre portée pour un halo lumineux coloré façon orbe de verre. */
+.card--violet .card__icon { background: radial-gradient(circle at 30% 25%, #ede9fe, color-mix(in srgb, #7c3aed 55%, #ede9fe)); --lueur-icone: color-mix(in srgb, #7c3aed 45%, transparent); }
+.card--bleu   .card__icon { background: radial-gradient(circle at 30% 25%, #dbeafe, color-mix(in srgb, var(--couleur-primaire) 55%, #dbeafe)); --lueur-icone: color-mix(in srgb, var(--couleur-primaire) 45%, transparent); }
+.card--ambre  .card__icon { background: radial-gradient(circle at 30% 25%, #fef3c7, color-mix(in srgb, #f59e0b 55%, #fef3c7)); --lueur-icone: color-mix(in srgb, #f59e0b 45%, transparent); }
+.card--rose   .card__icon { background: radial-gradient(circle at 30% 25%, #fee2e2, color-mix(in srgb, var(--danger) 50%, #fee2e2)); --lueur-icone: color-mix(in srgb, var(--danger) 40%, transparent); }
+.card--vert   .card__icon { background: radial-gradient(circle at 30% 25%, color-mix(in srgb, var(--succes) 55%, #86efac), var(--succes)); --lueur-icone: color-mix(in srgb, var(--succes) 55%, transparent); }
+.card--jaune  .card__icon { background: radial-gradient(circle at 30% 25%, #fde047, #eab308); --lueur-icone: color-mix(in srgb, #eab308 55%, transparent); }
+
+.card__info {
+    position: relative;
+    z-index: 1;
 }
 
 .card__info h3 {
-    font-size: 1.6rem;
-    font-weight: 700;
+    font-size: 1.3rem;
+    font-weight: 800;
     color: var(--texte);
     font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
 }
 
 .card__info p {
-    font-size: 0.9rem;
+    font-size: 0.78rem;
     color: var(--text-light);
+    white-space: nowrap;
 }
 
 /* ============================
@@ -63,8 +174,28 @@
 
 .chart {
     @include mixins.glass-card;
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
     padding: var(--space-lg);
     animation-delay: 0.15s;
+
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(220px 120px at 10% 0%, color-mix(in srgb, #fff 40%, transparent), transparent 70%);
+        pointer-events: none;
+
+        body.dark & {
+            background: radial-gradient(220px 120px at 10% 0%, color-mix(in srgb, #fff 8%, transparent), transparent 70%);
+        }
+    }
+
+    > * {
+        position: relative;
+        z-index: 1;
+    }
 }
 
 .chart h3 {
@@ -85,8 +216,28 @@
 
 .list {
     @include mixins.glass-card;
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
     padding: var(--space-lg);
     animation-delay: 0.2s;
+
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(220px 120px at 10% 0%, color-mix(in srgb, #fff 40%, transparent), transparent 70%);
+        pointer-events: none;
+
+        body.dark & {
+            background: radial-gradient(220px 120px at 10% 0%, color-mix(in srgb, #fff 8%, transparent), transparent 70%);
+        }
+    }
+
+    > * {
+        position: relative;
+        z-index: 1;
+    }
 }
 
 .list h3 {

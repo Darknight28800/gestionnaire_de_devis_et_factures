@@ -48,13 +48,16 @@
 .table-archives {
     width: 100%;
     border-collapse: collapse;
-    background: var(--bg-card, var(--fond-carte));
-    border-radius: var(--radius, 12px);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: var(--shadow, 0 4px 12px rgba(0, 0, 0, 0.05));
+    box-shadow: var(--glass-shadow);
 
     th {
-        background: var(--bg, var(--fond));
+        background: transparent;
         padding: 1rem;
         text-align: left;
         color: var(--text-light, var(--texte));

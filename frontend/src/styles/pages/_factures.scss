@@ -42,13 +42,16 @@
 .table-factures {
     width: 100%;
     border-collapse: collapse;
-    background: var(--bg-card);
-    border-radius: var(--radius);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: var(--shadow);
+    box-shadow: var(--glass-shadow);
 
     th {
-        background: var(--bg);
+        background: transparent;
         padding: 1rem;
         text-align: left;
         color: var(--text-light);

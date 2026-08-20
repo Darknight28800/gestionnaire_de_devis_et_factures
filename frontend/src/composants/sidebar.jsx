@@ -2,6 +2,19 @@ import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import "../styles/composants/_sidebar.scss";
 
+const LIENS = [
+    { to: "/", label: "Tableau de bord", icone: "📊", fin: true },
+    { to: "/clients", label: "Clients", icone: "👤" },
+    { to: "/devis", label: "Devis", icone: "📄" },
+    { to: "/factures", label: "Factures", icone: "🧾" },
+    { to: "/archives", label: "Archives", icone: "🗂️" },
+    { to: "/parametres", label: "Paramètres", icone: "⚙️" },
+    { to: "/abonnement", label: "Abonnement", icone: "💳", badge: "PRO" },
+    { to: "/profil", label: "Profil", icone: "🙋" },
+    { to: "/admin", label: "Administration", icone: "🛠️" },
+    { to: "/support", label: "Support", icone: "🆘" }
+];
+
 export default function Sidebar({ open }) {
     const [collapsed, setCollapsed] = useState(false);
 
@@ -19,47 +32,16 @@ export default function Sidebar({ open }) {
             </div>
 
             <nav className="sidebar_nav">
-                <NavLink to="/" end className="sidebar_link">
-                    <span>Tableau de bord</span>
-                </NavLink>
-
-                <NavLink to="/clients" className="sidebar_link">
-                    <span>Clients</span>
-                </NavLink>
-
-                <NavLink to="/devis" className="sidebar_link">
-                    <span>Devis</span>
-                </NavLink>
-
-                <NavLink to="/factures" className="sidebar_link">
-                    <span>Factures</span>
-                </NavLink>
-
-                <NavLink to="/archives" className="sidebar_link">
-                    <span>Archives</span>
-                </NavLink>
-
-                <NavLink to="/parametres" className="sidebar_link">
-                    <span>Paramètres</span>
-                </NavLink>
-
-                <NavLink to="/abonnement" className="sidebar_link">
-                    <span>Abonnement</span>
-                </NavLink>
-
-                <NavLink to="/profil" className="sidebar_link">
-                    <span>Profil</span>
-                </NavLink>
-
-                <NavLink to="/admin" className="sidebar_link">
-                    <span>Administration</span>
-                </NavLink>
-
-                <NavLink to="/support" className="sidebar_link">
-                    <span>Support</span>
-                </NavLink>
+                {LIENS.map((lien) => (
+                    <NavLink key={lien.to} to={lien.to} end={lien.fin} className="sidebar_link">
+                        <span className="sidebar_icon">{lien.icone}</span>
+                        <span>{lien.label}</span>
+                        {lien.badge && <span className="sidebar_badge">{lien.badge}</span>}
+                    </NavLink>
+                ))}
 
                 <NavLink to="/logout" className="sidebar_link sidebar_logout">
+                    <span className="sidebar_icon">🚪</span>
                     <span>Déconnexion</span>
                 </NavLink>
             </nav>

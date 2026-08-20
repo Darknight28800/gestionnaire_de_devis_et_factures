@@ -77,11 +77,18 @@
     /* Footer (bloc de marque, toujours sombre, indépendant du thème) */
     --footer-bg: #10203d;
 
-    /* Glassmorphism (cards, KPI) */
-    --glass-bg: rgba(255, 255, 255, 0.68);
-    --glass-border: rgba(255, 255, 255, 0.6);
-    --glass-blur: blur(18px) saturate(160%);
-    --glass-shadow: 0 8px 30px rgba(29, 78, 216, 0.1), 0 2px 8px rgba(16, 24, 40, 0.06);
+    /* Bleu de marque figé (sidebar/footer) — ne change JAMAIS avec le mode sombre,
+       pour garder un repère visuel stable. Personnalisable via /parametres (voir header.jsx),
+       qui écrit directement sur <html> ; comme cette variable n'est redéclarée nulle part
+       ailleurs (y compris dans .dark), cette valeur inline reste la seule source de vérité. */
+    --fond-marque: #1e3a8a;
+
+    /* Glassmorphism (cards, KPI) — plus transparent pour laisser le fond bleu transparaître,
+       plus saturé pour un rendu vitre premium plutôt que carte blanche opaque */
+    --glass-bg: rgba(255, 255, 255, 0.01);
+    --glass-border: rgba(255, 255, 255, 0.8);
+    --glass-blur: blur(24px) saturate(190%);
+    --glass-shadow: 0 8px 32px rgba(29, 78, 216, 0.16), 0 2px 10px rgba(16, 24, 40, 0.08);
 
     /* ---- Alias anglais (mêmes valeurs, autre convention de nommage) ---- */
     --bg: var(--fond);

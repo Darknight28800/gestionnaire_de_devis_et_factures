@@ -43,6 +43,8 @@ export default function Header({ onToggleSidebar }) {
         apply("--couleur-primaire", parametres.couleur_primaire);
         apply("--couleur-secondaire", parametres.couleur_secondaire);
         apply("--couleur-accent", parametres.couleur_accent);
+        // Sidebar/footer : figés sur cette même teinte, mais indépendants du mode sombre
+        apply("--fond-marque", parametres.couleur_secondaire);
     }, [parametres]);
 
     /* Appliquer le thème sauvegardé */
@@ -71,11 +73,13 @@ export default function Header({ onToggleSidebar }) {
                 </button>
 
                 {/* Logo FacturePro (fallback si aucun logo dans parametres) */}
-                <img
-                    src={parametres?.logo_url ? resoudreUrlFichier(parametres.logo_url) : "/assets/logo-facturepro.svg"}
-                    alt="Logo FacturePro"
-                    className="header__logo"
-                />
+                <span className="header__logo-badge">
+                    <img
+                        src={parametres?.logo_url ? resoudreUrlFichier(parametres.logo_url) : "/assets/logo-facturepro.svg"}
+                        alt="Logo FacturePro"
+                        className="header__logo"
+                    />
+                </span>
 
                 {/* Nom entreprise */}
                 <h1 className="header__title">

@@ -1,12 +1,35 @@
+/* Suit le même dégradé que le fond de page (app-main) : s'adapte donc automatiquement
+   au thème clair/sombre au lieu d'un bloc de marque figé */
 .footer-premium {
-    background: var(--footer-bg);
+    background: linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--couleur-primaire) 32%, var(--fond)) 0%,
+        color-mix(in srgb, var(--couleur-accent, #0891b2) 18%, var(--fond)) 45%,
+        color-mix(in srgb, var(--couleur-primaire) 28%, var(--fond)) 100%
+    );
     padding: 50px 60px;
-    color: #fff;
+    color: var(--texte);
     margin-top: 40px;
-    border-top: 1px solid rgba(255,255,255,0.15);
+    border-top: 1px solid var(--glass-border);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(480px 260px at 90% -10%, color-mix(in srgb, #fff 30%, transparent), transparent 65%);
+
+        body.dark & {
+            background: radial-gradient(480px 260px at 90% -10%, color-mix(in srgb, #fff 8%, transparent), transparent 65%);
+        }
+    }
 }
 
 .footer-container {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 40px;
@@ -35,7 +58,7 @@
 }
 
 .footer-col ul li a {
-    color: #fff;
+    color: var(--texte);
     opacity: 0.85;
     font-size: 0.95rem;
     transition: 0.25s ease;
