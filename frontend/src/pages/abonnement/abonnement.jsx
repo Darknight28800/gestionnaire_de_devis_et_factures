@@ -12,6 +12,16 @@ const LABELS_STATUT = {
     annule: "Abonnement résilié"
 };
 
+const ICONES_STATUT = {
+    attente_carte: "🔓",
+    essai: "⏳",
+    actif: "✅",
+    impaye: "⚠️",
+    annule: "🔒"
+};
+
+const ICONES_OFFRE = ["🚀", "⭐", "💎", "🏆"];
+
 function formaterLimite(valeur) {
     return valeur === null || valeur === undefined ? "Illimité" : valeur;
 }
@@ -78,7 +88,15 @@ export default function Abonnement() {
 
     return (
         <div className="page-abonnement">
-            <h1 className="page-title">Abonnement</h1>
+
+            {/* EN-TÊTE */}
+            <div className="abonnement-hero">
+                <span className="abonnement-hero__badge">💎</span>
+                <div>
+                    <h1 className="page-title">Abonnement</h1>
+                    <p className="page-lede">Gérez votre formule et suivez l'état de votre abonnement.</p>
+                </div>
+            </div>
 
             {paiementRetour === "succes" && (
                 <p className="message message--succes">
@@ -98,70 +116,94 @@ export default function Abonnement() {
             )}
 
             <div className={`carte-statut carte-statut--${statut.statut}`}>
-                <h2>{LABELS_STATUT[statut.statut] || statut.statut}</h2>
+                <div className="carte-statut__entete">
+                    <span className="carte-statut__icone">{ICONES_STATUT[statut.statut] || "📦"}</span>
+                    <div className="carte-statut__corps">
+                        <h2>{LABELS_STATUT[statut.statut] || statut.statut}</h2>
 
-                {statut.statut === "essai" && (
-                    <p>
-                        Offre <strong>{statut.offre?.nom}</strong> — se termine le{" "}
-                        <strong>{new Date(statut.essaiFin).toLocaleDateString()}</strong>
-                        {" "}({statut.joursRestants} jour{statut.joursRestants > 1 ? "s" : ""} restant{statut.joursRestants > 1 ? "s" : ""}).
-                        Votre carte enregistrée sera débitée automatiquement à la fin de l'essai.
-                    </p>
-                )}
-                {statut.statut === "actif" && (
-                    <p>Offre <strong>{statut.offre?.nom}</strong> — {statut.offre?.prix_mensuel} €/mois.</p>
-                )}
-                {statut.statut === "impaye" && (
-                    <p>Le dernier prélèvement a échoué. Mettez à jour votre moyen de paiement pour ne pas perdre l'accès à l'application.</p>
-                )}
-                {statut.statut === "attente_carte" && (
-                    <p>Choisissez une offre ci-dessous pour démarrer votre essai gratuit de {offresInfo.dureeEssaiJours} jours (carte requise, aucun prélèvement avant la fin de l'essai).</p>
-                )}
-                {statut.statut === "annule" && (
-                    <p>Choisissez une nouvelle offre ci-dessous pour réactiver l'accès.</p>
-                )}
+                        {statut.statut === "essai" && (
+                            <>
+                                <p>
+                                    Offre <strong>{statut.offre?.nom}</strong> — se termine le{" "}
+                                    <strong>{new Date(statut.essaiFin).toLocaleDateString()}</strong>
+                                    {" "}({statut.joursRestants} jour{statut.joursRestants > 1 ? "s" : ""} restant{statut.joursRestants > 1 ? "s" : ""}).
+                                    Votre carte enregistrée sera débitée automatiquement à la fin de l'essai.
+                                </p>
+                                <div className="carte-statut__progression">
+                                    <div
+                                        className="carte-statut__progression-barre"
+                                        style={{
+                                            width: `${Math.max(4, Math.min(100, ((offresInfo.dureeEssaiJours - statut.joursRestants) / offresInfo.dureeEssaiJours) * 100))}%`
+                                        }}
+                                    />
+                                </div>
+                            </>
+                        )}
+                        {statut.statut === "actif" && (
+                            <p>Offre <strong>{statut.offre?.nom}</strong> — {statut.offre?.prix_mensuel} €/mois.</p>
+                        )}
+                        {statut.statut === "impaye" && (
+                            <p>Le dernier prélèvement a échoué. Mettez à jour votre moyen de paiement pour ne pas perdre l'accès à l'application.</p>
+                        )}
+                        {statut.statut === "attente_carte" && (
+                            <p>Choisissez une offre ci-dessous pour démarrer votre essai gratuit de {offresInfo.dureeEssaiJours} jours (carte requise, aucun prélèvement avant la fin de l'essai).</p>
+                        )}
+                        {statut.statut === "annule" && (
+                            <p>Choisissez une nouvelle offre ci-dessous pour réactiver l'accès.</p>
+                        )}
 
-                {!estAdmin && (
-                    <p className="carte-statut__note">Seul un administrateur peut gérer l'abonnement. Contactez-le si besoin.</p>
-                )}
+                        {!estAdmin && (
+                            <p className="carte-statut__note">Seul un administrateur peut gérer l'abonnement. Contactez-le si besoin.</p>
+                        )}
 
-                {estAdmin && ["actif", "impaye"].includes(statut.statut) && stripePret && (
-                    <button className="btn btn-primaire" onClick={ouvrirPortail} disabled={chargementPortail}>
-                        {chargementPortail ? "Ouverture..." : "Gérer mon abonnement"}
-                    </button>
-                )}
+                        {estAdmin && ["actif", "impaye"].includes(statut.statut) && stripePret && (
+                            <button className="btn btn-primaire" onClick={ouvrirPortail} disabled={chargementPortail}>
+                                {chargementPortail ? "Ouverture..." : "Gérer mon abonnement"}
+                            </button>
+                        )}
+                    </div>
+                </div>
             </div>
 
             <h2 className="offres-titre">Nos offres</h2>
             <div className="grille-offres">
-                {offresInfo.offres.map((offre) => (
-                    <div key={offre.id} className="carte-offre">
-                        <h3>{offre.nom}</h3>
-                        <p className="carte-offre__description">{offre.description}</p>
-                        <p className="carte-offre__prix">
-                            {offre.prix_mensuel} € <span>/ mois</span>
-                        </p>
-                        <ul>
-                            <li>{formaterLimite(offre.max_utilisateurs)} utilisateur{offre.max_utilisateurs !== 1 ? "s" : ""}</li>
-                            <li>{formaterLimite(offre.max_devis_mois)} devis / mois</li>
-                            <li>{formaterLimite(offre.max_factures_mois)} factures / mois</li>
-                        </ul>
+                {offresInfo.offres.map((offre, i) => {
+                    const estOffreActuelle = statut.offre?.id === offre.id;
+                    return (
+                        <div
+                            key={offre.id}
+                            className={`carte-offre ${estOffreActuelle ? "carte-offre--actuelle" : ""}`}
+                        >
+                            {estOffreActuelle && <span className="carte-offre__ruban">Offre actuelle</span>}
 
-                        {estAdmin && (
-                            <button
-                                className="btn btn-primaire"
-                                disabled={!stripePret || chargementOffre === offre.code || statut.offre?.id === offre.id}
-                                onClick={() => choisirOffre(offre.code)}
-                            >
-                                {statut.offre?.id === offre.id
-                                    ? "Offre actuelle"
-                                    : chargementOffre === offre.code
-                                        ? "Redirection..."
-                                        : "Choisir cette offre"}
-                            </button>
-                        )}
-                    </div>
-                ))}
+                            <span className="carte-offre__icone">{ICONES_OFFRE[i % ICONES_OFFRE.length]}</span>
+                            <h3>{offre.nom}</h3>
+                            <p className="carte-offre__description">{offre.description}</p>
+                            <p className="carte-offre__prix">
+                                {offre.prix_mensuel} € <span>/ mois</span>
+                            </p>
+                            <ul>
+                                <li><span className="carte-offre__puce">👥</span> {formaterLimite(offre.max_utilisateurs)} utilisateur{offre.max_utilisateurs !== 1 ? "s" : ""}</li>
+                                <li><span className="carte-offre__puce">📄</span> {formaterLimite(offre.max_devis_mois)} devis / mois</li>
+                                <li><span className="carte-offre__puce">🧾</span> {formaterLimite(offre.max_factures_mois)} factures / mois</li>
+                            </ul>
+
+                            {estAdmin && (
+                                <button
+                                    className="btn btn-primaire"
+                                    disabled={!stripePret || chargementOffre === offre.code || estOffreActuelle}
+                                    onClick={() => choisirOffre(offre.code)}
+                                >
+                                    {estOffreActuelle
+                                        ? "Offre actuelle"
+                                        : chargementOffre === offre.code
+                                            ? "Redirection..."
+                                            : "Choisir cette offre"}
+                                </button>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

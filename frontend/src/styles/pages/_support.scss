@@ -1,25 +1,244 @@
-.page-support .card {
-    max-width: 500px;
+@use "../base/mixins";
+
+/* ============================
+    EN-TÊTE
+   ============================ */
+.support-hero {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
 }
 
-.page-support .card p {
-    padding: var(--space-sm) 0;
-    color: var(--texte);
-}
-
-.page-support .card p:hover {
-    color: var(--couleur-primaire);
-    cursor: pointer;
+.support-hero__badge {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--couleur-primaire), var(--couleur-accent, #0891b2));
+    box-shadow: 0 6px 16px -4px color-mix(in srgb, var(--couleur-primaire) 55%, transparent),
+        0 1px 0 rgba(255, 255, 255, 0.35) inset;
 }
 
 .page-lede {
     color: var(--text-light, var(--texte));
-    margin: -0.5rem 0 1.5rem;
+    margin: 4px 0 0;
     max-width: 60ch;
+}
+
+/* ============================
+    MISE EN PAGE
+   ============================ */
+.support-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: var(--space-lg);
+    align-items: start;
+
+    @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.support-side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.support-card {
+    @include mixins.glass-card;
+    @include mixins.fade-in-up;
+    padding: var(--space-lg);
+    border-radius: 20px;
+
+    h2 {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--texte);
+        margin: 0 0 var(--space-md);
+    }
+}
+
+/* ============================
+    FAQ
+   ============================ */
+.faq-liste {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.faq-item {
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--fond-carte) 40%, transparent);
+    overflow: hidden;
+}
+
+.faq-item--ouvert {
+    background: color-mix(in srgb, var(--couleur-primaire) 8%, transparent);
+}
+
+.faq-question {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--texte);
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.faq-chevron {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+    color: var(--couleur-primaire);
+    font-weight: 800;
+}
+
+.faq-item--ouvert .faq-chevron {
+    transform: rotate(180deg);
+}
+
+.faq-reponse {
+    margin: 0;
+    padding: 0 14px 14px;
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: var(--text-light, var(--texte));
+}
+
+/* ============================
+    LIENS RAPIDES
+   ============================ */
+.support-lien {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--texte);
+    transition: background 0.16s ease, transform 0.16s ease;
+
+    & + & {
+        margin-top: 4px;
+    }
+
+    &:hover {
+        background: color-mix(in srgb, var(--couleur-primaire) 8%, transparent);
+        transform: translateX(2px);
+    }
+
+    strong {
+        display: block;
+        font-size: 0.88rem;
+        font-weight: 600;
+    }
+
+    small {
+        display: block;
+        font-size: 0.76rem;
+        color: var(--text-light, var(--texte));
+        opacity: 0.8;
+    }
+}
+
+.support-lien__icone {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--couleur-primaire) 14%, var(--fond-carte));
+}
+
+.support-lien__fleche {
+    margin-left: auto;
+    color: var(--text-light, var(--texte));
+    opacity: 0.6;
+}
+
+/* ============================
+    FORMULAIRE
+   ============================ */
+.support-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: var(--space-lg);
+}
+
+.support-categorie {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border);
+    background: color-mix(in srgb, var(--fond-carte) 50%, transparent);
+    color: var(--texte);
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+
+    &:hover {
+        transform: translateY(-1px);
+    }
+
+    &--actif {
+        background: linear-gradient(135deg, var(--couleur-primaire), var(--couleur-accent, #0891b2));
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 6px 14px -4px color-mix(in srgb, var(--couleur-primaire) 60%, transparent);
+    }
 }
 
 .form-support {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
+}
+
+.form-support .form-ligne label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.support-compteur {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-light, var(--texte));
+    opacity: 0.7;
+}
+
+.support-submit {
+    align-self: flex-end;
+    min-width: 200px;
+}
+
+@media (max-width: 560px) {
+    .support-hero {
+        align-items: flex-start;
+    }
+
+    .support-submit {
+        align-self: stretch;
+    }
 }

@@ -23,15 +23,6 @@
     gap: var(--space-sm);
 }
 
-/* Profil */
-.page-profil .card {
-    max-width: 420px;
-}
-
-.page-profil p strong {
-    color: var(--couleur-primaire);
-}
-
 /* Admin */
 .page-admin .card {
     max-width: 520px;
@@ -44,18 +35,4 @@
 
 .page-admin .card p:last-child {
     border-bottom: none;
-}
-
-/* Support */
-.page-support .card {
-    max-width: 520px;
-}
-
-.page-support .card p {
-    padding: var(--space-sm) 0;
-    cursor: pointer;
-}
-
-.page-support .card p:hover {
-    color: var(--couleur-primaire);
 }

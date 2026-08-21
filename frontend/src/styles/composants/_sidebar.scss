@@ -1,5 +1,5 @@
 .sidebar {
-    width: 225px;
+    width: 260px;
     background: linear-gradient(
         160deg,
         color-mix(in srgb, var(--fond-marque) 96%, #2b3e7a 4%) 0%,
@@ -173,7 +173,7 @@
     .sidebar {
         position: fixed;
         top: 0;
-        left: -225px;
+        left: -260px;
     }
 
     .sidebar.open {
@@ -183,9 +183,13 @@
     .sidebar-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(2px);
-        z-index: 1500;
+        /* Pas de backdrop-filter ici : superposé au header (qui a lui-même un
+           backdrop-filter), deux calques de flou empilés provoquent un bug de rendu GPU
+           où le calque du dessus ne peint pas — le header reste visible, net, au-dessus. */
+        background: rgba(0, 0, 0, 0.55);
+        /* Au-dessus du header (1800) pour bien le couvrir quand la sidebar est ouverte,
+           mais en dessous de la sidebar elle-même (2000) */
+        z-index: 1900;
         opacity: 1;
     }
 }

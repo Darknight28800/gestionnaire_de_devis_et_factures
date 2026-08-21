@@ -1,7 +1,183 @@
-.page-profil .card {
-    max-width: 400px;
+@use "../base/mixins";
+
+/* ============================
+    EN-TÊTE PROFIL
+   ============================ */
+.profil-hero {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
 }
 
-.page-profil p strong {
+.profil-hero__avatar {
+    flex-shrink: 0;
+    width: 84px;
+    height: 84px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #fff;
+    border-radius: 26px;
+    background: linear-gradient(135deg, var(--couleur-primaire), var(--couleur-accent, #0891b2));
+    box-shadow: 0 10px 24px -6px color-mix(in srgb, var(--couleur-primaire) 55%, transparent),
+        0 1px 0 rgba(255, 255, 255, 0.35) inset;
+}
+
+.profil-hero__infos .page-title {
+    margin-bottom: 2px;
+}
+
+.profil-hero__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.profil-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: color-mix(in srgb, var(--fond-carte) 50%, transparent);
+    border: 1px solid var(--glass-border);
+    color: var(--texte);
+}
+
+.profil-badge--admin {
+    background: color-mix(in srgb, #7c3aed 16%, var(--fond-carte));
+    color: #7c3aed;
+    border-color: transparent;
+}
+
+.profil-badge--user {
+    background: color-mix(in srgb, var(--couleur-primaire) 14%, var(--fond-carte));
     color: var(--couleur-primaire);
+    border-color: transparent;
+}
+
+.profil-badge--neutre {
+    color: var(--text-light, var(--texte));
+}
+
+/* ============================
+    MISE EN PAGE
+   ============================ */
+.profil-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--space-lg);
+    align-items: start;
+}
+
+.profil-card {
+    @include mixins.glass-card;
+    @include mixins.fade-in-up;
+    padding: var(--space-lg);
+    border-radius: 20px;
+
+    h2 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--texte);
+        margin: 0 0 4px;
+    }
+}
+
+.profil-card__icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--couleur-primaire) 14%, var(--fond-carte));
+    font-size: 1rem;
+}
+
+.profil-card__sous-titre {
+    font-size: 0.82rem;
+    color: var(--text-light, var(--texte));
+    margin: 0 0 var(--space-md);
+}
+
+/* ============================
+    CHAMP MOT DE PASSE (bouton afficher/masquer)
+   ============================ */
+.profil-champ-mdp {
+    position: relative;
+    display: flex;
+
+    input {
+        flex: 1;
+        padding-right: 44px;
+    }
+}
+
+.profil-toggle-mdp {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 6px 8px;
+    border-radius: 8px;
+    line-height: 1;
+
+    &:hover {
+        background: var(--hover);
+    }
+}
+
+/* ============================
+    INDICATEUR DE FORCE DU MOT DE PASSE
+   ============================ */
+.profil-force-mdp {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: -0.3rem;
+}
+
+.profil-force-mdp__barres {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+}
+
+.profil-force-mdp__barre {
+    height: 4px;
+    flex: 1;
+    border-radius: 999px;
+    background: var(--gris-200);
+
+    &--1 { background: var(--danger); }
+    &--2 { background: #f59e0b; }
+    &--3 { background: #eab308; }
+    &--4 { background: var(--succes); }
+}
+
+.profil-force-mdp__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-light, var(--texte));
+    white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+    .profil-hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

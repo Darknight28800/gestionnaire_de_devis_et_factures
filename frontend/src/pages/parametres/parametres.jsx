@@ -131,13 +131,23 @@ export default function Parametres() {
 
     return (
         <div className="page-parametres">
-            <h1>Paramètres de l'entreprise</h1>
+
+            {/* EN-TÊTE */}
+            <div className="parametres-hero">
+                <span className="parametres-hero__badge">⚙️</span>
+                <div>
+                    <h1>Paramètres de l'entreprise</h1>
+                    <p className="page-lede">
+                        Ces informations apparaissent sur vos devis, factures et sur les pages publiques de l'application.
+                    </p>
+                </div>
+            </div>
 
             <form onSubmit={handleSubmit} className="page-parametres__form">
 
                 {/* INFORMATIONS */}
                 <section className="parametres-section">
-                    <h2>Informations</h2>
+                    <h2><span className="parametres-section__icone">🏢</span> Informations</h2>
 
                     <div className="parametres-form">
 
@@ -174,7 +184,7 @@ export default function Parametres() {
                             <label>Téléphone</label>
                         </div>
 
-                        <div className={`field ${parametres.adresse ? "filled" : ""}`}>
+                        <div className={`field field--large ${parametres.adresse ? "filled" : ""}`}>
                             <input
                                 type="text"
                                 name="adresse"
@@ -189,7 +199,7 @@ export default function Parametres() {
 
                 {/* LOGO */}
                 <section className="parametres-section">
-                    <h2>Logo</h2>
+                    <h2><span className="parametres-section__icone">🖼️</span> Logo</h2>
 
                     <div className="logo-wrapper">
                         <div className="logo-preview">
@@ -217,7 +227,7 @@ export default function Parametres() {
 
                 {/* FACTURATION & MENTIONS LÉGALES */}
                 <section className="parametres-section">
-                    <h2>Facturation &amp; mentions légales</h2>
+                    <h2><span className="parametres-section__icone">🧾</span> Facturation &amp; mentions légales</h2>
                     <p className="parametres-section__aide">
                         Ces informations apparaissent sur vos devis/factures PDF, ainsi que sur les pages
                         Mentions légales et Contact de l'application.
@@ -235,7 +245,7 @@ export default function Parametres() {
                             <label>Numéro SIRET</label>
                         </div>
 
-                        <div className={`field ${parametres.forme_juridique ? "filled" : ""}`}>
+                        <div className={`field field--medium ${parametres.forme_juridique ? "filled" : ""}`}>
                             <input
                                 type="text"
                                 name="forme_juridique"
@@ -246,7 +256,7 @@ export default function Parametres() {
                             <label>Forme juridique (ex : Auto-entrepreneur, SASU au capital de 1000 €)</label>
                         </div>
 
-                        <div className={`field field--large ${parametres.hebergeur ? "filled" : ""}`}>
+                        <div className={`field field--medium ${parametres.hebergeur ? "filled" : ""}`}>
                             <input
                                 type="text"
                                 name="hebergeur"
@@ -269,7 +279,7 @@ export default function Parametres() {
                             <label>Délai de paiement (jours)</label>
                         </div>
 
-                        <div className={`field ${parametres.iban ? "filled" : ""}`}>
+                        <div className={`field field--medium ${parametres.iban ? "filled" : ""}`}>
                             <input
                                 type="text"
                                 name="iban"
@@ -307,10 +317,24 @@ export default function Parametres() {
                 {/* COULEURS */}
                 <section className="parametres-section">
                     <div className="parametres-section__entete">
-                        <h2>Couleurs du thème</h2>
+                        <h2><span className="parametres-section__icone">🎨</span> Couleurs du thème</h2>
                         <button type="button" className="btn-texte" onClick={reinitialiserCouleurs}>
                             ↺ Réinitialiser aux couleurs par défaut
                         </button>
+                    </div>
+
+                    {/* APERÇU EN DIRECT */}
+                    <div className="couleurs-apercu" style={{ background: parametres.couleur_fond, color: parametres.couleur_texte }}>
+                        <span className="couleurs-apercu__badge" style={{ background: parametres.couleur_primaire }}>
+                            {(parametres.nom_entreprise || "GD").slice(0, 2).toUpperCase()}
+                        </span>
+                        <div className="couleurs-apercu__texte">
+                            <strong>{parametres.nom_entreprise || "Votre entreprise"}</strong>
+                            <span>Aperçu de votre thème</span>
+                        </div>
+                        <span className="couleurs-apercu__bouton" style={{ background: parametres.couleur_secondaire }}>
+                            Bouton
+                        </span>
                     </div>
 
                     <div className="color-grid">
@@ -322,12 +346,15 @@ export default function Parametres() {
                         ].map(([key, label]) => (
                             <div className="color-item" key={key}>
                                 <label>{label}</label>
-                                <input
-                                    type="color"
-                                    name={key}
-                                    value={parametres[key]}
-                                    onChange={handleColorChange}
-                                />
+                                <div className="color-item__champ">
+                                    <input
+                                        type="color"
+                                        name={key}
+                                        value={parametres[key]}
+                                        onChange={handleColorChange}
+                                    />
+                                    <span className="color-item__hex">{parametres[key]}</span>
+                                </div>
                             </div>
                         ))}
                     </div>

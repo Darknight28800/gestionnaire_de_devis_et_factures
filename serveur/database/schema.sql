@@ -205,10 +205,10 @@ CREATE TABLE IF NOT EXISTS offres_abonnement (
 ) ENGINE=InnoDB;
 
 INSERT INTO offres_abonnement (code, nom, description, prix_mensuel, max_utilisateurs, max_devis_mois, max_factures_mois, ordre) VALUES
-('independant', 'Indépendant', 'Pour les indépendants et micro-entreprises', 9.00, 1, 20, 20, 1),
-('pme', 'PME', 'Pour les petites et moyennes équipes', 19.00, 5, 100, 100, 2),
-('grande_entreprise', 'Grande entreprise', 'Utilisateurs et volume illimités', 39.00, NULL, NULL, NULL, 3)
-ON DUPLICATE KEY UPDATE code = code;
+('independant', 'Indépendant', 'Pour les indépendants et micro-entreprises', 7.99, 1, 20, 20, 1),
+('pme', 'PME', 'Pour les petites et moyennes équipes', 19.99, 5, 100, 100, 2),
+('grande_entreprise', 'Grande entreprise', 'Utilisateurs et volume illimités', 39.99, NULL, NULL, NULL, 3)
+ON DUPLICATE KEY UPDATE prix_mensuel = VALUES(prix_mensuel);
 
 -- ------------------------------------------------------------
 -- Abonnement de l'installation (ligne unique id = 1)

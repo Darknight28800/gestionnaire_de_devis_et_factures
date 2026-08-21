@@ -24,7 +24,7 @@ const router = Router();
     router.get("/me", verifyToken, async (req, res) => {
     try {
         const [rows] = await db.query(
-        "SELECT id, nom, email, role FROM utilisateurs WHERE id = ?",
+        "SELECT id, nom, email, role, date_creation FROM utilisateurs WHERE id = ?",
         [req.utilisateur.id]
         );
 
