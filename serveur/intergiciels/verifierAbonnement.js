@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { AbonnementModele } from "../modeles/abonnementModele.js";
 import { stripeConfigure } from "../config/stripe.js";
 
@@ -6,6 +7,22 @@ import { stripeConfigure } from "../config/stripe.js";
 // développement local et pour les tests automatisés.
 export default async function verifierAbonnement(req, res, next) {
     if (!stripeConfigure()) return next();
+
+    // Le créateur de l'application garde toujours accès, quel que soit l'état de l'abonnement.
+    // Ce middleware s'exécute avant authMiddleware/verifyToken sur ces routes, donc le token
+    // est décodé ici directement plutôt que de dépendre de req.utilisateur.
+    if (process.env.PROPRIETAIRE_EMAIL) {
+        const header = req.headers.authorization;
+        const token = header?.split(" ")[1];
+        if (token) {
+            try {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                if (decoded.email === process.env.PROPRIETAIRE_EMAIL) return next();
+            } catch {
+                // Token invalide : on laisse la suite de la chaîne (verifyToken) le signaler.
+            }
+        }
+    }
 
     try {
         const autorise = await AbonnementModele.accesAutorise();
