@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import api, { resoudreUrlFichier } from "../../api/axios";
 import "../../styles/pages/_parametres.scss";
 
@@ -11,6 +12,7 @@ const COULEURS_PAR_DEFAUT = {
 };
 
 export default function Parametres() {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -126,8 +128,15 @@ export default function Parametres() {
     };
 
     if (loading) {
-        return <p className="page-parametres__loading">Chargement…</p>;
+        return <p className="page-parametres__loading">{t("commun.chargement")}</p>;
     }
+
+    const libellesCouleurs = {
+        couleur_primaire: t("parametres.couleurPrimaire"),
+        couleur_secondaire: t("parametres.couleurSecondaire"),
+        couleur_fond: t("parametres.couleurFond"),
+        couleur_texte: t("parametres.couleurTexte")
+    };
 
     return (
         <div className="page-parametres">
@@ -136,10 +145,8 @@ export default function Parametres() {
             <div className="parametres-hero">
                 <span className="parametres-hero__badge">⚙️</span>
                 <div>
-                    <h1>Paramètres de l'entreprise</h1>
-                    <p className="page-lede">
-                        Ces informations apparaissent sur vos devis, factures et sur les pages publiques de l'application.
-                    </p>
+                    <h1>{t("parametres.titre")}</h1>
+                    <p className="page-lede">{t("parametres.sousTitre")}</p>
                 </div>
             </div>
 
@@ -147,7 +154,7 @@ export default function Parametres() {
 
                 {/* INFORMATIONS */}
                 <section className="parametres-section">
-                    <h2><span className="parametres-section__icone">🏢</span> Informations</h2>
+                    <h2><span className="parametres-section__icone">🏢</span> {t("parametres.informations")}</h2>
 
                     <div className="parametres-form">
 
@@ -159,7 +166,7 @@ export default function Parametres() {
                                 onChange={handleChange}
                                 placeholder=" "
                             />
-                            <label>Nom de l’entreprise</label>
+                            <label>{t("parametres.nomEntreprise")}</label>
                         </div>
 
                         <div className={`field ${parametres.email ? "filled" : ""}`}>
@@ -170,7 +177,7 @@ export default function Parametres() {
                                 onChange={handleChange}
                                 placeholder=" "
                             />
-                            <label>E-mail</label>
+                            <label>{t("commun.email")}</label>
                         </div>
 
                         <div className={`field ${parametres.telephone ? "filled" : ""}`}>
@@ -181,7 +188,7 @@ export default function Parametres() {
                                 onChange={handleChange}
                                 placeholder=" "
                             />
-                            <label>Téléphone</label>
+                            <label>{t("commun.telephone")}</label>
                         </div>
 
                         <div className={`field field--large ${parametres.adresse ? "filled" : ""}`}>
@@ -192,27 +199,27 @@ export default function Parametres() {
                                 onChange={handleChange}
                                 placeholder=" "
                             />
-                            <label>Adresse</label>
+                            <label>{t("commun.adresse")}</label>
                         </div>
                     </div>
                 </section>
 
                 {/* LOGO */}
                 <section className="parametres-section">
-                    <h2><span className="parametres-section__icone">🖼️</span> Logo</h2>
+                    <h2><span className="parametres-section__icone">🖼️</span> {t("parametres.logo")}</h2>
 
                     <div className="logo-wrapper">
                         <div className="logo-preview">
                             {logoPreview ? (
                                 <img src={logoPreview} alt="Logo" />
                             ) : (
-                                <span>Aucun logo</span>
+                                <span>{t("parametres.aucunLogo")}</span>
                             )}
                         </div>
 
                         <div className="logo-actions">
                             <label className="btn-file">
-                                Choisir un fichier
+                                {t("parametres.choisirFichier")}
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -220,18 +227,15 @@ export default function Parametres() {
                                     style={{ display: "none" }}
                                 />
                             </label>
-                            <p className="logo-hint">PNG, JPG, SVG — max 2 Mo</p>
+                            <p className="logo-hint">{t("parametres.formatsLogo")}</p>
                         </div>
                     </div>
                 </section>
 
                 {/* FACTURATION & MENTIONS LÉGALES */}
                 <section className="parametres-section">
-                    <h2><span className="parametres-section__icone">🧾</span> Facturation &amp; mentions légales</h2>
-                    <p className="parametres-section__aide">
-                        Ces informations apparaissent sur vos devis/factures PDF, ainsi que sur les pages
-                        Mentions légales et Contact de l'application.
-                    </p>
+                    <h2><span className="parametres-section__icone">🧾</span> {t("parametres.facturationMentions")}</h2>
+                    <p className="parametres-section__aide">{t("parametres.aideFacturation")}</p>
 
                     <div className="parametres-form">
                         <div className={`field ${parametres.siret ? "filled" : ""}`}>
@@ -242,7 +246,7 @@ export default function Parametres() {
                                 onChange={handleChange}
                                 placeholder=" "
                             />
-                            <label>Numéro SIRET</label>
+                            <label>{t("parametres.numeroSiret")}</label>
                         </div>
 
                         <div className={`field field--medium ${parametres.forme_juridique ? "filled" : ""}`}>
@@ -253,7 +257,7 @@ export default function Parametres() {
                                 onChange={handleChange}
                                 placeholder=" "
                             />
-                            <label>Forme juridique (ex : Auto-entrepreneur, SASU au capital de 1000 €)</label>
+                            <label>{t("parametres.formeJuridique")}</label>
                         </div>
 
                         <div className={`field field--medium ${parametres.hebergeur ? "filled" : ""}`}>
@@ -264,7 +268,7 @@ export default function Parametres() {
                                 onChange={handleChange}
                                 placeholder=" "
                             />
-                            <label>Hébergeur de l'application (si hébergée en ligne)</label>
+                            <label>{t("parametres.hebergeur")}</label>
                         </div>
 
                         <div className={`field ${parametres.delai_paiement_jours ? "filled" : ""}`}>
@@ -276,7 +280,7 @@ export default function Parametres() {
                                 onChange={handleChange}
                                 placeholder=" "
                             />
-                            <label>Délai de paiement (jours)</label>
+                            <label>{t("parametres.delaiPaiement")}</label>
                         </div>
 
                         <div className={`field field--medium ${parametres.iban ? "filled" : ""}`}>
@@ -309,7 +313,7 @@ export default function Parametres() {
                                 onChange={handleChange}
                                 placeholder=" "
                             />
-                            <label>Mention TVA (ex : « TVA non applicable, art. 293 B du CGI »)</label>
+                            <label>{t("parametres.mentionTva")}</label>
                         </div>
                     </div>
                 </section>
@@ -317,9 +321,9 @@ export default function Parametres() {
                 {/* COULEURS */}
                 <section className="parametres-section">
                     <div className="parametres-section__entete">
-                        <h2><span className="parametres-section__icone">🎨</span> Couleurs du thème</h2>
+                        <h2><span className="parametres-section__icone">🎨</span> {t("parametres.couleursTheme")}</h2>
                         <button type="button" className="btn-texte" onClick={reinitialiserCouleurs}>
-                            ↺ Réinitialiser aux couleurs par défaut
+                            ↺ {t("parametres.reinitialiserCouleurs")}
                         </button>
                     </div>
 
@@ -329,23 +333,18 @@ export default function Parametres() {
                             {(parametres.nom_entreprise || "GD").slice(0, 2).toUpperCase()}
                         </span>
                         <div className="couleurs-apercu__texte">
-                            <strong>{parametres.nom_entreprise || "Votre entreprise"}</strong>
-                            <span>Aperçu de votre thème</span>
+                            <strong>{parametres.nom_entreprise || t("parametres.votreEntreprise")}</strong>
+                            <span>{t("parametres.apercuTheme")}</span>
                         </div>
                         <span className="couleurs-apercu__bouton" style={{ background: parametres.couleur_secondaire }}>
-                            Bouton
+                            {t("parametres.bouton")}
                         </span>
                     </div>
 
                     <div className="color-grid">
-                        {[
-                            ["couleur_primaire", "Couleur primaire"],
-                            ["couleur_secondaire", "Couleur secondaire"],
-                            ["couleur_fond", "Couleur de fond"],
-                            ["couleur_texte", "Couleur du texte"]
-                        ].map(([key, label]) => (
+                        {["couleur_primaire", "couleur_secondaire", "couleur_fond", "couleur_texte"].map((key) => (
                             <div className="color-item" key={key}>
-                                <label>{label}</label>
+                                <label>{libellesCouleurs[key]}</label>
                                 <div className="color-item__champ">
                                     <input
                                         type="color"
@@ -362,7 +361,7 @@ export default function Parametres() {
 
                 {/* BOUTON */}
                 <button type="submit" className="btn-save" disabled={saving}>
-                    {saving ? "Enregistrement..." : "Enregistrer les paramètres"}
+                    {saving ? t("commun.enregistrementEnCours") : t("parametres.enregistrerParametres")}
                 </button>
             </form>
         </div>

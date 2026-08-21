@@ -1,9 +1,12 @@
 import { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import api, { resoudreUrlFichier } from "../api/axios";
 import { AuthContexte } from "../contexte/authProvider";
+import SelecteurLangue from "./selecteurLangue";
 import "../styles/composants/_header.scss";
 
 export default function Header({ onToggleSidebar }) {
+    const { t } = useTranslation();
     const { utilisateur } = useContext(AuthContexte);
     const [parametres, setParametres] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -89,6 +92,8 @@ export default function Header({ onToggleSidebar }) {
 
             <div className="header__right">
 
+                <SelecteurLangue />
+
                 {/* DARK MODE */}
                 <button className="btn-darkmode" onClick={toggleDarkMode} aria-label="Basculer le mode sombre">
                     {modeSombre ? "☀️" : "🌙"}
@@ -106,9 +111,9 @@ export default function Header({ onToggleSidebar }) {
 
                     {menuOpen && (
                         <div className="user-menu">
-                            <a href="/profil">Profil</a>
-                            <a href="/parametres">Paramètres</a>
-                            <a href="/logout">Déconnexion</a>
+                            <a href="/profil">{t("nav.profil")}</a>
+                            <a href="/parametres">{t("nav.parametres")}</a>
+                            <a href="/logout">{t("nav.deconnexion")}</a>
                         </div>
                     )}
                 </div>

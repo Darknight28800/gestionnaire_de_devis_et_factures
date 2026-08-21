@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import "../../styles/pages/_roles.scss";
 
-const PERMISSIONS = [
-    { id: "voir_utilisateurs", label: "Voir les utilisateurs" },
-    { id: "creer_utilisateur", label: "Créer un utilisateur" },
-    { id: "modifier_utilisateur", label: "Modifier un utilisateur" },
-    { id: "supprimer_utilisateur", label: "Supprimer un utilisateur" },
-
-    { id: "voir_roles", label: "Voir les rôles" },
-    { id: "gerer_roles", label: "Gérer les rôles" },
-
-    { id: "voir_logs", label: "Voir les logs" }
-];
-
 export default function Roles() {
+    const { t } = useTranslation();
+
+    const PERMISSIONS = [
+        { id: "voir_utilisateurs", label: t("admin.permissions.voirUtilisateurs") },
+        { id: "creer_utilisateur", label: t("admin.permissions.creerUtilisateur") },
+        { id: "modifier_utilisateur", label: t("admin.permissions.modifierUtilisateur") },
+        { id: "supprimer_utilisateur", label: t("admin.permissions.supprimerUtilisateur") },
+
+        { id: "voir_roles", label: t("admin.permissions.voirRoles") },
+        { id: "gerer_roles", label: t("admin.permissions.gererRoles") },
+
+        { id: "voir_logs", label: t("admin.permissions.voirLogs") }
+    ];
 
     const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -90,7 +92,7 @@ export default function Roles() {
 
     /* Suppression */
     const supprimer = async (id) => {
-        if (!confirm("Supprimer ce rôle ?")) return;
+        if (!confirm(t("admin.confirmerSuppressionRole"))) return;
 
         try {
             await api.delete(`/admin/roles/${id}`);
@@ -100,15 +102,15 @@ export default function Roles() {
         }
     };
 
-    if (loading) return <p>Chargement…</p>;
+    if (loading) return <p>{t("commun.chargement")}</p>;
 
     return (
         <div className="page-roles">
 
             <div className="header">
-                <h1>Gestion des rôles</h1>
+                <h1>{t("admin.gestionRoles")}</h1>
                 <button className="btn-primary" onClick={openCreate}>
-                    + Ajouter un rôle
+                    + {t("admin.ajouterRole")}
                 </button>
             </div>
 
@@ -116,9 +118,9 @@ export default function Roles() {
             <table className="table-roles">
                 <thead>
                     <tr>
-                        <th>Nom</th>
-                        <th>Permissions</th>
-                        <th>Actions</th>
+                        <th>{t("commun.nom")}</th>
+                        <th>{t("admin.permissionsLabel")}</th>
+                        <th>{t("commun.actions")}</th>
                     </tr>
                 </thead>
 
@@ -132,8 +134,8 @@ export default function Roles() {
                                 ))}
                             </td>
                             <td>
-                                <button className="btn-edit" onClick={() => openEdit(r)}>Modifier</button>
-                                <button className="btn-delete" onClick={() => supprimer(r.id)}>Supprimer</button>
+                                <button className="btn-edit" onClick={() => openEdit(r)}>{t("commun.modifier")}</button>
+                                <button className="btn-delete" onClick={() => supprimer(r.id)}>{t("commun.supprimer")}</button>
                             </td>
                         </tr>
                     ))}
@@ -142,22 +144,22 @@ export default function Roles() {
 
             {/* MODALE */}
             {modalOpen && (
-                <motion.div 
+                <motion.div
                     className="modal-overlay"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                 >
-                    <motion.div 
+                    <motion.div
                         className="modal"
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                     >
-                        <h2>{editingRole ? "Modifier le rôle" : "Créer un rôle"}</h2>
+                        <h2>{editingRole ? t("admin.modifierRole") : t("admin.creerRole")}</h2>
 
                         <form onSubmit={handleSubmit}>
-                            <input 
+                            <input
                                 type="text"
-                                placeholder="Nom du rôle"
+                                placeholder={t("admin.nomDuRole")}
                                 value={form.nom}
                                 onChange={(e) => setForm({ ...form, nom: e.target.value })}
                             />
@@ -176,8 +178,8 @@ export default function Roles() {
                             </div>
 
                             <div className="modal-actions">
-                                <button type="submit" className="btn-primary">Enregistrer</button>
-                                <button type="button" className="btn-secondary" onClick={() => setModalOpen(false)}>Annuler</button>
+                                <button type="submit" className="btn-primary">{t("commun.enregistrer")}</button>
+                                <button type="button" className="btn-secondary" onClick={() => setModalOpen(false)}>{t("commun.annuler")}</button>
                             </div>
                         </form>
                     </motion.div>

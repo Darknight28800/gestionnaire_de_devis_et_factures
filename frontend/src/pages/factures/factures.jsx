@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import { Link } from "react-router-dom";
 import Modal from "../../composants/modal";
@@ -8,6 +9,7 @@ import "../../styles/pages/_factures.scss";
 const LIGNE_VIDE = { description: "", quantite: 1, prix: 0 };
 
 export default function Factures() {
+    const { t } = useTranslation();
     const { utilisateur } = useAuth();
     const [factures, setFactures] = useState([]);
     const [clients, setClients] = useState([]);
@@ -133,19 +135,19 @@ export default function Factures() {
             charger();
         } catch (err) {
             console.error(err.response?.data);
-            alert("Erreur lors de l'enregistrement de la facture.");
+            alert(t("factures.erreurEnregistrement"));
         }
     };
 
     const supprimerFacture = async (f) => {
-        if (!window.confirm(`Supprimer la facture #${f.id} ?`)) return;
+        if (!window.confirm(t("factures.confirmerSuppression", { id: f.id }))) return;
 
         try {
             await api.delete(`/factures/${f.id}`);
             charger();
         } catch (err) {
             console.error(err);
-            alert("Erreur lors de la suppression de la facture.");
+            alert(t("factures.erreurSuppression"));
         }
     };
 
@@ -153,32 +155,32 @@ export default function Factures() {
         <div className="factures-page">
 
             <div className="factures-header">
-                <h1>Factures</h1>
+                <h1>{t("nav.factures")}</h1>
 
                 <div className="factures-header__actions">
                     <input
                         type="text"
                         className="input-search"
-                        placeholder="Rechercher une facture..."
+                        placeholder={t("factures.rechercher")}
                         onChange={(e) => {
                             setPage(1);
                             setSearch(e.target.value);
                         }}
                     />
-                    <button className="btn btn-primaire" onClick={ouvrirCreation}>
-                        + Nouvelle facture
+                    <button className="btn btn-primaire" onClick={ouvrirCreation} data-tour="factures-nouvelle">
+                        + {t("factures.nouvelleFacture")}
                     </button>
                 </div>
             </div>
 
-            <table className="table-factures">
+            <table className="table-factures" data-tour="factures-tableau">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Montant</th>
-                        <th>Date</th>
-                        <th>Statut</th>
-                        <th>Actions</th>
+                        <th>{t("commun.montant")}</th>
+                        <th>{t("commun.date")}</th>
+                        <th>{t("commun.statut")}</th>
+                        <th>{t("commun.actions")}</th>
                     </tr>
                 </thead>
 
@@ -191,20 +193,20 @@ export default function Factures() {
 
                             <td>
                                 <span className={`statut statut--${f.statut}`}>
-                                    {f.statut}
+                                    {t(`statuts.facture.${f.statut}`, f.statut)}
                                 </span>
                             </td>
 
                             <td className="actions-cellule">
                                 <Link className="btn-lien" to={`/factures/${f.id}`}>
-                                    Voir →
+                                    {t("commun.voir")} →
                                 </Link>
                                 <button className="btn-lien" onClick={() => ouvrirEdition(f)}>
-                                    Modifier
+                                    {t("commun.modifier")}
                                 </button>
                                 {utilisateur?.role === "admin" && (
                                     <button className="btn-texte btn-danger" onClick={() => supprimerFacture(f)}>
-                                        Supprimer
+                                        {t("commun.supprimer")}
                                     </button>
                                 )}
                             </td>
@@ -219,11 +221,11 @@ export default function Factures() {
                     disabled={page === 1}
                     onClick={() => setPage(page - 1)}
                 >
-                    ← Précédent
+                    ← {t("commun.precedent")}
                 </button>
 
                 <span className="pagination__info">
-                    Page {page} / {totalPages}
+                    {t("commun.page")} {page} / {totalPages}
                 </span>
 
                 <button
@@ -231,26 +233,26 @@ export default function Factures() {
                     disabled={page === totalPages}
                     onClick={() => setPage(page + 1)}
                 >
-                    Suivant →
+                    {t("commun.suivant")} →
                 </button>
             </div>
 
             <Modal
                 open={modalOpen}
-                title={modeEdition ? "Modifier la facture" : "Nouvelle facture"}
+                title={modeEdition ? t("factures.modifierFacture") : t("factures.nouvelleFacture")}
                 onClose={() => setModalOpen(false)}
                 taille="large"
             >
                 <form onSubmit={envoyer} className="form-devis">
 
                     <div className="form-ligne">
-                        <label>Client</label>
+                        <label>{t("commun.client")}</label>
                         <select
                             value={form.client_id}
                             onChange={(e) => setForm({ ...form, client_id: Number(e.target.value) })}
                             required
                         >
-                            <option value="">Sélectionner un client</option>
+                            <option value="">{t("devis.selectionnerClient")}</option>
                             {clients.map((c) => (
                                 <option key={c.id} value={c.id}>{c.nom}</option>
                             ))}
@@ -258,38 +260,38 @@ export default function Factures() {
                     </div>
 
                     <div className="form-ligne">
-                        <label>Statut</label>
+                        <label>{t("commun.statut")}</label>
                         <select
                             value={form.statut}
                             onChange={(e) => setForm({ ...form, statut: e.target.value })}
                         >
-                            <option value="non_payee">Non payée</option>
-                            <option value="payee">Payée</option>
+                            <option value="non_payee">{t("statuts.facture.non_payee")}</option>
+                            <option value="payee">{t("statuts.facture.payee")}</option>
                         </select>
                     </div>
 
-                    <h3>Lignes de la facture</h3>
+                    <h3>{t("factures.lignesFacture")}</h3>
 
                     <div className="ligne-devis ligne-devis--entete">
-                        <span>Description</span>
-                        <span>Quantité</span>
-                        <span>Prix unitaire (€)</span>
+                        <span>{t("commun.description")}</span>
+                        <span>{t("devis.quantite")}</span>
+                        <span>{t("devis.prixUnitaire")}</span>
                         <span></span>
                     </div>
 
                     {form.lignes.map((ligne, index) => (
                         <div key={index} className="ligne-devis">
                             <input
-                                placeholder="Ex : Prestation, produit..."
-                                aria-label="Description de la ligne"
+                                placeholder={t("devis.placeholderDescription")}
+                                aria-label={t("devis.descriptionLigne")}
                                 value={ligne.description}
                                 onChange={(e) => changerLigne(index, "description", e.target.value)}
                             />
                             <input
                                 type="number"
                                 min="1"
-                                aria-label="Quantité"
-                                title="Quantité"
+                                aria-label={t("devis.quantite")}
+                                title={t("devis.quantite")}
                                 value={ligne.quantite}
                                 onFocus={() => viderChamp(index, "quantite")}
                                 onBlur={() => remplirSiVide(index, "quantite", 1)}
@@ -299,8 +301,8 @@ export default function Factures() {
                                 type="number"
                                 min="0"
                                 step="0.01"
-                                aria-label="Prix unitaire en euros"
-                                title="Prix unitaire (€)"
+                                aria-label={t("devis.prixUnitaireEuros")}
+                                title={t("devis.prixUnitaire")}
                                 value={ligne.prix}
                                 onFocus={() => viderChamp(index, "prix")}
                                 onBlur={() => remplirSiVide(index, "prix", 0)}
@@ -309,7 +311,7 @@ export default function Factures() {
                             <button
                                 type="button"
                                 className="btn-icone"
-                                aria-label="Supprimer cette ligne"
+                                aria-label={t("devis.supprimerLigne")}
                                 onClick={() => supprimerLigne(index)}
                             >
                                 🗑️
@@ -322,21 +324,21 @@ export default function Factures() {
                         className="btn-primaire btn-ajout-ligne"
                         onClick={ajouterLigne}
                     >
-                        + Ajouter une ligne
+                        + {t("devis.ajouterLigne")}
                     </button>
 
                     <div className="totaux">
-                        <p>Total HT : <strong>{totalHT.toFixed(2)} €</strong></p>
-                        <p>TVA (20%) : <strong>{totalTVA.toFixed(2)} €</strong></p>
-                        <p>Total TTC : <strong>{totalTTC.toFixed(2)} €</strong></p>
+                        <p>{t("devis.totalHT")} : <strong>{totalHT.toFixed(2)} €</strong></p>
+                        <p>{t("devis.tva")} : <strong>{totalTVA.toFixed(2)} €</strong></p>
+                        <p>{t("devis.totalTTC")} : <strong>{totalTTC.toFixed(2)} €</strong></p>
                     </div>
 
                     <div className="form-actions">
                         <button type="button" className="btn-texte" onClick={() => setModalOpen(false)}>
-                            Annuler
+                            {t("commun.annuler")}
                         </button>
                         <button type="submit" className="btn-primaire">
-                            {modeEdition ? "Enregistrer" : "Créer la facture"}
+                            {modeEdition ? t("commun.enregistrer") : t("factures.creerFacture")}
                         </button>
                     </div>
 

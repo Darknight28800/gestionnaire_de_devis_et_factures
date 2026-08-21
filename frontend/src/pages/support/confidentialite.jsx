@@ -1,43 +1,33 @@
+import { useTranslation } from "react-i18next";
+
 export default function Confidentialite() {
+    const { t } = useTranslation();
+
     return (
         <div className="page page-legal">
-            <h1>Politique de confidentialité</h1>
-            <p className="page-legal__maj">Dernière mise à jour : [à compléter]</p>
+            <h1>{t("legal.confidentialite.titre")}</h1>
+            <p className="page-legal__maj">{t("legal.derniereMaj")} : {t("legal.aCompleter")}</p>
 
             <section>
-                <h2>Données collectées</h2>
-                <p>
-                    Dans le cadre de l'utilisation de l'application, nous collectons les données que vous
-                    renseignez vous-même : informations de compte (nom, email), données de vos clients,
-                    devis et factures, ainsi que les informations de paiement nécessaires à la gestion de
-                    votre abonnement.
-                </p>
+                <h2>{t("legal.confidentialite.donneesCollectees")}</h2>
+                <p>{t("legal.confidentialite.donneesCollecteesTexte")}</p>
             </section>
 
             <section>
-                <h2>Utilisation des données</h2>
-                <p>
-                    Ces données sont utilisées exclusivement pour fournir le service : gestion de vos
-                    devis et factures, authentification, facturation de votre abonnement et support.
-                    Elles ne sont ni vendues ni partagées à des fins commerciales avec des tiers.
-                </p>
+                <h2>{t("legal.confidentialite.utilisationDonnees")}</h2>
+                <p>{t("legal.confidentialite.utilisationDonneesTexte")}</p>
             </section>
 
             <section>
-                <h2>Conservation</h2>
-                <p>
-                    Les devis et factures archivés sont conservés 5 ans à compter de leur archivage, puis
-                    supprimés définitivement. Les autres données sont conservées tant que votre compte est
-                    actif.
-                </p>
+                <h2>{t("legal.confidentialite.conservation")}</h2>
+                <p>{t("legal.confidentialite.conservationTexte")}</p>
             </section>
 
             <section>
-                <h2>Vos droits</h2>
+                <h2>{t("legal.confidentialite.vosDroits")}</h2>
                 <p>
-                    Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de
-                    suppression de vos données. Pour exercer ces droits, contactez-nous via le{" "}
-                    <a href="/support">Centre d'aide</a>.
+                    {t("legal.confidentialite.vosDroitsTexte")}{" "}
+                    <a href="/support">{t("nav.support")}</a>.
                 </p>
             </section>
         </div>

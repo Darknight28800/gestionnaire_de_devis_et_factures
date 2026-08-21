@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import "../../styles/pages/_logs.scss";
 
 export default function Logs() {
+    const { t } = useTranslation();
 
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -55,60 +57,60 @@ export default function Logs() {
         chargerLogs();
     };
 
-    if (loading) return <p>Chargement…</p>;
+    if (loading) return <p>{t("commun.chargement")}</p>;
 
     return (
         <div className="page-logs">
 
             {/* HEADER */}
-            <motion.div 
+            <motion.div
                 className="header"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
             >
-                <h1>Historique des actions</h1>
-                <p>Consultez toutes les actions effectuées dans le système.</p>
+                <h1>{t("admin.historiqueActions")}</h1>
+                <p>{t("admin.historiqueActionsTexte")}</p>
             </motion.div>
 
             {/* FILTRES */}
             <div className="filters">
-                <input 
+                <input
                     type="text"
-                    placeholder="Utilisateur"
+                    placeholder={t("commun.utilisateur")}
                     value={filters.utilisateur}
                     onChange={(e) => setFilters({ ...filters, utilisateur: e.target.value })}
                 />
 
-                <input 
+                <input
                     type="text"
-                    placeholder="Action"
+                    placeholder={t("admin.action")}
                     value={filters.action}
                     onChange={(e) => setFilters({ ...filters, action: e.target.value })}
                 />
 
-                <input 
+                <input
                     type="date"
                     value={filters.date}
                     onChange={(e) => setFilters({ ...filters, date: e.target.value })}
                 />
 
                 <button className="btn-primary" onClick={appliquerFiltres}>
-                    Filtrer
+                    {t("admin.filtrer")}
                 </button>
             </div>
 
             {/* TABLE */}
-            <motion.table 
+            <motion.table
                 className="table-logs"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
             >
                 <thead>
                     <tr>
-                        <th>Utilisateur</th>
-                        <th>Action</th>
-                        <th>Détails</th>
-                        <th>Date</th>
+                        <th>{t("commun.utilisateur")}</th>
+                        <th>{t("admin.action")}</th>
+                        <th>{t("admin.details")}</th>
+                        <th>{t("commun.date")}</th>
                     </tr>
                 </thead>
 
@@ -126,20 +128,20 @@ export default function Logs() {
 
             {/* PAGINATION */}
             <div className="pagination">
-                <button 
+                <button
                     disabled={page === 1}
                     onClick={() => setPage(page - 1)}
                 >
-                    ← Précédent
+                    ← {t("commun.precedent")}
                 </button>
 
-                <span>Page {page} / {totalPages}</span>
+                <span>{t("admin.pageSur", { page, totalPages })}</span>
 
-                <button 
+                <button
                     disabled={page === totalPages}
                     onClick={() => setPage(page + 1)}
                 >
-                    Suivant →
+                    {t("commun.suivant")} →
                 </button>
             </div>
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
 import "../../styles/pages/_archives.scss";
@@ -13,6 +14,7 @@ function dateExpiration(archiveLe) {
 }
 
 export default function Archives() {
+    const { t } = useTranslation();
     const { utilisateur } = useAuth();
     const [onglet, setOnglet] = useState("devis");
     const [devis, setDevis] = useState([]);
@@ -52,41 +54,39 @@ export default function Archives() {
     };
 
     const purgerArchives = async () => {
-        if (!window.confirm(
-            `Cette action supprime définitivement tous les devis et factures archivés depuis plus de ${DUREE_CONSERVATION_ANNEES} ans. Continuer ?`
-        )) return;
+        if (!window.confirm(t("archives.confirmerPurge", { annees: DUREE_CONSERVATION_ANNEES }))) return;
 
         setPurge(true);
         setMessagePurge(null);
         try {
             const res = await api.post("/admin/purger-archives");
             setMessagePurge(
-                `${res.data.devisSupprimes} devis et ${res.data.facturesSupprimees} facture(s) supprimés définitivement.`
+                t("archives.resultatPurge", { devis: res.data.devisSupprimes, factures: res.data.facturesSupprimees })
             );
             charger();
         } catch (err) {
             console.error("Erreur purge :", err);
-            setMessagePurge("Erreur lors de la purge.");
+            setMessagePurge(t("archives.erreurPurge"));
         } finally {
             setPurge(false);
         }
     };
 
-    if (loading) return <p>Chargement…</p>;
+    if (loading) return <p>{t("commun.chargement")}</p>;
 
     return (
         <div className="page-archives">
             <div className="archives-header">
                 <div>
-                    <h1>Archives</h1>
+                    <h1>{t("nav.archives")}</h1>
                     <p className="page-lede">
-                        Devis et factures terminés, conservés {DUREE_CONSERVATION_ANNEES} ans maximum avant suppression définitive.
+                        {t("archives.description", { annees: DUREE_CONSERVATION_ANNEES })}
                     </p>
                 </div>
 
                 {utilisateur?.role === "admin" && (
                     <button className="btn btn-texte" onClick={purgerArchives} disabled={purge}>
-                        {purge ? "Purge en cours..." : "Purger les archives expirées"}
+                        {purge ? t("archives.purgeEnCours") : t("archives.purgerExpirees")}
                     </button>
                 )}
             </div>
@@ -98,29 +98,29 @@ export default function Archives() {
                     className={onglet === "devis" ? "actif" : ""}
                     onClick={() => setOnglet("devis")}
                 >
-                    Devis archivés ({devis.length})
+                    {t("archives.devisArchives")} ({devis.length})
                 </button>
                 <button
                     className={onglet === "factures" ? "actif" : ""}
                     onClick={() => setOnglet("factures")}
                 >
-                    Factures archivées ({factures.length})
+                    {t("archives.facturesArchivees")} ({factures.length})
                 </button>
             </div>
 
             {onglet === "devis" && (
                 devis.length === 0 ? (
-                    <p>Aucun devis archivé.</p>
+                    <p>{t("archives.aucunDevis")}</p>
                 ) : (
                     <table className="table-archives">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Client</th>
-                                <th>Montant</th>
-                                <th>Archivé le</th>
-                                <th>Suppression définitive prévue</th>
-                                <th>Actions</th>
+                                <th>{t("commun.client")}</th>
+                                <th>{t("commun.montant")}</th>
+                                <th>{t("archives.archiveLe")}</th>
+                                <th>{t("archives.suppressionPrevue")}</th>
+                                <th>{t("commun.actions")}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -132,9 +132,9 @@ export default function Archives() {
                                     <td>{new Date(d.archive_le).toLocaleDateString()}</td>
                                     <td>{dateExpiration(d.archive_le).toLocaleDateString()}</td>
                                     <td className="actions-cellule">
-                                        <Link className="btn-lien" to={`/devis/${d.id}`}>Voir →</Link>
+                                        <Link className="btn-lien" to={`/devis/${d.id}`}>{t("commun.voir")} →</Link>
                                         <button className="btn-lien" onClick={() => desarchiverDevis(d.id)}>
-                                            Désarchiver
+                                            {t("commun.desarchiver")}
                                         </button>
                                     </td>
                                 </tr>
@@ -146,16 +146,16 @@ export default function Archives() {
 
             {onglet === "factures" && (
                 factures.length === 0 ? (
-                    <p>Aucune facture archivée.</p>
+                    <p>{t("archives.aucuneFacture")}</p>
                 ) : (
                     <table className="table-archives">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Montant</th>
-                                <th>Archivée le</th>
-                                <th>Suppression définitive prévue</th>
-                                <th>Actions</th>
+                                <th>{t("commun.montant")}</th>
+                                <th>{t("archives.archiveeLe")}</th>
+                                <th>{t("archives.suppressionPrevue")}</th>
+                                <th>{t("commun.actions")}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -166,9 +166,9 @@ export default function Archives() {
                                     <td>{new Date(f.archive_le).toLocaleDateString()}</td>
                                     <td>{dateExpiration(f.archive_le).toLocaleDateString()}</td>
                                     <td className="actions-cellule">
-                                        <Link className="btn-lien" to={`/factures/${f.id}`}>Voir →</Link>
+                                        <Link className="btn-lien" to={`/factures/${f.id}`}>{t("commun.voir")} →</Link>
                                         <button className="btn-lien" onClick={() => desarchiverFacture(f.id)}>
-                                            Désarchiver
+                                            {t("commun.desarchiver")}
                                         </button>
                                     </td>
                                 </tr>

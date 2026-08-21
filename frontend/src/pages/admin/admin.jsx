@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import "../../styles/pages/_admin.scss";
 
 export default function Admin() {
+    const { t } = useTranslation();
     const container = {
         hidden: { opacity: 0 },
         show: {
@@ -37,8 +39,8 @@ export default function Admin() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
-            <h1>Administration</h1>
-            <p>Gérez les utilisateurs, les rôles et les journaux du système.</p>
+            <h1>{t("nav.administration")}</h1>
+            <p>{t("admin.sousTitre")}</p>
         </motion.div>
 
         {/* GRILLE */}
@@ -52,8 +54,8 @@ export default function Admin() {
             <motion.div variants={card}>
             <Link to="/admin/utilisateurs" className="admin-card">
                 <div className="icon">👤</div>
-                <h3>Gestion des utilisateurs</h3>
-                <p>Créer, modifier et gérer les comptes utilisateurs.</p>
+                <h3>{t("admin.gestionUtilisateurs")}</h3>
+                <p>{t("admin.gestionUtilisateursTexte")}</p>
             </Link>
             </motion.div>
 
@@ -61,8 +63,8 @@ export default function Admin() {
             <motion.div variants={card}>
             <Link to="/admin/roles" className="admin-card">
                 <div className="icon">🛡️</div>
-                <h3>Gestion des rôles</h3>
-                <p>Définir les permissions et niveaux d’accès.</p>
+                <h3>{t("admin.gestionRoles")}</h3>
+                <p>{t("admin.gestionRolesTexte")}</p>
             </Link>
             </motion.div>
 
@@ -70,8 +72,8 @@ export default function Admin() {
             <motion.div variants={card}>
             <Link to="/admin/logs" className="admin-card">
                 <div className="icon">📜</div>
-                <h3>Système de journaux</h3>
-                <p>Consulter l’historique des actions du système.</p>
+                <h3>{t("admin.systemeJournaux")}</h3>
+                <p>{t("admin.systemeJournauxTexte")}</p>
             </Link>
             </motion.div>
 
@@ -79,8 +81,8 @@ export default function Admin() {
             <motion.div variants={card}>
             <Link to="/admin/tickets" className="admin-card">
                 <div className="icon">🎫</div>
-                <h3>Tickets de support</h3>
-                <p>Consulter et traiter les demandes des utilisateurs.</p>
+                <h3>{t("admin.ticketsSupport")}</h3>
+                <p>{t("admin.ticketsSupportTexte")}</p>
             </Link>
             </motion.div>
         </motion.div>

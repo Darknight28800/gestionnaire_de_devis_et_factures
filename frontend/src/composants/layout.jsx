@@ -2,6 +2,7 @@ import Sidebar from "./sidebar";
 import Header from "./header";
 import Footer from "./footer";
 import BandeauEssai from "./bandeauEssai";
+import BoutonAide from "./boutonAide";
 import "../styles/composants/_layout.scss";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
@@ -35,6 +36,8 @@ export default function Layout() {
             {/* FOOTER GLOBAL */}
             <Footer />
         </div>
+
+        <BoutonAide />
         </div>
     );
 }

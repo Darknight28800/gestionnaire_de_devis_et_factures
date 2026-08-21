@@ -40,12 +40,20 @@
     gap: 1.1rem;
 }
 
+.page-connexion__langue {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 2;
+}
+
 .carte-connexion__marque {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
     margin-bottom: 0.3rem;
+    text-decoration: none;
 
     span {
         font-size: 1.25rem;

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 
 export default function Profil() {
+    const { t, i18n } = useTranslation();
     const [profil, setProfil] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -40,9 +42,9 @@ export default function Profil() {
         try {
             const res = await api.put("/auth/profil", { nom });
             setProfil((prev) => ({ ...prev, nom: res.data.nom }));
-            setMessageNom({ type: "succes", texte: "Nom mis à jour." });
+            setMessageNom({ type: "succes", texte: t("profil.nomMisAJour") });
         } catch (err) {
-            setMessageNom({ type: "erreur", texte: err.response?.data?.message || "Erreur lors de la mise à jour." });
+            setMessageNom({ type: "erreur", texte: err.response?.data?.message || t("profil.erreurMiseAJour") });
         } finally {
             setEnregistrementNom(false);
         }
@@ -55,18 +57,18 @@ export default function Profil() {
 
         try {
             await api.put("/auth/mot-de-passe", { motDePasseActuel, nouveauMotDePasse });
-            setMessageMdp({ type: "succes", texte: "Mot de passe mis à jour." });
+            setMessageMdp({ type: "succes", texte: t("profil.mdpMisAJour") });
             setMotDePasseActuel("");
             setNouveauMotDePasse("");
         } catch (err) {
-            setMessageMdp({ type: "erreur", texte: err.response?.data?.message || "Erreur lors du changement." });
+            setMessageMdp({ type: "erreur", texte: err.response?.data?.message || t("profil.erreurChangement") });
         } finally {
             setEnregistrementMdp(false);
         }
     };
 
-    if (loading) return <p>Chargement…</p>;
-    if (!profil) return <p>Impossible de charger votre profil.</p>;
+    if (loading) return <p>{t("commun.chargement")}</p>;
+    if (!profil) return <p>{t("profil.impossibleCharger")}</p>;
 
     const initiales = (profil.nom || profil.email || "?")
         .split(/[\s@.]+/)
@@ -76,7 +78,7 @@ export default function Profil() {
         .join("");
 
     const membreDepuis = profil.date_creation
-        ? new Date(profil.date_creation).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })
+        ? new Date(profil.date_creation).toLocaleDateString(i18n.language, { month: "long", year: "numeric" })
         : null;
 
     const forceMdp = (() => {
@@ -89,7 +91,13 @@ export default function Profil() {
         if (/[^A-Za-z0-9]/.test(nouveauMotDePasse)) score++;
         return Math.min(score, 4);
     })();
-    const forceLabels = ["Trop court", "Faible", "Correct", "Bon", "Excellent"];
+    const forceLabels = [
+        t("profil.forceTropCourt"),
+        t("profil.forceFaible"),
+        t("profil.forceCorrect"),
+        t("profil.forceBon"),
+        t("profil.forceExcellent")
+    ];
 
     return (
         <div className="page page-profil">
@@ -98,15 +106,15 @@ export default function Profil() {
             <div className="profil-hero">
                 <span className="profil-hero__avatar">{initiales || "?"}</span>
                 <div className="profil-hero__infos">
-                    <h1 className="page-title">{profil.nom || "Mon profil"}</h1>
+                    <h1 className="page-title">{profil.nom || t("nav.profil")}</h1>
                     <p className="page-lede">{profil.email}</p>
                     <div className="profil-hero__badges">
                         <span className={`profil-badge profil-badge--${profil.role}`}>
-                            {profil.role === "admin" ? "🛡️ Administrateur" : "👤 Utilisateur"}
+                            {profil.role === "admin" ? `🛡️ ${t("profil.administrateur")}` : `👤 ${t("profil.utilisateur")}`}
                         </span>
                         {membreDepuis && (
                             <span className="profil-badge profil-badge--neutre">
-                                📅 Membre depuis {membreDepuis}
+                                📅 {t("profil.membreDepuis", { date: membreDepuis })}
                             </span>
                         )}
                     </div>
@@ -117,28 +125,28 @@ export default function Profil() {
 
                 {/* NOM AFFICHÉ */}
                 <div className="profil-card">
-                    <h2><span className="profil-card__icone">🪪</span> Informations du compte</h2>
-                    <p className="profil-card__sous-titre">Ce nom est visible par les autres utilisateurs de votre organisation.</p>
+                    <h2><span className="profil-card__icone">🪪</span> {t("profil.informationsCompte")}</h2>
+                    <p className="profil-card__sous-titre">{t("profil.nomVisible")}</p>
 
                     <form onSubmit={enregistrerNom} className="form-ligne">
-                        <label>Nom affiché</label>
+                        <label>{t("profil.nomAffiche")}</label>
                         <input value={nom} onChange={(e) => setNom(e.target.value)} required />
                         {messageNom && (
                             <p className={`message message--${messageNom.type}`}>{messageNom.texte}</p>
                         )}
                         <button type="submit" className="btn btn-primaire" disabled={enregistrementNom}>
-                            {enregistrementNom ? "Enregistrement..." : "Enregistrer"}
+                            {enregistrementNom ? t("commun.enregistrementEnCours") : t("commun.enregistrer")}
                         </button>
                     </form>
                 </div>
 
                 {/* MOT DE PASSE */}
                 <div className="profil-card">
-                    <h2><span className="profil-card__icone">🔐</span> Sécurité</h2>
-                    <p className="profil-card__sous-titre">Choisissez un mot de passe d'au moins 6 caractères.</p>
+                    <h2><span className="profil-card__icone">🔐</span> {t("profil.securite")}</h2>
+                    <p className="profil-card__sous-titre">{t("profil.choisirMotDePasse")}</p>
 
                     <form onSubmit={changerMotDePasse} className="form-ligne">
-                        <label>Mot de passe actuel</label>
+                        <label>{t("profil.mdpActuel")}</label>
                         <div className="profil-champ-mdp">
                             <input
                                 type={afficherMdpActuel ? "text" : "password"}
@@ -150,13 +158,13 @@ export default function Profil() {
                                 type="button"
                                 className="profil-toggle-mdp"
                                 onClick={() => setAfficherMdpActuel(!afficherMdpActuel)}
-                                aria-label={afficherMdpActuel ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                                aria-label={afficherMdpActuel ? t("profil.masquerMdp") : t("profil.afficherMdp")}
                             >
                                 {afficherMdpActuel ? "🙈" : "👁️"}
                             </button>
                         </div>
 
-                        <label>Nouveau mot de passe</label>
+                        <label>{t("profil.nouveauMdp")}</label>
                         <div className="profil-champ-mdp">
                             <input
                                 type={afficherMdpNouveau ? "text" : "password"}
@@ -169,7 +177,7 @@ export default function Profil() {
                                 type="button"
                                 className="profil-toggle-mdp"
                                 onClick={() => setAfficherMdpNouveau(!afficherMdpNouveau)}
-                                aria-label={afficherMdpNouveau ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                                aria-label={afficherMdpNouveau ? t("profil.masquerMdp") : t("profil.afficherMdp")}
                             >
                                 {afficherMdpNouveau ? "🙈" : "👁️"}
                             </button>
@@ -193,7 +201,7 @@ export default function Profil() {
                             <p className={`message message--${messageMdp.type}`}>{messageMdp.texte}</p>
                         )}
                         <button type="submit" className="btn btn-primaire" disabled={enregistrementMdp}>
-                            {enregistrementMdp ? "Enregistrement..." : "Changer le mot de passe"}
+                            {enregistrementMdp ? t("commun.enregistrementEnCours") : t("profil.changerMotDePasse")}
                         </button>
                     </form>
                 </div>

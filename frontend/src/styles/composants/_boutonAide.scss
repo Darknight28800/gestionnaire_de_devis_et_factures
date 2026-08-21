@@ -1,0 +1,92 @@
+.bouton-aide {
+    position: fixed;
+    right: 28px;
+    bottom: 28px;
+    z-index: 1500;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(135deg, var(--couleur-primaire), var(--couleur-accent, #0891b2));
+    box-shadow: 0 10px 24px -6px color-mix(in srgb, var(--couleur-primaire) 55%, transparent),
+        0 1px 0 rgba(255, 255, 255, 0.35) inset;
+    transition: transform 0.16s ease;
+
+    &:hover {
+        transform: translateY(-2px) scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+        right: 18px;
+        bottom: 18px;
+        width: 44px;
+        height: 44px;
+    }
+}
+
+/* ============================
+    SURCHARGE DRIVER.JS — style verre premium cohérent avec l'app
+   ============================ */
+.driver-popover {
+    background: var(--fond-carte) !important;
+    color: var(--texte) !important;
+    border-radius: 16px !important;
+    box-shadow: var(--shadow-lg) !important;
+    border: 1px solid var(--glass-border) !important;
+    font-family: var(--font-base) !important;
+    padding: 18px !important;
+}
+
+.driver-popover-title {
+    color: var(--texte) !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+}
+
+.driver-popover-description {
+    color: var(--text-light, var(--texte)) !important;
+    font-size: 0.9rem !important;
+}
+
+.driver-popover-progress-text {
+    color: var(--text-light, var(--texte)) !important;
+    font-size: 0.78rem !important;
+}
+
+.driver-popover-footer button {
+    text-shadow: none !important;
+    background: var(--couleur-primaire) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 7px 14px !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+}
+
+.driver-popover-footer .driver-popover-prev-btn {
+    background: var(--gris-200) !important;
+    color: var(--texte) !important;
+}
+
+.driver-popover-close-btn {
+    color: var(--text-light, var(--texte)) !important;
+}
+
+.driver-popover-arrow-side-left.driver-popover-arrow,
+.driver-popover-arrow-side-right.driver-popover-arrow,
+.driver-popover-arrow-side-top.driver-popover-arrow,
+.driver-popover-arrow-side-bottom.driver-popover-arrow {
+    border-color: transparent;
+}
+
+.driver-popover-arrow-side-top { border-top-color: var(--fond-carte) !important; }
+.driver-popover-arrow-side-bottom { border-bottom-color: var(--fond-carte) !important; }
+.driver-popover-arrow-side-left { border-left-color: var(--fond-carte) !important; }
+.driver-popover-arrow-side-right { border-right-color: var(--fond-carte) !important; }

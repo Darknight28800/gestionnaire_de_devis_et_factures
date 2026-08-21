@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
 
-const AFAIRE = "à compléter dans Paramètres";
-
 export default function MentionsLegales() {
+    const { t, i18n } = useTranslation();
     const { utilisateur } = useAuth();
     const [parametres, setParametres] = useState(null);
+
+    const AFAIRE = t("legal.aCompleterParametres");
 
     useEffect(() => {
         const charger = async () => {
@@ -29,54 +31,49 @@ export default function MentionsLegales() {
 
     return (
         <div className="page page-legal">
-            <h1>Mentions légales</h1>
+            <h1>{t("legal.mentionsLegales.titre")}</h1>
             <p className="page-legal__maj">
-                Dernière mise à jour : {new Date().toLocaleDateString("fr-FR", { year: "numeric", month: "long" })}
+                {t("legal.derniereMaj")} : {new Date().toLocaleDateString(i18n.language, { year: "numeric", month: "long" })}
             </p>
 
             <section>
-                <h2>Éditeur du site</h2>
+                <h2>{t("legal.mentionsLegales.editeurSite")}</h2>
                 <p>
                     {nom}<br />
                     {formeJuridique}<br />
-                    Siège social : {adresse}<br />
+                    {t("legal.mentionsLegales.siegeSocial")} : {adresse}<br />
                     SIRET : {siret}<br />
-                    Directeur de la publication : {utilisateur?.nom || AFAIRE}<br />
-                    Email : {email}
+                    {t("legal.mentionsLegales.directeurPublication")} : {utilisateur?.nom || AFAIRE}<br />
+                    {t("commun.email")} : {email}
                 </p>
             </section>
 
             <section>
-                <h2>Hébergement</h2>
+                <h2>{t("legal.mentionsLegales.hebergement")}</h2>
                 <p>
                     {hebergeur
-                        ? <>Ce site est hébergé par {hebergeur}.</>
-                        : "Application à usage interne, non hébergée publiquement à ce jour."}
+                        ? t("legal.mentionsLegales.hebergePar", { hebergeur })
+                        : t("legal.mentionsLegales.pasHeberge")}
                 </p>
             </section>
 
             <section>
-                <h2>Propriété intellectuelle</h2>
-                <p>
-                    L'ensemble des contenus de cette application (textes, logos, structure) est la
-                    propriété de {nom}, sauf mention contraire. Toute reproduction sans
-                    autorisation préalable est interdite.
-                </p>
+                <h2>{t("legal.mentionsLegales.proprieteIntellectuelle")}</h2>
+                <p>{t("legal.mentionsLegales.proprieteIntellectuelleTexte", { nom })}</p>
             </section>
 
             <section>
-                <h2>Données personnelles</h2>
+                <h2>{t("legal.mentionsLegales.donneesPersonnelles")}</h2>
                 <p>
-                    Le traitement de vos données personnelles est détaillé dans notre{" "}
-                    <a href="/support/confidentialite">politique de confidentialité</a>.
+                    {t("legal.mentionsLegales.donneesPersonnellesTexte")}{" "}
+                    <a href="/support/confidentialite">{t("support.confidentialite")}</a>.
                 </p>
             </section>
 
             {(nom === AFAIRE || formeJuridique === AFAIRE || adresse === AFAIRE || siret === AFAIRE) && (
                 <p className="parametres-section__aide">
-                    Certaines informations ci-dessus sont incomplètes. Rendez-vous dans{" "}
-                    <a href="/parametres">Paramètres</a> pour les renseigner — cette page se met à jour
-                    automatiquement.
+                    {t("legal.mentionsLegales.informationsIncompletes")}{" "}
+                    <a href="/parametres">{t("nav.parametres")}</a> {t("legal.mentionsLegales.pourLesRenseigner")}
                 </p>
             )}
         </div>

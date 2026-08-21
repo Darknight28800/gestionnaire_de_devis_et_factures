@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import Modal from "../../composants/modal";
 import useAuth from "../../hooks/useAuth";
 import "../../styles/pages/_devis.scss";
 
 export default function Devis() {
+    const { t } = useTranslation();
     const { utilisateur } = useAuth();
     const navigate = useNavigate();
     const [devis, setDevis] = useState([]);
@@ -158,7 +160,7 @@ export default function Devis() {
 
         } catch (err) {
             console.error(err.response?.data);
-            alert("Erreur lors de l’enregistrement du devis.");
+            alert(t("devis.erreurEnregistrement"));
         }
     };
 
@@ -172,7 +174,7 @@ export default function Devis() {
             navigate(`/factures/${res.data.facture.id}`);
         } catch (err) {
             console.error(err);
-            alert("Erreur lors de la conversion en facture.");
+            alert(t("devis.erreurConversion"));
         } finally {
             setConversionEnCours(null);
         }
@@ -182,14 +184,14 @@ export default function Devis() {
        SUPPRESSION
     ============================ */
     const supprimerDevis = async (d) => {
-        if (!window.confirm(`Supprimer le devis #${d.id} ?`)) return;
+        if (!window.confirm(t("devis.confirmerSuppression", { id: d.id }))) return;
 
         try {
             await api.delete(`/devis/${d.id}`);
             rechargerDevis();
         } catch (err) {
             console.error(err);
-            alert("Erreur lors de la suppression du devis.");
+            alert(t("devis.erreurSuppression"));
         }
     };
 
@@ -198,22 +200,22 @@ export default function Devis() {
 
             {/* HEADER */}
             <div className="devis-header">
-                <h1>Devis</h1>
-                <button className="btn btn-primaire" onClick={ouvrirCreationDevis}>
-                    + Nouveau devis
+                <h1>{t("nav.devis")}</h1>
+                <button className="btn btn-primaire" onClick={ouvrirCreationDevis} data-tour="devis-nouveau">
+                    + {t("devis.nouveauDevis")}
                 </button>
             </div>
 
             {/* TABLEAU */}
-            <table className="table-devis">
+            <table className="table-devis" data-tour="devis-tableau">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Client</th>
-                        <th>Montant</th>
-                        <th>Statut</th>
-                        <th>Date</th>
-                        <th>Actions</th>
+                        <th>{t("commun.client")}</th>
+                        <th>{t("commun.montant")}</th>
+                        <th>{t("commun.statut")}</th>
+                        <th>{t("commun.date")}</th>
+                        <th>{t("commun.actions")}</th>
                     </tr>
                 </thead>
 
@@ -225,30 +227,30 @@ export default function Devis() {
                             <td>{d.montant_total} €</td>
                             <td>
                                 <span className={`statut statut--${d.statut}`}>
-                                    {d.statut}
+                                    {t(`statuts.devis.${d.statut}`, d.statut)}
                                 </span>
                             </td>
                             <td>{new Date(d.date_creation).toLocaleDateString()}</td>
                             <td className="actions-cellule">
                                 <Link className="btn-lien" to={`/devis/${d.id}`}>
-                                    Voir →
+                                    {t("commun.voir")} →
                                 </Link>
                                 <button className="btn-lien" onClick={() => ouvrirEditionDevis(d)}>
-                                    Modifier
+                                    {t("commun.modifier")}
                                 </button>
                                 {d.statut === "accepte" && !d.archive_le && (
                                     <button
                                         className="btn-primaire btn-primaire--compact"
                                         onClick={() => convertirEnFacture(d)}
                                         disabled={conversionEnCours === d.id}
-                                        title="Convertir ce devis accepté en facture"
+                                        title={t("devis.convertirTitre")}
                                     >
-                                        {conversionEnCours === d.id ? "Conversion..." : "🧾 Convertir"}
+                                        {conversionEnCours === d.id ? t("devis.conversionEnCours") : `🧾 ${t("devis.convertir")}`}
                                     </button>
                                 )}
                                 {utilisateur?.role === "admin" && (
                                     <button className="btn-texte btn-danger" onClick={() => supprimerDevis(d)}>
-                                        Supprimer
+                                        {t("commun.supprimer")}
                                     </button>
                                 )}
                             </td>
@@ -260,7 +262,7 @@ export default function Devis() {
             {/* MODAL PRO */}
             <Modal
                 open={modalOpen}
-                title={modeEdition ? "Modifier le devis" : "Nouveau devis"}
+                title={modeEdition ? t("devis.modifierDevis") : t("devis.nouveauDevis")}
                 onClose={() => setModalOpen(false)}
                 taille="large"
             >
@@ -268,7 +270,7 @@ export default function Devis() {
 
                     {/* CLIENT */}
                     <div className="form-ligne">
-                        <label>Client</label>
+                        <label>{t("commun.client")}</label>
                         <select
                             value={form.client_id}
                             onChange={(e) =>
@@ -276,7 +278,7 @@ export default function Devis() {
                             }
                             required
                         >
-                            <option value="">Sélectionner un client</option>
+                            <option value="">{t("devis.selectionnerClient")}</option>
                             {clients.map((c) => (
                                 <option key={c.id} value={c.id}>
                                     {c.nom}
@@ -287,7 +289,7 @@ export default function Devis() {
 
                     {/* TITRE */}
                     <div className="form-ligne">
-                        <label>Titre du devis</label>
+                        <label>{t("devis.titreDevis")}</label>
                         <input
                             value={form.titre}
                             onChange={(e) =>
@@ -299,7 +301,7 @@ export default function Devis() {
 
                     {/* DESCRIPTION */}
                     <div className="form-ligne">
-                        <label>Description</label>
+                        <label>{t("commun.description")}</label>
                         <textarea
                             value={form.description}
                             onChange={(e) =>
@@ -310,34 +312,34 @@ export default function Devis() {
 
                     {/* STATUT */}
                     <div className="form-ligne">
-                        <label>Statut</label>
+                        <label>{t("commun.statut")}</label>
                         <select
                             value={form.statut}
                             onChange={(e) =>
                                 setForm({ ...form, statut: e.target.value })
                             }
                         >
-                            <option value="brouillon">Brouillon</option>
-                            <option value="envoye">Envoyé</option>
-                            <option value="accepte">Accepté</option>
-                            <option value="refuse">Refusé</option>
+                            <option value="brouillon">{t("statuts.devis.brouillon")}</option>
+                            <option value="envoye">{t("statuts.devis.envoye")}</option>
+                            <option value="accepte">{t("statuts.devis.accepte")}</option>
+                            <option value="refuse">{t("statuts.devis.refuse")}</option>
                         </select>
                     </div>
 
-                    <h3>Lignes du devis</h3>
+                    <h3>{t("devis.lignesDevis")}</h3>
 
                     <div className="ligne-devis ligne-devis--entete">
-                        <span>Description</span>
-                        <span>Quantité</span>
-                        <span>Prix unitaire (€)</span>
+                        <span>{t("commun.description")}</span>
+                        <span>{t("devis.quantite")}</span>
+                        <span>{t("devis.prixUnitaire")}</span>
                         <span></span>
                     </div>
 
                     {form.lignes.map((ligne, index) => (
                         <div key={index} className="ligne-devis">
                             <input
-                                placeholder="Ex : Prestation, produit..."
-                                aria-label="Description de la ligne"
+                                placeholder={t("devis.placeholderDescription")}
+                                aria-label={t("devis.descriptionLigne")}
                                 value={ligne.description}
                                 onChange={(e) =>
                                     changerLigne(index, "description", e.target.value)
@@ -347,8 +349,8 @@ export default function Devis() {
                             <input
                                 type="number"
                                 min="1"
-                                aria-label="Quantité"
-                                title="Quantité"
+                                aria-label={t("devis.quantite")}
+                                title={t("devis.quantite")}
                                 value={ligne.quantite}
                                 onFocus={() => viderChamp(index, "quantite")}
                                 onBlur={() => remplirSiVide(index, "quantite", 1)}
@@ -361,8 +363,8 @@ export default function Devis() {
                                 type="number"
                                 min="0"
                                 step="0.01"
-                                aria-label="Prix unitaire en euros"
-                                title="Prix unitaire (€)"
+                                aria-label={t("devis.prixUnitaireEuros")}
+                                title={t("devis.prixUnitaire")}
                                 value={ligne.prix}
                                 onFocus={() => viderChamp(index, "prix")}
                                 onBlur={() => remplirSiVide(index, "prix", 0)}
@@ -374,7 +376,7 @@ export default function Devis() {
                             <button
                                 type="button"
                                 className="btn-icone"
-                                aria-label="Supprimer cette ligne"
+                                aria-label={t("devis.supprimerLigne")}
                                 onClick={() => supprimerLigne(index)}
                             >
                                 🗑️
@@ -387,13 +389,13 @@ export default function Devis() {
                         className="btn-primaire btn-ajout-ligne"
                         onClick={ajouterLigne}
                     >
-                        + Ajouter une ligne
+                        + {t("devis.ajouterLigne")}
                     </button>
 
                     <div className="totaux">
-                        <p>Total HT : <strong>{totalHT.toFixed(2)} €</strong></p>
-                        <p>TVA (20%) : <strong>{totalTVA.toFixed(2)} €</strong></p>
-                        <p>Total TTC : <strong>{totalTTC.toFixed(2)} €</strong></p>
+                        <p>{t("devis.totalHT")} : <strong>{totalHT.toFixed(2)} €</strong></p>
+                        <p>{t("devis.tva")} : <strong>{totalTVA.toFixed(2)} €</strong></p>
+                        <p>{t("devis.totalTTC")} : <strong>{totalTTC.toFixed(2)} €</strong></p>
                     </div>
 
                     <div className="form-actions">
@@ -402,10 +404,10 @@ export default function Devis() {
                             className="btn-texte"
                             onClick={() => setModalOpen(false)}
                         >
-                            Annuler
+                            {t("commun.annuler")}
                         </button>
                         <button type="submit" className="btn-primaire">
-                            {modeEdition ? "Enregistrer" : "Créer le devis"}
+                            {modeEdition ? t("commun.enregistrer") : t("devis.creerDevis")}
                         </button>
                     </div>
 

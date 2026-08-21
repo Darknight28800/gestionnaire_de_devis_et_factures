@@ -4,6 +4,7 @@ import Layout from "../composants/layout";
 import RouteProtegee from "../composants/routeProtegee";
 
 /* Pages */
+import Accueil from "../pages/accueil/accueil";
 import Connexion from "../pages/connexion/connexion";
 import TableauDeBord from "../pages/tableauDeBord/tableauDeBord";
 
@@ -41,6 +42,9 @@ export default function RouteurApp() {
         <BrowserRouter>
             <Routes>
 
+                {/* Page d'accueil publique */}
+                <Route path="/" element={<Accueil />} />
+
                 {/* Connexion */}
                 <Route path="/connexion" element={<Connexion />} />
 
@@ -48,7 +52,7 @@ export default function RouteurApp() {
                 <Route element={<RouteProtegee role="user" />}>
                     <Route element={<Layout />}>
 
-                        <Route path="/" element={<TableauDeBord />} />
+                        <Route path="/tableau-de-bord" element={<TableauDeBord />} />
 
                         <Route path="/clients" element={<Clients />} />
                         <Route path="/devis" element={<Devis />} />

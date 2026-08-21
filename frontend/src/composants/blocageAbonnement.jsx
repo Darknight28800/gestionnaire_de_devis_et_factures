@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import useAuth from "../hooks/useAuth";
 import "../styles/composants/_blocageAbonnement.scss";
 
 export default function BlocageAbonnement() {
+    const { t } = useTranslation();
     const { utilisateur } = useAuth();
     const [bloque, setBloque] = useState(false);
 
@@ -18,21 +20,21 @@ export default function BlocageAbonnement() {
         <div className="blocage-abonnement">
             <div className="blocage-abonnement__carte">
                 <div className="blocage-abonnement__icone">🔒</div>
-                <h1>Accès suspendu</h1>
+                <h1>{t("commun.accesSuspendu")}</h1>
                 <p>
-                    Votre période d'essai gratuite est terminée ou votre dernier paiement a échoué.
+                    {t("commun.accesSuspenduTexte")}
                     {utilisateur?.role === "admin"
-                        ? " Choisissez ou réactivez un abonnement pour continuer à utiliser l'application."
-                        : " Contactez votre administrateur pour réactiver l'abonnement."}
+                        ? " " + t("commun.accesSuspenduAdmin")
+                        : " " + t("commun.accesSuspenduUtilisateur")}
                 </p>
 
                 {utilisateur?.role === "admin" && (
                     <a className="btn btn-primaire" href="/abonnement">
-                        Gérer mon abonnement
+                        {t("commun.gererMonAbonnement")}
                     </a>
                 )}
 
-                <a className="blocage-abonnement__deconnexion" href="/logout">Se déconnecter</a>
+                <a className="blocage-abonnement__deconnexion" href="/logout">{t("commun.seDeconnecter")}</a>
             </div>
         </div>
     );

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 
-const AFAIRE = "à compléter dans Paramètres";
-
 export default function Contact() {
+    const { t } = useTranslation();
     const [parametres, setParametres] = useState(null);
+    const AFAIRE = t("legal.aCompleterParametres");
 
     useEffect(() => {
         const charger = async () => {
@@ -20,24 +21,23 @@ export default function Contact() {
 
     return (
         <div className="page page-legal">
-            <h1>Contact</h1>
+            <h1>{t("support.contact")}</h1>
 
             <section>
-                <h2>Une question ?</h2>
+                <h2>{t("legal.contact.uneQuestion")}</h2>
                 <p>
-                    Pour toute demande concernant votre compte, votre abonnement ou l'utilisation de
-                    l'application, la façon la plus rapide de nous joindre est de créer un ticket depuis
-                    le <a href="/support">Centre d'aide</a>.
+                    {t("legal.contact.texteIntro")}{" "}
+                    <a href="/support">{t("nav.support")}</a>.
                 </p>
             </section>
 
             <section>
-                <h2>Coordonnées</h2>
+                <h2>{t("legal.contact.coordonnees")}</h2>
                 <p>
                     {parametres?.nom_entreprise || AFAIRE}<br />
                     {parametres?.adresse || AFAIRE}<br />
-                    Email : {parametres?.email || AFAIRE}<br />
-                    Téléphone : {parametres?.telephone || AFAIRE}
+                    {t("commun.email")} : {parametres?.email || AFAIRE}<br />
+                    {t("commun.telephone")} : {parametres?.telephone || AFAIRE}
                 </p>
             </section>
         </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import { Bar, Doughnut } from "react-chartjs-2";
 import {
@@ -16,6 +17,7 @@ import "../../styles/pages/_tableauDeBord.scss";
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
 export default function TableauDeBord() {
+    const { t } = useTranslation();
     const [stats, setStats] = useState(null);
     const [recentDevis, setRecentDevis] = useState([]);
     const [recentFactures, setRecentFactures] = useState([]);
@@ -46,17 +48,17 @@ export default function TableauDeBord() {
                 console.error("Erreur lors du chargement du tableau de bord :", err);
                 setErreur(
                     err.response?.status === 401
-                        ? "Votre session a expiré, merci de vous reconnecter."
-                        : "Impossible de charger le tableau de bord. Réessayez dans un instant."
+                        ? t("dashboard.sessionExpiree")
+                        : t("dashboard.erreurChargement")
                 );
             }
         };
 
         charger();
-    }, []);
+    }, [t]);
 
     if (erreur) return <p className="dashboard__erreur">{erreur}</p>;
-    if (!stats) return <p>Chargement...</p>;
+    if (!stats) return <p>{t("commun.chargement")}</p>;
 
     /* Couleurs dynamiques selon le thème */
     const textColor = theme === "dark" ? "#f8fafc" : "#111827";
@@ -64,10 +66,10 @@ export default function TableauDeBord() {
 
     /* BAR CHART */
     const barData = {
-        labels: ["Devis", "Factures"],
+        labels: [t("dashboard.devis"), t("dashboard.factures")],
         datasets: [
             {
-                label: "Nombre",
+                label: t("dashboard.nombre"),
                 data: [stats.total_devis, stats.total_factures],
                 backgroundColor: ["#2563eb", "#10b981"]
             }
@@ -93,7 +95,7 @@ export default function TableauDeBord() {
 
     /* DOUGHNUT */
     const donutData = {
-        labels: ["Payées", "Non payées"],
+        labels: [t("dashboard.payees"), t("dashboard.nonPayees")],
         datasets: [
             {
                 data: [stats.factures_payees, stats.factures_non_payees],
@@ -114,15 +116,15 @@ export default function TableauDeBord() {
         <div className="dashboard">
 
             {/* TITRE */}
-            <h1 className="dashboard__title">Tableau de bord</h1>
+            <h1 className="dashboard__title">{t("nav.tableauDeBord")}</h1>
 
             {/* CARTES PREMIUM */}
-            <div className="dashboard__cards">
+            <div className="dashboard__cards" data-tour="dashboard-cartes">
                 <div className="card card--violet">
                     <div className="card__icon">👥</div>
                     <div className="card__info">
                         <h3>{stats.total_clients}</h3>
-                        <p>Clients</p>
+                        <p>{t("nav.clients")}</p>
                     </div>
                 </div>
 
@@ -130,7 +132,7 @@ export default function TableauDeBord() {
                     <div className="card__icon">📄</div>
                     <div className="card__info">
                         <h3>{stats.total_devis}</h3>
-                        <p>Devis</p>
+                        <p>{t("dashboard.devis")}</p>
                     </div>
                 </div>
 
@@ -138,7 +140,7 @@ export default function TableauDeBord() {
                     <div className="card__icon">💰</div>
                     <div className="card__info">
                         <h3>{stats.total_factures}</h3>
-                        <p>Factures</p>
+                        <p>{t("dashboard.factures")}</p>
                     </div>
                 </div>
 
@@ -146,7 +148,7 @@ export default function TableauDeBord() {
                     <div className="card__icon">✔️</div>
                     <div className="card__info">
                         <h3>{stats.factures_payees}</h3>
-                        <p>Payées</p>
+                        <p>{t("dashboard.payees")}</p>
                     </div>
                 </div>
 
@@ -154,7 +156,7 @@ export default function TableauDeBord() {
                     <div className="card__icon">⏳</div>
                     <div className="card__info">
                         <h3>{stats.factures_non_payees}</h3>
-                        <p>Non payées</p>
+                        <p>{t("dashboard.nonPayees")}</p>
                     </div>
                 </div>
 
@@ -162,7 +164,7 @@ export default function TableauDeBord() {
                     <div className="card__icon">💵</div>
                     <div className="card__info">
                         <h3>{stats.montant_total} €</h3>
-                        <p>Total facturé</p>
+                        <p>{t("dashboard.totalFacture")}</p>
                     </div>
                 </div>
 
@@ -170,7 +172,7 @@ export default function TableauDeBord() {
                     <div className="card__icon">🟢</div>
                     <div className="card__info">
                         <h3>{stats.montant_paye} €</h3>
-                        <p>Montant payé</p>
+                        <p>{t("dashboard.montantPaye")}</p>
                     </div>
                 </div>
 
@@ -178,33 +180,33 @@ export default function TableauDeBord() {
                     <div className="card__icon">🟡</div>
                     <div className="card__info">
                         <h3>{stats.montant_attente} €</h3>
-                        <p>En attente</p>
+                        <p>{t("dashboard.enAttente")}</p>
                     </div>
                 </div>
             </div>
 
             {/* GRAPHIQUES PREMIUM */}
-            <div className="dashboard__charts">
+            <div className="dashboard__charts" data-tour="dashboard-graphiques">
 
                 {/* BAR CHART */}
                 <div className="chart">
-                    <h3>Devis vs Factures</h3>
+                    <h3>{t("dashboard.devisVsFactures")}</h3>
                     <Bar data={barData} options={barOptions} />
                 </div>
 
                 {/* DOUGHNUT */}
                 <div className="chart">
-                    <h3>Répartition des factures</h3>
+                    <h3>{t("dashboard.repartitionFactures")}</h3>
                     <Doughnut data={donutData} options={donutOptions} />
                 </div>
             </div>
 
             {/* LISTES PREMIUM */}
-            <div className="dashboard__lists">
+            <div className="dashboard__lists" data-tour="dashboard-listes">
 
                 {/* DERNIERS DEVIS */}
                 <div className="list">
-                    <h3>Derniers devis</h3>
+                    <h3>{t("dashboard.derniersDevis")}</h3>
                     <ul>
                         {recentDevis.map((d) => (
                             <li key={d.id}>
@@ -219,14 +221,14 @@ export default function TableauDeBord() {
 
                 {/* DERNIÈRES FACTURES */}
                 <div className="list">
-                    <h3>Dernières factures</h3>
+                    <h3>{t("dashboard.dernieresFactures")}</h3>
                     <ul>
                         {recentFactures.map((f) => (
                             <li key={f.id}>
                                 <span>#{f.id}</span>
                                 <span>{f.client_nom}</span>
                                 <span className={f.statut === "payee" ? "statut-payee" : "statut-non-payee"}>
-                                    {f.statut}
+                                    {t(`statuts.facture.${f.statut}`, f.statut)}
                                 </span>
                                 <span>{f.montant} €</span>
                             </li>

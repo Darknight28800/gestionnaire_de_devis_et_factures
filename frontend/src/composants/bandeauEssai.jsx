@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import api from "../api/axios";
 import useAuth from "../hooks/useAuth";
 import "../styles/composants/_bandeauEssai.scss";
 
 export default function BandeauEssai() {
+    const { t } = useTranslation();
     const { utilisateur } = useAuth();
     const [statut, setStatut] = useState(null);
     const [masque, setMasque] = useState(false);
@@ -27,16 +29,16 @@ export default function BandeauEssai() {
 
     const texte =
         statut.joursRestants === 0
-            ? "Votre essai gratuit se termine aujourd'hui."
-            : `Votre essai gratuit se termine dans ${statut.joursRestants} jour${statut.joursRestants > 1 ? "s" : ""}.`;
+            ? t("commun.essaiSeTermineAujourdhui")
+            : t("commun.essaiSeTermineDans", { count: statut.joursRestants });
 
     return (
         <div className="bandeau-essai">
-            <span>⏳ {texte} Votre carte enregistrée sera débitée automatiquement pour poursuivre votre abonnement.</span>
+            <span>⏳ {texte} {t("commun.carteDebiteeAutomatiquement")}</span>
             {utilisateur?.role === "admin" && (
-                <Link to="/abonnement" className="bandeau-essai__lien">Gérer mon abonnement</Link>
+                <Link to="/abonnement" className="bandeau-essai__lien">{t("commun.gererMonAbonnement")}</Link>
             )}
-            <button className="bandeau-essai__fermer" onClick={() => setMasque(true)} aria-label="Fermer">✕</button>
+            <button className="bandeau-essai__fermer" onClick={() => setMasque(true)} aria-label={t("commun.fermer")}>✕</button>
         </div>
     );
 }

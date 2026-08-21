@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import Modal from "../../composants/modal";
 import "../../styles/pages/_clients.scss";
 
 export default function Clients() {
+    const { t } = useTranslation();
     const [clients, setClients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [erreur, setErreur] = useState(null);
@@ -35,14 +37,14 @@ export default function Clients() {
                 setErreur(null);
             } catch (e) {
                 console.error(e);
-                setErreur("Impossible de charger les clients.");
+                setErreur(t("clients.erreurChargement"));
             } finally {
                 setLoading(false);
             }
         };
 
         charger();
-    }, []);
+    }, [t]);
 
     /* ============================
        OUVERTURE MODAL CREATION
@@ -110,7 +112,7 @@ export default function Clients() {
 
         } catch (e) {
             console.error(e);
-            alert("Erreur lors de l’enregistrement du client.");
+            alert(t("clients.erreurEnregistrement"));
         }
     };
 
@@ -118,7 +120,7 @@ export default function Clients() {
        SUPPRESSION CLIENT
     ============================ */
     const supprimerClient = async (client) => {
-        if (!window.confirm(`Supprimer le client "${client.nom}" ?`)) return;
+        if (!window.confirm(t("clients.confirmerSuppression", { nom: client.nom }))) return;
 
         try {
             await api.delete(`/clients/${client.id}`);
@@ -128,22 +130,22 @@ export default function Clients() {
 
         } catch (e) {
             console.error(e);
-            alert(e.response?.data?.message || "Erreur lors de la suppression du client.");
+            alert(e.response?.data?.message || t("clients.erreurSuppression"));
         }
     };
 
-    if (loading) return <p>Chargement des clients...</p>;
+    if (loading) return <p>{t("clients.chargementClients")}</p>;
 
     return (
         <div className="clients-page">
 
             {/* HEADER */}
             <div className="clients-header">
-                <h1>Clients</h1>
+                <h1>{t("nav.clients")}</h1>
 
-                <div className="actions">
+                <div className="actions" data-tour="clients-nouveau">
                     <button className="btn btn-primaire" onClick={ouvrirCreation}>
-                        + Nouveau client
+                        + {t("clients.nouveauClient")}
                     </button>
                 </div>
             </div>
@@ -152,17 +154,17 @@ export default function Clients() {
 
             {/* TABLEAU */}
             {clients.length === 0 ? (
-                <p>Aucun client pour le moment.</p>
+                <p>{t("clients.aucunClient")}</p>
             ) : (
-                <table className="table-clients">
+                <table className="table-clients" data-tour="clients-tableau">
                     <thead>
                         <tr>
-                            <th>Nom</th>
-                            <th>Email</th>
-                            <th>Téléphone</th>
-                            <th>Ville</th>
-                            <th>Statut</th>
-                            <th style={{ width: "140px" }}>Actions</th>
+                            <th>{t("commun.nom")}</th>
+                            <th>{t("commun.email")}</th>
+                            <th>{t("commun.telephone")}</th>
+                            <th>{t("commun.ville")}</th>
+                            <th>{t("commun.statut")}</th>
+                            <th style={{ width: "140px" }}>{t("commun.actions")}</th>
                         </tr>
                     </thead>
 
@@ -175,7 +177,7 @@ export default function Clients() {
                                 <td>{c.ville}</td>
                                 <td>
                                     <span className={`statut statut--${c.statut}`}>
-                                        {c.statut}
+                                        {t(`statuts.client.${c.statut}`, c.statut)}
                                     </span>
                                 </td>
                                 <td>
@@ -183,14 +185,14 @@ export default function Clients() {
                                         className="btn-texte"
                                         onClick={() => ouvrirEdition(c)}
                                     >
-                                        Modifier
+                                        {t("commun.modifier")}
                                     </button>
 
                                     <button
                                         className="btn-texte btn-danger"
                                         onClick={() => supprimerClient(c)}
                                     >
-                                        Supprimer
+                                        {t("commun.supprimer")}
                                     </button>
                                 </td>
                             </tr>
@@ -202,13 +204,13 @@ export default function Clients() {
             {/* MODAL */}
             <Modal
                 open={modalOuvert}
-                title={modeEdition ? "Modifier le client" : "Nouveau client"}
+                title={modeEdition ? t("clients.modifierClient") : t("clients.nouveauClient")}
                 onClose={() => setModalOuvert(false)}
             >
                 <form onSubmit={handleSubmit} className="form-client">
 
                     <div className="form-ligne">
-                        <label>Nom</label>
+                        <label>{t("commun.nom")}</label>
                         <input
                             name="nom"
                             value={form.nom}
@@ -218,7 +220,7 @@ export default function Clients() {
                     </div>
 
                     <div className="form-ligne">
-                        <label>Email</label>
+                        <label>{t("commun.email")}</label>
                         <input
                             type="email"
                             name="email"
@@ -228,7 +230,7 @@ export default function Clients() {
                     </div>
 
                     <div className="form-ligne">
-                        <label>Téléphone</label>
+                        <label>{t("commun.telephone")}</label>
                         <input
                             name="telephone"
                             value={form.telephone}
@@ -237,7 +239,7 @@ export default function Clients() {
                     </div>
 
                     <div className="form-ligne">
-                        <label>Adresse</label>
+                        <label>{t("commun.adresse")}</label>
                         <input
                             name="adresse"
                             value={form.adresse}
@@ -247,7 +249,7 @@ export default function Clients() {
 
                     <div className="form-ligne form-ligne--2">
                         <div>
-                            <label>Ville</label>
+                            <label>{t("commun.ville")}</label>
                             <input
                                 name="ville"
                                 value={form.ville}
@@ -255,7 +257,7 @@ export default function Clients() {
                             />
                         </div>
                         <div>
-                            <label>Code postal</label>
+                            <label>{t("commun.codePostal")}</label>
                             <input
                                 name="code_postal"
                                 value={form.code_postal}
@@ -265,7 +267,7 @@ export default function Clients() {
                     </div>
 
                     <div className="form-ligne">
-                        <label>Pays</label>
+                        <label>{t("commun.pays")}</label>
                         <input
                             name="pays"
                             value={form.pays}
@@ -274,14 +276,14 @@ export default function Clients() {
                     </div>
 
                     <div className="form-ligne">
-                        <label>Statut</label>
+                        <label>{t("commun.statut")}</label>
                         <select
                             name="statut"
                             value={form.statut}
                             onChange={handleChange}
                         >
-                            <option value="actif">Actif</option>
-                            <option value="inactif">Inactif</option>
+                            <option value="actif">{t("commun.actif")}</option>
+                            <option value="inactif">{t("commun.inactif")}</option>
                         </select>
                     </div>
 
@@ -291,10 +293,10 @@ export default function Clients() {
                             className="btn btn-texte"
                             onClick={() => setModalOuvert(false)}
                         >
-                            Annuler
+                            {t("commun.annuler")}
                         </button>
                         <button type="submit" className="btn btn-primaire">
-                            {modeEdition ? "Enregistrer" : "Créer"}
+                            {modeEdition ? t("commun.enregistrer") : t("commun.creer")}
                         </button>
                     </div>
 

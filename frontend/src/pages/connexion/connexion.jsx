@@ -1,13 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import api from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import SelecteurLangue from "../../composants/selecteurLangue";
 import "../../styles/pages/_connexion.scss";
 
 const EMAIL_DEMO = "demo@facturepro.app";
 const MOT_DE_PASSE_DEMO = "Demo1234!";
 
 export default function Connexion() {
+    const { t } = useTranslation();
     const [mode, setMode] = useState("connexion"); // "connexion" | "inscription"
     const [nom, setNom] = useState("");
     const [email, setEmail] = useState("");
@@ -28,7 +31,7 @@ export default function Connexion() {
     const seConnecter = async (emailConnexion, motdepasseConnexion) => {
         const res = await api.post("/auth/connexion", { email: emailConnexion, password: motdepasseConnexion });
         connexion(res.data.token, res.data.utilisateur);
-        navigate("/");
+        navigate("/tableau-de-bord");
     };
 
     const handleSubmit = async (e) => {
@@ -71,7 +74,7 @@ export default function Connexion() {
                         <img src="/assets/logo-facturepro.svg" alt="" className="carte-connexion__logo" />
                         <span>FacturePro</span>
                     </div>
-                    <p className="carte-connexion__sous-titre">Connexion à la version démo…</p>
+                    <p className="carte-connexion__sous-titre">{t("connexion.connexionDemo")}</p>
                 </div>
             </div>
         );
@@ -81,11 +84,13 @@ export default function Connexion() {
         <div className="page-connexion">
             <div className="page-connexion__fond" aria-hidden="true"></div>
 
+            <SelecteurLangue className="page-connexion__langue" />
+
             <div className="carte-connexion">
-                <div className="carte-connexion__marque">
+                <Link to="/" className="carte-connexion__marque">
                     <img src="/assets/logo-facturepro.svg" alt="" className="carte-connexion__logo" />
                     <span>FacturePro</span>
-                </div>
+                </Link>
 
                 <div className="carte-connexion__onglets">
                     <button
@@ -93,30 +98,30 @@ export default function Connexion() {
                         className={mode === "connexion" ? "actif" : ""}
                         onClick={() => basculerMode("connexion")}
                     >
-                        Connexion
+                        {t("connexion.connexion")}
                     </button>
                     <button
                         type="button"
                         className={mode === "inscription" ? "actif" : ""}
                         onClick={() => basculerMode("inscription")}
                     >
-                        Créer un compte
+                        {t("connexion.creerCompte")}
                     </button>
                 </div>
 
                 <p className="carte-connexion__sous-titre">
                     {mode === "connexion"
-                        ? "Connectez-vous pour accéder à vos devis et factures."
-                        : "Le premier compte créé devient automatiquement administrateur."}
+                        ? t("connexion.sousTitreConnexion")
+                        : t("connexion.sousTitreInscription")}
                 </p>
 
                 <form onSubmit={handleSubmit} className="form-connexion">
                     {mode === "inscription" && (
                         <div className="form-ligne">
-                            <label>Nom</label>
+                            <label>{t("connexion.nom")}</label>
                             <input
                                 type="text"
-                                placeholder="Votre nom"
+                                placeholder={t("connexion.nomPlaceholder")}
                                 value={nom}
                                 onChange={(e) => setNom(e.target.value)}
                             />
@@ -124,7 +129,7 @@ export default function Connexion() {
                     )}
 
                     <div className="form-ligne">
-                        <label>Email</label>
+                        <label>{t("connexion.email")}</label>
                         <input
                             type="email"
                             placeholder="vous@entreprise.fr"
@@ -135,7 +140,7 @@ export default function Connexion() {
                     </div>
 
                     <div className="form-ligne">
-                        <label>Mot de passe</label>
+                        <label>{t("connexion.motDePasse")}</label>
                         <input
                             type="password"
                             placeholder="••••••••"
@@ -149,8 +154,8 @@ export default function Connexion() {
 
                     <button type="submit" className="btn btn-primaire carte-connexion__submit" disabled={envoi}>
                         {envoi
-                            ? "Un instant..."
-                            : mode === "connexion" ? "Se connecter" : "Créer mon compte"}
+                            ? t("connexion.unInstant")
+                            : mode === "connexion" ? t("connexion.seConnecter") : t("connexion.creerMonCompte")}
                     </button>
                 </form>
             </div>

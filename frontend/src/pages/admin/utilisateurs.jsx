@@ -1,10 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import "../../styles/pages/_utilisateurs.scss";
 
 export default function Utilisateurs() {
+    const { t } = useTranslation();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -70,9 +72,7 @@ export default function Utilisateurs() {
             setUsers((prev) => [...prev, res.data.utilisateur]);
 
             if (res.data.motDePasseTemporaire) {
-                alert(
-                    `Utilisateur créé.\nMot de passe temporaire : ${res.data.motDePasseTemporaire}\n\nCommuniquez-le à l'utilisateur, il ne sera plus affiché.`
-                );
+                alert(t("admin.utilisateurCreeMessage", { motDePasse: res.data.motDePasseTemporaire }));
             }
         }
 
@@ -84,7 +84,7 @@ export default function Utilisateurs() {
 
     // Suppression
     const supprimer = async (id) => {
-        if (!confirm("Supprimer cet utilisateur ?")) return;
+        if (!confirm(t("admin.confirmerSuppressionUtilisateur"))) return;
 
         try {
         await api.delete(`/admin/utilisateurs/${id}`);
@@ -94,14 +94,14 @@ export default function Utilisateurs() {
         }
     };
 
-    if (loading) return <p>Chargement…</p>;
+    if (loading) return <p>{t("commun.chargement")}</p>;
 
     return (
         <div className="page-utilisateurs">
         <div className="header">
-            <h1>Gestion des utilisateurs</h1>
+            <h1>{t("admin.gestionUtilisateurs")}</h1>
             <button className="btn-primary" onClick={openCreate}>
-            + Ajouter un utilisateur
+            + {t("admin.ajouterUtilisateur")}
             </button>
         </div>
 
@@ -109,10 +109,10 @@ export default function Utilisateurs() {
         <table className="table-users">
             <thead>
             <tr>
-                <th>Nom</th>
-                <th>Email</th>
-                <th>Rôle</th>
-                <th>Actions</th>
+                <th>{t("commun.nom")}</th>
+                <th>{t("commun.email")}</th>
+                <th>{t("admin.role")}</th>
+                <th>{t("commun.actions")}</th>
             </tr>
             </thead>
 
@@ -122,14 +122,14 @@ export default function Utilisateurs() {
                 <td>{u.nom}</td>
                 <td>{u.email}</td>
                 <td>
-                    <span className={`badge badge-${u.role}`}>{u.role}</span>
+                    <span className={`badge badge-${u.role}`}>{u.role === "admin" ? t("profil.administrateur") : t("profil.utilisateur")}</span>
                 </td>
                 <td>
                     <button className="btn-edit" onClick={() => openEdit(u)}>
-                    Modifier
+                    {t("commun.modifier")}
                     </button>
                     <button className="btn-delete" onClick={() => supprimer(u.id)}>
-                    Supprimer
+                    {t("commun.supprimer")}
                     </button>
                 </td>
                 </tr>
@@ -149,12 +149,12 @@ export default function Utilisateurs() {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
             >
-                <h2>{editingUser ? "Modifier l’utilisateur" : "Créer un utilisateur"}</h2>
+                <h2>{editingUser ? t("admin.modifierUtilisateur") : t("admin.creerUtilisateur")}</h2>
 
                 <form onSubmit={handleSubmit}>
                 <input
                     type="text"
-                    placeholder="Nom"
+                    placeholder={t("commun.nom")}
                     value={form.nom}
                     onChange={(e) => setForm({ ...form, nom: e.target.value })}
                     required
@@ -162,7 +162,7 @@ export default function Utilisateurs() {
 
                 <input
                     type="email"
-                    placeholder="Email"
+                    placeholder={t("commun.email")}
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     required
@@ -172,20 +172,20 @@ export default function Utilisateurs() {
                     value={form.role}
                     onChange={(e) => setForm({ ...form, role: e.target.value })}
                 >
-                    <option value="user">Utilisateur</option>
-                    <option value="admin">Administrateur</option>
+                    <option value="user">{t("profil.utilisateur")}</option>
+                    <option value="admin">{t("profil.administrateur")}</option>
                 </select>
 
                 <div className="modal-actions">
                     <button type="submit" className="btn-primary">
-                    Enregistrer
+                    {t("commun.enregistrer")}
                     </button>
                     <button
                     type="button"
                     className="btn-secondary"
                     onClick={() => setModalOpen(false)}
                     >
-                    Annuler
+                    {t("commun.annuler")}
                     </button>
                 </div>
                 </form>

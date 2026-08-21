@@ -7,7 +7,7 @@ const router = express.Router();
 
 // 📌 Le webhook Stripe est monté séparément dans app.js (corps brut requis pour la signature)
 
-router.get("/offres", verifyToken, AbonnementControleur.offres);
+router.get("/offres", AbonnementControleur.offres);
 router.get("/statut", verifyToken, AbonnementControleur.statut);
 router.post("/creer-session-paiement", verifyToken, adminMiddleware, AbonnementControleur.creerSessionPaiement);
 router.post("/portail", verifyToken, adminMiddleware, AbonnementControleur.ouvrirPortail);

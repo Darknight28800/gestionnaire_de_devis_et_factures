@@ -1,9 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import "../../styles/pages/_devisDetail.scss";
 
 export default function DevisDetail() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const [devis, setDevis] = useState(null);
@@ -61,7 +63,7 @@ export default function DevisDetail() {
             navigate(`/factures/${res.data.facture.id}`);
         } catch (err) {
             console.error("Erreur conversion en facture :", err);
-            alert("Erreur lors de la conversion en facture.");
+            alert(t("devis.erreurConversion"));
         }
     };
 
@@ -83,7 +85,7 @@ export default function DevisDetail() {
         }
     };
 
-    if (!devis) return <p>Chargement...</p>;
+    if (!devis) return <p>{t("commun.chargement")}</p>;
 
     const totalHT = devis.lignes.reduce(
         (sum, l) => sum + l.quantite * l.prix,
@@ -96,60 +98,60 @@ export default function DevisDetail() {
         <div className="devis-detail">
 
             <div className="devis-detail__header">
-                <h1>Devis #{devis.id}</h1>
+                <h1>{t("nav.devis")} #{devis.id}</h1>
 
                 <div className="actions">
                     {devis.statut === "accepte" && !devis.archive_le && (
-                        <button className="btn-primaire" onClick={convertirEnFacture}>🧾 Convertir en facture</button>
+                        <button className="btn-primaire" onClick={convertirEnFacture}>🧾 {t("devis.convertirEnFacture")}</button>
                     )}
-                    <button className="btn-texte" onClick={envoyerEmail}>✉️ Envoyer</button>
-                    <button className="btn-primaire" onClick={telechargerPDF}>📄 Générer PDF</button>
+                    <button className="btn-texte" onClick={envoyerEmail}>✉️ {t("commun.envoyer")}</button>
+                    <button className="btn-primaire" onClick={telechargerPDF}>📄 {t("commun.genererPDF")}</button>
                     {devis.archive_le ? (
-                        <button className="btn-texte" onClick={desarchiver}>📤 Désarchiver</button>
+                        <button className="btn-texte" onClick={desarchiver}>📤 {t("commun.desarchiver")}</button>
                     ) : (
                         (devis.statut === "accepte" || devis.statut === "refuse") && (
-                            <button className="btn-texte" onClick={archiver}>🗄️ Archiver</button>
+                            <button className="btn-texte" onClick={archiver}>🗄️ {t("commun.archiver")}</button>
                         )
                     )}
-                    <Link className="btn-texte" to="/devis">← Retour</Link>
+                    <Link className="btn-texte" to="/devis">← {t("commun.retour")}</Link>
                 </div>
             </div>
 
             {devis.archive_le && (
                 <p className="message message--succes">
-                    📦 Ce devis est archivé depuis le {new Date(devis.archive_le).toLocaleDateString()}.
+                    📦 {t("devis.archiveDepuis", { date: new Date(devis.archive_le).toLocaleDateString() })}
                 </p>
             )}
 
             <div className="infos-grid">
 
                 <div className="card">
-                    <h3>Informations du devis</h3>
-                    <p><strong>Titre :</strong> {devis.titre}</p>
-                    <p><strong>Description :</strong> {devis.description}</p>
-                    <p><strong>Statut :</strong> <span className={`statut statut--${devis.statut}`}>{devis.statut}</span></p>
-                    <p><strong>Date :</strong> {new Date(devis.date_creation).toLocaleDateString()}</p>
+                    <h3>{t("devis.informationsDevis")}</h3>
+                    <p><strong>{t("devis.titreDevis")} :</strong> {devis.titre}</p>
+                    <p><strong>{t("commun.description")} :</strong> {devis.description}</p>
+                    <p><strong>{t("commun.statut")} :</strong> <span className={`statut statut--${devis.statut}`}>{t(`statuts.devis.${devis.statut}`, devis.statut)}</span></p>
+                    <p><strong>{t("commun.date")} :</strong> {new Date(devis.date_creation).toLocaleDateString()}</p>
                 </div>
 
                 <div className="card">
-                    <h3>Client</h3>
-                    <p><strong>Nom :</strong> {devis.client.nom}</p>
-                    <p><strong>Email :</strong> {devis.client.email}</p>
-                    <p><strong>Téléphone :</strong> {devis.client.telephone}</p>
+                    <h3>{t("commun.client")}</h3>
+                    <p><strong>{t("commun.nom")} :</strong> {devis.client.nom}</p>
+                    <p><strong>{t("commun.email")} :</strong> {devis.client.email}</p>
+                    <p><strong>{t("commun.telephone")} :</strong> {devis.client.telephone}</p>
                 </div>
 
             </div>
 
             <div className="card">
-                <h3>Lignes du devis</h3>
+                <h3>{t("devis.lignesDevis")}</h3>
 
                 <table className="table-lignes">
                     <thead>
                         <tr>
-                            <th>Description</th>
-                            <th>Qté</th>
-                            <th>Prix</th>
-                            <th>Total</th>
+                            <th>{t("commun.description")}</th>
+                            <th>{t("devis.qte")}</th>
+                            <th>{t("devis.prix")}</th>
+                            <th>{t("commun.total")}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -166,13 +168,13 @@ export default function DevisDetail() {
             </div>
 
             <div className="totaux">
-                <p>Total HT : <strong>{totalHT.toFixed(2)} €</strong></p>
-                <p>TVA (20%) : <strong>{totalTVA.toFixed(2)} €</strong></p>
-                <p>Total TTC : <strong>{totalTTC.toFixed(2)} €</strong></p>
+                <p>{t("devis.totalHT")} : <strong>{totalHT.toFixed(2)} €</strong></p>
+                <p>{t("devis.tva")} : <strong>{totalTVA.toFixed(2)} €</strong></p>
+                <p>{t("devis.totalTTC")} : <strong>{totalTTC.toFixed(2)} €</strong></p>
             </div>
 
             <div className="card timeline">
-                <h3>Historique</h3>
+                <h3>{t("commun.historique")}</h3>
                 <ul>
                     {devis.historique.map((event, i) => (
                         <li key={i}>

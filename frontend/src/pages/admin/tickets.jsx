@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import "../../styles/pages/_logs.scss";
 
 export default function Tickets() {
+    const { t, i18n } = useTranslation();
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -31,44 +33,46 @@ export default function Tickets() {
         }
     };
 
-    if (loading) return <p>Chargement…</p>;
+    if (loading) return <p>{t("commun.chargement")}</p>;
 
     return (
         <div className="page-logs">
             <motion.div className="header" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-                <h1>Tickets de support</h1>
-                <p>Consultez et traitez les demandes envoyées par les utilisateurs.</p>
+                <h1>{t("admin.ticketsSupport")}</h1>
+                <p>{t("admin.ticketsSupportListeTexte")}</p>
             </motion.div>
 
             {tickets.length === 0 ? (
-                <p>Aucun ticket pour le moment.</p>
+                <p>{t("admin.aucunTicket")}</p>
             ) : (
                 <motion.table className="table-logs" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <thead>
                         <tr>
-                            <th>Utilisateur</th>
-                            <th>Sujet</th>
-                            <th>Message</th>
-                            <th>Statut</th>
-                            <th>Date</th>
-                            <th>Actions</th>
+                            <th>{t("commun.utilisateur")}</th>
+                            <th>{t("admin.sujet")}</th>
+                            <th>{t("admin.message")}</th>
+                            <th>{t("commun.statut")}</th>
+                            <th>{t("commun.date")}</th>
+                            <th>{t("commun.actions")}</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {tickets.map((t) => (
-                            <tr key={t.id}>
-                                <td>{t.utilisateur_nom || t.utilisateur_email}</td>
-                                <td>{t.sujet}</td>
-                                <td>{t.message}</td>
+                        {tickets.map((tk) => (
+                            <tr key={tk.id}>
+                                <td>{tk.utilisateur_nom || tk.utilisateur_email}</td>
+                                <td>{tk.sujet}</td>
+                                <td>{tk.message}</td>
                                 <td>
-                                    <span className={`statut statut--${t.statut}`}>{t.statut}</span>
+                                    <span className={`statut statut--${tk.statut}`}>
+                                        {tk.statut === "resolu" ? t("admin.statutResolu") : t("admin.statutOuvert")}
+                                    </span>
                                 </td>
-                                <td>{new Date(t.date_creation).toLocaleString()}</td>
+                                <td>{new Date(tk.date_creation).toLocaleString(i18n.language)}</td>
                                 <td>
-                                    {t.statut !== "resolu" && (
-                                        <button className="btn-primary" onClick={() => resoudre(t.id)}>
-                                            Marquer résolu
+                                    {tk.statut !== "resolu" && (
+                                        <button className="btn-primary" onClick={() => resoudre(tk.id)}>
+                                            {t("admin.marquerResolu")}
                                         </button>
                                     )}
                                 </td>
