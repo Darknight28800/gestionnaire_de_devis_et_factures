@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import Modal from "../../composants/modal";
+import { useDialog } from "../../contexte/dialogProvider";
 import "../../styles/pages/_clients.scss";
 
 export default function Clients() {
     const { t } = useTranslation();
+    const { confirmer, alerter } = useDialog();
     const [clients, setClients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [erreur, setErreur] = useState(null);
@@ -112,7 +114,7 @@ export default function Clients() {
 
         } catch (e) {
             console.error(e);
-            alert(t("clients.erreurEnregistrement"));
+            await alerter(t("clients.erreurEnregistrement"));
         }
     };
 
@@ -120,7 +122,8 @@ export default function Clients() {
        SUPPRESSION CLIENT
     ============================ */
     const supprimerClient = async (client) => {
-        if (!window.confirm(t("clients.confirmerSuppression", { nom: client.nom }))) return;
+        const ok = await confirmer(t("clients.confirmerSuppression", { nom: client.nom }), { variante: "danger", texteConfirmer: t("commun.supprimer") });
+        if (!ok) return;
 
         try {
             await api.delete(`/clients/${client.id}`);
@@ -130,7 +133,7 @@ export default function Clients() {
 
         } catch (e) {
             console.error(e);
-            alert(e.response?.data?.message || t("clients.erreurSuppression"));
+            await alerter(e.response?.data?.message || t("clients.erreurSuppression"));
         }
     };
 

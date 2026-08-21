@@ -4,6 +4,7 @@ import api from "../../api/axios";
 import { Link } from "react-router-dom";
 import Modal from "../../composants/modal";
 import useAuth from "../../hooks/useAuth";
+import { useDialog } from "../../contexte/dialogProvider";
 import "../../styles/pages/_factures.scss";
 
 const LIGNE_VIDE = { description: "", quantite: 1, prix: 0 };
@@ -11,6 +12,7 @@ const LIGNE_VIDE = { description: "", quantite: 1, prix: 0 };
 export default function Factures() {
     const { t } = useTranslation();
     const { utilisateur } = useAuth();
+    const { confirmer, alerter } = useDialog();
     const [factures, setFactures] = useState([]);
     const [clients, setClients] = useState([]);
     const [search, setSearch] = useState("");
@@ -135,19 +137,20 @@ export default function Factures() {
             charger();
         } catch (err) {
             console.error(err.response?.data);
-            alert(t("factures.erreurEnregistrement"));
+            await alerter(t("factures.erreurEnregistrement"));
         }
     };
 
     const supprimerFacture = async (f) => {
-        if (!window.confirm(t("factures.confirmerSuppression", { id: f.id }))) return;
+        const ok = await confirmer(t("factures.confirmerSuppression", { id: f.id }), { variante: "danger", texteConfirmer: t("commun.supprimer") });
+        if (!ok) return;
 
         try {
             await api.delete(`/factures/${f.id}`);
             charger();
         } catch (err) {
             console.error(err);
-            alert(t("factures.erreurSuppression"));
+            await alerter(t("factures.erreurSuppression"));
         }
     };
 

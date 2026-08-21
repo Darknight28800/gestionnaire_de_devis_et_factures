@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
+import { useDialog } from "../../contexte/dialogProvider";
 import "../../styles/pages/_archives.scss";
 
 const DUREE_CONSERVATION_ANNEES = 5;
@@ -16,6 +17,7 @@ function dateExpiration(archiveLe) {
 export default function Archives() {
     const { t } = useTranslation();
     const { utilisateur } = useAuth();
+    const { confirmer } = useDialog();
     const [onglet, setOnglet] = useState("devis");
     const [devis, setDevis] = useState([]);
     const [factures, setFactures] = useState([]);
@@ -54,7 +56,8 @@ export default function Archives() {
     };
 
     const purgerArchives = async () => {
-        if (!window.confirm(t("archives.confirmerPurge", { annees: DUREE_CONSERVATION_ANNEES }))) return;
+        const ok = await confirmer(t("archives.confirmerPurge", { annees: DUREE_CONSERVATION_ANNEES }), { variante: "danger", texteConfirmer: t("commun.supprimer") });
+        if (!ok) return;
 
         setPurge(true);
         setMessagePurge(null);

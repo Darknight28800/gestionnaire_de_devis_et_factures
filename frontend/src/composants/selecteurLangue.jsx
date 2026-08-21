@@ -4,7 +4,7 @@ import { LANGUES_DISPONIBLES } from "../i18n";
 import "../styles/composants/_selecteurLangue.scss";
 
 export default function SelecteurLangue({ className = "" }) {
-    const { i18n } = useTranslation();
+    const { i18n, t } = useTranslation();
     const [ouvert, setOuvert] = useState(false);
 
     const langueActuelle = LANGUES_DISPONIBLES.find((l) => l.code === i18n.language) || LANGUES_DISPONIBLES[0];
@@ -15,15 +15,17 @@ export default function SelecteurLangue({ className = "" }) {
     };
 
     return (
-        <div className={`selecteur-langue ${className}`}>
+        <div className={`selecteur-langue ${className} ${ouvert ? "selecteur-langue--ouvert" : ""}`}>
             <button
                 type="button"
                 className="selecteur-langue__bouton"
                 onClick={() => setOuvert(!ouvert)}
-                aria-label="Choisir la langue"
+                aria-label={t("langue.selectionner")}
+                aria-expanded={ouvert}
             >
-                <span>{langueActuelle.drapeau}</span>
+                <span className="selecteur-langue__drapeau">{langueActuelle.drapeau}</span>
                 <span className="selecteur-langue__code">{langueActuelle.code.toUpperCase()}</span>
+                <span className="selecteur-langue__chevron">⌄</span>
             </button>
 
             {ouvert && (
@@ -37,8 +39,11 @@ export default function SelecteurLangue({ className = "" }) {
                                 className={langue.code === langueActuelle.code ? "actif" : ""}
                                 onClick={() => choisir(langue.code)}
                             >
-                                <span>{langue.drapeau}</span>
+                                <span className="selecteur-langue__drapeau">{langue.drapeau}</span>
                                 <span>{langue.label}</span>
+                                {langue.code === langueActuelle.code && (
+                                    <span className="selecteur-langue__coche">✓</span>
+                                )}
                             </button>
                         ))}
                     </div>

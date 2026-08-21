@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
+import { useDialog } from "../../contexte/dialogProvider";
 import "../../styles/pages/_roles.scss";
 
 export default function Roles() {
     const { t } = useTranslation();
+    const { confirmer } = useDialog();
 
     const PERMISSIONS = [
         { id: "voir_utilisateurs", label: t("admin.permissions.voirUtilisateurs") },
@@ -92,7 +94,8 @@ export default function Roles() {
 
     /* Suppression */
     const supprimer = async (id) => {
-        if (!confirm(t("admin.confirmerSuppressionRole"))) return;
+        const ok = await confirmer(t("admin.confirmerSuppressionRole"), { variante: "danger", texteConfirmer: t("commun.supprimer") });
+        if (!ok) return;
 
         try {
             await api.delete(`/admin/roles/${id}`);

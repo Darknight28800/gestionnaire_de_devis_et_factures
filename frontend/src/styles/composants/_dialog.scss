@@ -1,0 +1,159 @@
+/* ============================
+   DIALOGUE PREMIUM (remplace confirm()/alert() natifs)
+============================ */
+
+.dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(9, 14, 26, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10500;
+    padding: 1.5rem;
+}
+
+.dialog {
+    position: relative;
+    width: 380px;
+    max-width: 100%;
+    padding: 28px 26px 22px;
+    text-align: center;
+    border-radius: 20px;
+    overflow: hidden;
+
+    background: color-mix(in srgb, var(--fond-carte) 94%, transparent);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), 0 20px 50px rgba(16, 24, 40, 0.2);
+
+    animation: dialogIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--couleur-primaire), var(--couleur-accent, #0891b2));
+    }
+
+    &.dialog--danger::before {
+        background: linear-gradient(90deg, var(--danger), #f59e0b);
+    }
+
+    h3 {
+        margin: 2px 0 8px;
+        font-size: 1.08rem;
+        font-weight: 700;
+        color: var(--texte);
+    }
+
+    p {
+        margin: 0;
+        color: var(--text-light, var(--texte));
+        font-size: 0.92rem;
+        line-height: 1.55;
+        white-space: pre-line;
+    }
+}
+
+.dialog__icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    background: color-mix(in srgb, var(--couleur-primaire) 14%, transparent);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset;
+
+    .dialog--danger & {
+        background: var(--danger-fond);
+    }
+}
+
+.dialog__actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.dialog__btn {
+    flex: 1;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.16s ease, filter 0.16s ease, background 0.16s ease;
+
+    &:hover {
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0) scale(0.97);
+    }
+
+    &--primaire {
+        background: var(--couleur-primaire);
+        color: #fff;
+
+        &:hover {
+            filter: brightness(1.08);
+            box-shadow: 0 8px 20px -6px color-mix(in srgb, var(--couleur-primaire) 55%, transparent);
+        }
+    }
+
+    &--danger {
+        background: var(--danger);
+        color: #fff;
+
+        &:hover {
+            filter: brightness(1.08);
+            box-shadow: 0 8px 20px -6px color-mix(in srgb, var(--danger) 55%, transparent);
+        }
+    }
+
+    &--fantome {
+        background: var(--gris-100);
+        color: var(--texte);
+
+        &:hover {
+            background: var(--gris-200);
+        }
+    }
+}
+
+@keyframes dialogIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dialog {
+        animation: none;
+    }
+
+    .dialog__btn {
+        transition: background 0.16s ease, filter 0.16s ease;
+
+        &:hover,
+        &:active {
+            transform: none;
+        }
+    }
+}

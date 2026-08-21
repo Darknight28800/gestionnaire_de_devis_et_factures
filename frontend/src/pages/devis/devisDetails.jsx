@@ -2,12 +2,14 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
+import { useDialog } from "../../contexte/dialogProvider";
 import "../../styles/pages/_devisDetail.scss";
 
 export default function DevisDetail() {
     const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
+    const { alerter } = useDialog();
     const [devis, setDevis] = useState(null);
 
     const rechargerDevis = useCallback(async () => {
@@ -63,7 +65,7 @@ export default function DevisDetail() {
             navigate(`/factures/${res.data.facture.id}`);
         } catch (err) {
             console.error("Erreur conversion en facture :", err);
-            alert(t("devis.erreurConversion"));
+            await alerter(t("devis.erreurConversion"));
         }
     };
 

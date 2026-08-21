@@ -4,11 +4,13 @@ import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
 import Modal from "../../composants/modal";
 import useAuth from "../../hooks/useAuth";
+import { useDialog } from "../../contexte/dialogProvider";
 import "../../styles/pages/_devis.scss";
 
 export default function Devis() {
     const { t } = useTranslation();
     const { utilisateur } = useAuth();
+    const { confirmer, alerter } = useDialog();
     const navigate = useNavigate();
     const [devis, setDevis] = useState([]);
     const [clients, setClients] = useState([]);
@@ -160,7 +162,7 @@ export default function Devis() {
 
         } catch (err) {
             console.error(err.response?.data);
-            alert(t("devis.erreurEnregistrement"));
+            await alerter(t("devis.erreurEnregistrement"));
         }
     };
 
@@ -174,7 +176,7 @@ export default function Devis() {
             navigate(`/factures/${res.data.facture.id}`);
         } catch (err) {
             console.error(err);
-            alert(t("devis.erreurConversion"));
+            await alerter(t("devis.erreurConversion"));
         } finally {
             setConversionEnCours(null);
         }
@@ -184,14 +186,15 @@ export default function Devis() {
        SUPPRESSION
     ============================ */
     const supprimerDevis = async (d) => {
-        if (!window.confirm(t("devis.confirmerSuppression", { id: d.id }))) return;
+        const ok = await confirmer(t("devis.confirmerSuppression", { id: d.id }), { variante: "danger", texteConfirmer: t("commun.supprimer") });
+        if (!ok) return;
 
         try {
             await api.delete(`/devis/${d.id}`);
             rechargerDevis();
         } catch (err) {
             console.error(err);
-            alert(t("devis.erreurSuppression"));
+            await alerter(t("devis.erreurSuppression"));
         }
     };
 

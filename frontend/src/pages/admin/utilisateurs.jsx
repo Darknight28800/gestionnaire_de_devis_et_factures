@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import api from "../../api/axios";
+import { useDialog } from "../../contexte/dialogProvider";
 import "../../styles/pages/_utilisateurs.scss";
 
 export default function Utilisateurs() {
     const { t } = useTranslation();
+    const { confirmer, alerter } = useDialog();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -72,7 +74,7 @@ export default function Utilisateurs() {
             setUsers((prev) => [...prev, res.data.utilisateur]);
 
             if (res.data.motDePasseTemporaire) {
-                alert(t("admin.utilisateurCreeMessage", { motDePasse: res.data.motDePasseTemporaire }));
+                await alerter(t("admin.utilisateurCreeMessage", { motDePasse: res.data.motDePasseTemporaire }));
             }
         }
 
@@ -84,7 +86,8 @@ export default function Utilisateurs() {
 
     // Suppression
     const supprimer = async (id) => {
-        if (!confirm(t("admin.confirmerSuppressionUtilisateur"))) return;
+        const ok = await confirmer(t("admin.confirmerSuppressionUtilisateur"), { variante: "danger", texteConfirmer: t("commun.supprimer") });
+        if (!ok) return;
 
         try {
         await api.delete(`/admin/utilisateurs/${id}`);
